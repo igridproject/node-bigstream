@@ -2,18 +2,10 @@ var util = require('util');
 var DIPlugin = require('../di-plugin');
 
 function DITask(){
-
+  this.name = "http"
 }
 util.inherits(DITask,DIPlugin);
 
-DITask.prototype.execute = execute_function;
-
-var execute_function = function(ctx,out){
-  var job_id = ctx.profile.jobid;
-  var transaction_id = ctx.profile.transaction_id;
-  var param = ctx.parameter;
-
-}
-
+DITask.prototype.execute  =  require('./execute');
 
 module.exports = DITask;
