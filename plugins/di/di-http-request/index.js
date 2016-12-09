@@ -1,7 +1,8 @@
 var util = require('util');
 var DIPlugin = require('../di-plugin');
 
-function DITask(){
+function DITask(context){
+  DIPlugin.call(this,context);
   this.name = "http"
 }
 util.inherits(DITask,DIPlugin);
