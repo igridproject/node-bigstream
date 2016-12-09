@@ -1,12 +1,18 @@
-function execute_function(ctx,out){
-  // var job_id = ctx.profile.jobid;
-  // var transaction_id = ctx.profile.transaction_id;
+function execute_function(context,response){
+  // var job_id = context.profile.job_id;
+  // var transaction_id = context.profile.transaction_id;
   // var param = ctx.parameter;
 
-  var data = '';
+  var data = 'hello world';
+
+  setTimeout(function () {
+    response.success(context.jobid + ' ' + data);
+}, 1000);
 
 
-  console.log(this.getname() + 'plug-ins');
+  //response.cancel();
+  //response.error("error message")
+  //response.success(data);
 }
 
 module.exports = execute_function;
