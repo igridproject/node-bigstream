@@ -38,11 +38,11 @@ DIResponse.prototype.success = function(data){
 }
 
 DIResponse.prototype.error = function(err){
-  this.handle.emit('done',response('error',data));
+  this.handle.emit('done',response('error',err));
 }
 
-DIResponse.prototype.cancel = function(){
-  this.handle.emit('done',response('cancel',null));
+DIResponse.prototype.reject = function(){
+  this.handle.emit('done',response('reject',null));
 }
 
 function response(status,data){

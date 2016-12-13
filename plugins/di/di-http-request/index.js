@@ -3,7 +3,8 @@ var DIPlugin = require('../di-plugin');
 
 function DITask(context){
   DIPlugin.call(this,context);
-  this.name = "http"
+  this.name = "http-request";
+  this.output_type = "text";
 }
 util.inherits(DITask,DIPlugin);
 
