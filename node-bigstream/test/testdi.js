@@ -6,3 +6,7 @@ di.run();
 di.on('done',function(response){
   console.log('>> ' + response.data);
 });
+
+di.on('start',function(){
+  console.log('>> start');
+});

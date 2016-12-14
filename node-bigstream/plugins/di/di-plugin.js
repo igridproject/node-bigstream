@@ -31,20 +31,40 @@ module.exports = DIPlugin;
 
 function DIResponse(handle){
   this.handle = handle;
+  this.status = null;
+  this.data = null;
+  this.output_type = '*';
 }
 
-DIResponse.prototype.success = function(data){
-  this.handle.emit('done',response('success',data));
+DIResponse.prototype.success = function(data,type){
+  var handle = this.handle;
+  process.nextTick(function(){
+    handle.emit('done',response('success',data,type));
+  });
+
 }
 
 DIResponse.prototype.error = function(err){
-  this.handle.emit('done',response('error',err));
+  var handle = this.handle;
+  process.nextTick(function(){
+    handle.emit('done',response('error',err));
+  });
 }
 
 DIResponse.prototype.reject = function(){
-  this.handle.emit('done',response('reject',null));
+  var handle = this.handle;
+  process.nextTick(function(){
+    handle.emit('done',response('reject',null));
+  });
 }
 
-function response(status,data){
-  return {'status':status,'data':data}
+function response(status,data,type){
+  var resp = {'status':status,'data':data};
+  if(type){
+    resp.type = type;
+    this.output_type = type;
+    this.data = data;
+    this.status = status;
+  }
+  return resp;
 }
