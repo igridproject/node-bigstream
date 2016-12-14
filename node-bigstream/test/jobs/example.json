@@ -1,14 +1,14 @@
 {
-  "job_id" : "001",
+  "job_id" : "example",
   "active" : true,
   "trigger" : {
     "type": "cron",
-    "cmd": "*/10 * * * *"
+    "cmd": "*/10 * * * * *"
   },
   "data_in" : {
-    "type": "http-request",
+    "type": "example",
     "param": {
-      "url": "http://agritronics.nstda.or.th/ws/get.php"
+      "url": "http://www.google.com"
     }
   },
   "data_out" : {

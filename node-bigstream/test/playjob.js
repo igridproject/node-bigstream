@@ -1,10 +1,11 @@
+var schedule = require('node-schedule');
 var storage = require('node-persist');
 storage.initSync({
     dir:'db'
 });
 var memstore = require('./lib/memstore');
 
-var CFG_FILE = "./jobs/testhttp.json";
+var CFG_FILE = "./jobs/example.json";
 
 var args = process.argv.slice(2);
 
@@ -13,8 +14,21 @@ if(args.length > 0){
 }
 
 var jobcfg = require(CFG_FILE);
-run_job(jobcfg);
 
+if(jobcfg.trigger && jobcfg.trigger.type == 'cron')
+{
+  var triggercfg = jobcfg.trigger;
+  var cron = jobcfg.trigger.cmd;
+  console.log('[SCHEDULE MODE]');
+  console.log('[CRON]\t\t: ' + cron);
+
+  var j = schedule.scheduleJob(cron, function(){
+    run_job(jobcfg);
+  });
+
+}else{
+  run_job(jobcfg);
+}
 
 
 
@@ -30,7 +44,7 @@ function run_job(cfg)
     "transaction" : transaction
   }
 
-  console.log('JOB STARTED \n[TRANSACTION ID]\t: ' + transaction.id + '\n');
+  console.log('JOB RUNNING \n[TRANSACTION ID]\t: ' + transaction.id + '\n');
 
   //process di
   perform_di(context,function(err,resp){
@@ -47,6 +61,7 @@ function perform_di(context,cb)
   var jobId = di_context.jobconfig.job_id;
   var di_cfg = di_context.jobconfig.data_in;
 
+  console.log('[DI_PLUGIN]\t\t: ' + di_cfg.type);
   var DITask = getPlugins('di',di_cfg.type);
   var mempref = "ms." + jobId + '.di';
   var diMem = new memstore(mempref,storage);
@@ -56,11 +71,11 @@ function perform_di(context,cb)
 
   var di = new DITask(di_context);
   di.run();
-  di.on('done',function(response){
+  di.on('done',function(resp){
     console.log('[DI_OUTPUT_TYPE]\t: ' + resp.type);
     console.log('[DI_STATUS]\t\t: ' + resp.status);
-    console.log('>> ' + resp.data);
-    cb(null,response);
+    console.log('>>' + resp.data);
+    cb(null,resp);
   });
 }
 
