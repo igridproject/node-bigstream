@@ -63,8 +63,12 @@ function response(status,data,type){
   if(type){
     resp.type = type;
     this.output_type = type;
-    this.data = data;
-    this.status = status;
+  }else{
+    resp.type = this.output_type;
   }
+
+
+  this.data = data;
+  this.status = status;
   return resp;
 }

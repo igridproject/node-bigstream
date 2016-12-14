@@ -6,6 +6,11 @@ var memstore = require('./lib/memstore');
 
 var CFG_FILE = "./jobs/testhttp.json";
 
+var args = process.argv.slice(2);
+
+if(args.length > 0){
+  CFG_FILE = "./jobs/" + args[0];
+}
 
 var jobcfg = require(CFG_FILE);
 run_job(jobcfg);
@@ -25,15 +30,18 @@ function run_job(cfg)
     "transaction" : transaction
   }
 
+  console.log('JOB STARTED \n[TRANSACTION ID]\t: ' + transaction.id + '\n');
+
   //process di
   perform_di(context,function(err,resp){
-    console.log('>> ' + resp.data);
+
   });
 
 }
 
 function perform_di(context,cb)
 {
+  console.log('[RUNNING DI]');
   var di_context = context;
 
   var jobId = di_context.jobconfig.job_id;
@@ -49,6 +57,9 @@ function perform_di(context,cb)
   var di = new DITask(di_context);
   di.run();
   di.on('done',function(response){
+    console.log('[DI_OUTPUT_TYPE]\t: ' + resp.type);
+    console.log('[DI_STATUS]\t\t: ' + resp.status);
+    console.log('>> ' + resp.data);
     cb(null,response);
   });
 }
