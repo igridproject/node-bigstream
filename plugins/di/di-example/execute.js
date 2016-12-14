@@ -1,5 +1,3 @@
-var request = require('request');
-
 function execute_function(context,response){
   var job_id = context.jobconfig.job_id;
   var transaction_id = context.transaction.id;
@@ -7,16 +5,9 @@ function execute_function(context,response){
   var memstore = context.task.memstore
 
   var output_type = 'text'
-  var url = param.url;
-  console.log(url);
+  var data = 'hello world ' + transaction_id;
 
-  request(url, function (error, resp, body) {
-    if (!error && resp.statusCode == 200) {
-      response.success(body);
-    }else{
-      response.error(error);
-    }
-  })
+
   // memstore.setItem('lasttransaction',transaction_id,function(err){
   //   response.success(data);
   // });
@@ -26,7 +17,7 @@ function execute_function(context,response){
   // });
 
 
-  //response.success(data,output_type);
+  response.success(data,output_type);
   //response.reject();
   //response.error("error message")
 
