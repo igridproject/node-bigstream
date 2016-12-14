@@ -1,12 +1,12 @@
 {
-  "job_id" : "example",
+  "job_id" : "http",
   "active" : true,
   "triggers" : {
     "type": "cron",
     "cmd": "*/10 * * * * *"
   },
   "data_in" : {
-    "type": "example",
+    "type": "http-request",
     "param": {
       "url": "http://www.google.com"
     }
