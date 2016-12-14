@@ -1,0 +1,35 @@
+{
+  "job_id" : "001",
+  "active" : true,
+  "trigger" : {
+    "type": "cron",
+    "cmd": "*/10 * * * *"
+  },
+  "data_in" : {
+    "type": "agritronics",
+    "profile": {
+      "station_id": "GISDA-01",
+      "latitude": "",
+      "longitude": ""
+    },
+    "param": {
+      "url": "http://agritronics.nstda.or.th/ws/get.php",
+      "appkey": "0c5a295bd8c07a081f4f0061eee6665c38",
+      "station_id": "GISTDA-01",
+      "data_types": ["1", "2", "4", "5", "6", "7", "8", "10", "2021", "2022"],
+      "node_id": "4096",
+      "node_id_camera": "7328",
+      "init_date_observed": "2016-11-23",
+      "init_time_observed": "09:00:05"
+    }
+  },
+  "data_transform" : {
+    "type": "agritronics"
+  },
+  "data_out" : {
+    "type": "bss-storage",
+    "param" : {
+      "name": "sds.agritronics"
+    }
+  }
+}
