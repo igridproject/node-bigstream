@@ -1,7 +1,7 @@
 {
   "job_id" : "example",
   "active" : true,
-  "triggers" : {
+  "trigger" : {
     "type": "cron",
     "cmd": "*/10 * * * * *"
   },
