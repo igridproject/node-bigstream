@@ -8,7 +8,6 @@ function execute_function(context,response){
 
   var output_type = 'text'
   var url = param.url;
-  console.log(url);
 
   request(url, function (error, resp, body) {
     if (!error && resp.statusCode == 200) {
