@@ -44,11 +44,19 @@ function run_job(cfg)
     "transaction" : transaction
   }
 
-  console.log('JOB RUNNING \n[TRANSACTION ID]\t: ' + transaction.id + '\n');
+  console.log('***** JOB RUNNING *****\n[TRANSACTION ID]\t: ' + transaction.id + '\n');
 
   //process di
   perform_di(context,function(err,resp){
+      if(resp.status == 'success' && context.jobconfig.data_transfrom){
+        var dt_request = {'type':resp.type,'data':resp.data}
+        perform_dt(context,dt_request,function(err,dt_resp){
 
+          console.log('***** JOB DONE *****\n\n');
+        });
+      }else{
+        console.log('***** JOB DONE *****\n\n');
+      }
   });
 
 }
@@ -74,6 +82,32 @@ function perform_di(context,cb)
   di.on('done',function(resp){
     console.log('[DI_OUTPUT_TYPE]\t: ' + resp.type);
     console.log('[DI_STATUS]\t\t: ' + resp.status);
+    console.log('>>' + resp.data);
+    cb(null,resp);
+  });
+}
+
+function perform_dt(context,request,cb)
+{
+  console.log('\n\n[RUNNING DT]');
+  var dt_context = context
+
+  var jobId = dt_context.jobconfig.job_id;
+  var dt_cfg = dt_context.jobconfig.data_transfrom;
+
+  console.log('[DT_PLUGIN]\t\t: ' + dt_cfg.type);
+  var DITask = getPlugins('dt',dt_cfg.type);
+  var mempref = "ms." + jobId + '.dt';
+  var dtMem = new memstore(mempref,storage);
+  dt_context.task = {
+    "memstore" : dtMem
+  }
+
+  var dt = new DITask(dt_context,request);
+  dt.run();
+  dt.on('done',function(resp){
+    console.log('[DT_OUTPUT_TYPE]\t: ' + resp.type);
+    console.log('[DT_STATUS]\t\t: ' + resp.status);
     console.log('>>' + resp.data);
     cb(null,resp);
   });

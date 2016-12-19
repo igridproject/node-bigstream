@@ -6,10 +6,10 @@
     "cmd": "*/10 * * * * *"
   },
   "data_in" : {
-    "type": "example",
-    "param": {
-      "url": "http://www.google.com"
-    }
+    "type": "example"
+  },
+  "data_transfrom" : {
+    "type": "noop"
   },
   "data_out" : {
     "type": "bss-storage",
