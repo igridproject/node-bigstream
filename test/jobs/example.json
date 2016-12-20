@@ -12,9 +12,6 @@
     "type": "noop"
   },
   "data_out" : {
-    "type": "bss-storage",
-    "param" : {
-      "name": "sds.agritronics"
-    }
+    "type": "console"
   }
 }
