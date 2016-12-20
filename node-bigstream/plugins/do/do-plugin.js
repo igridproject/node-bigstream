@@ -1,69 +1,65 @@
 var util = require('util');
 var EventEmitter = require('events').EventEmitter;
 
-function DTPlugin(context,request){
+function DOPlugin(context,request){
   EventEmitter.call(this);
 
   this.version = '0.1';
   this.name = 'base';
   this.jobcontext = context;
   this.request = request;
-  this.outputdata = null;
 }
-util.inherits(DTPlugin, EventEmitter);
+util.inherits(DOPlugin, EventEmitter);
 
-DTPlugin.prototype.getname = function(){
+DOPlugin.prototype.getname = function(){
   return this.name;
 }
 
-DTPlugin.prototype.perform = function(){}
+DOPlugin.prototype.perform = function(){}
 
-DTPlugin.prototype.run = function(){
+DOPlugin.prototype.run = function(){
   this.emit('start');
-  var resp = new DTResponse(this);
+  var resp = new DOResponse(this);
   this.perform(this.jobcontext,this.request,resp);
 }
 
-module.exports = DTPlugin;
+module.exports = DOPlugin;
 
 
 /*
-  DTResponse
+  DOResponse
 */
 
-function DTResponse(handle){
+function DOResponse(handle){
   this.handle = handle;
   this.status = null;
   this.data = null;
-  this.output_type = '';
+
 }
 
-DTResponse.prototype.success = function(data,type){
-  var self=this;
+DOResponse.prototype.success = function(data){
   var handle = this.handle;
-  this.data = data;
   this.status = 'success';
-  if(type){this.output_type=type;}
+  this.data = data;
   process.nextTick(function(){
-    handle.emit('done',{'status':'success','data':data,'type':self.output_type});
+    handle.emit('done',{'status':'success','data':data});
   });
 
 }
 
-DTResponse.prototype.error = function(err){
-  var self=this;
+DOResponse.prototype.error = function(err){
   var handle = this.handle;
-  this.data = err;
   this.status = 'error';
+  this.data = err;
   process.nextTick(function(){
     handle.emit('done',{'status':'error','data':err});
   });
 }
 
-DTResponse.prototype.reject = function(){
+DOResponse.prototype.reject = function(){
   var handle = this.handle;
   this.status = 'reject';
   process.nextTick(function(){
-    handle.emit('done',{'status':'reject'});
+    handle.emit('done',{'status':'reject','data':null});
   });
 }

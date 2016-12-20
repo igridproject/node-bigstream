@@ -38,38 +38,31 @@ function DIResponse(handle){
 }
 
 DIResponse.prototype.success = function(data,type){
+  var self=this;
   var handle = this.handle;
+  this.data = data;
+  this.status = 'success';
+  if(type){this.output_type=type;}
   process.nextTick(function(){
-    handle.emit('done',response('success',data,type));
+    handle.emit('done',{'status':'success','data':data,'type':self.output_type});
   });
 
 }
 
 DIResponse.prototype.error = function(err){
+  var self=this;
   var handle = this.handle;
+  this.data = err;
+  this.status = 'error';
   process.nextTick(function(){
-    handle.emit('done',response('error',err));
+    handle.emit('done',{'status':'error','data':err});
   });
 }
 
 DIResponse.prototype.reject = function(){
   var handle = this.handle;
+  this.status = 'reject';
   process.nextTick(function(){
-    handle.emit('done',response('reject',null));
+    handle.emit('done',{'status':'reject'});
   });
-}
-
-function response(status,data,type){
-  var resp = {'status':status,'data':data};
-  if(type){
-    resp.type = type;
-    this.output_type = type;
-  }else{
-    resp.type = this.output_type;
-  }
-
-
-  this.data = data;
-  this.status = status;
-  return resp;
 }
