@@ -39,7 +39,7 @@ function execute_function(context,response){
 	    if( err ) {
 	      response.error(err);
 	    } else {
-	    	console.log(JSON.stringify(result));
+	    	//console.log(JSON.stringify(result));
 	    	response.success(result, output_type);
 	    }
 	});
