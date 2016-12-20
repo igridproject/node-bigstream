@@ -16,7 +16,7 @@ if(args.length > 0){
   if(args.length==1){
     CFG_FILE = "./jobs/" + args[0];
   }else{
-
+    CFG_FILE = "./jobs/" + args[args.length-1];
     for(var i=0;i<args.length-1;i++){
       switch (args[i]) {
         case '-log0':
