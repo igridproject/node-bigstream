@@ -82,7 +82,7 @@ function run_job(cfg)
       });
     },
     function(request,callback){
-      var dt_request = {'type':request.type,'data':request.data}
+      var dt_request = {'input_type':request.type,'data':request.data}
       perform_dt(context,dt_request,function(err,dt_resp){
         if(dt_resp.status == 'success'){
           callback(null,dt_resp);
@@ -92,7 +92,7 @@ function run_job(cfg)
       });
     },
     function(request,callback){
-      var do_request = {'type':request.type,'data':request.data}
+      var do_request = {'input_type':request.type,'data':request.data}
       perform_do(context,do_request,function(err,do_resp){
         if(do_resp.status == 'success'){
           callback(null,do_resp);
