@@ -155,7 +155,12 @@ function perform_dt(context,request,cb)
   }
 
   var dt = new DITask(dt_context,request);
+
   dt.run();
+  dt.on('error',function(err){
+    console.log('ERR');
+    console.log(err);
+  });
   dt.on('done',function(resp){
     track('[DT_OUTPUT_TYPE]\t: ' + resp.type,TRACKING>1);
     track('[DT_STATUS]\t\t: ' + resp.status,TRACKING>1);
