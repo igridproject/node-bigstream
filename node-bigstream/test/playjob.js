@@ -50,7 +50,6 @@ if(jobcfg.trigger && jobcfg.trigger.type == 'cron' && ONTRIGGER)
   var j = schedule.scheduleJob(cron, function(){
     run_job(jobcfg);
   });
-
 }else{
   run_job(jobcfg);
 }

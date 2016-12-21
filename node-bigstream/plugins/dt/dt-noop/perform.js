@@ -15,7 +15,7 @@ function perform_function(context,request,response){
   // memstore.getItem('lasttransaction',function(err,value){
   //   response.success(value);
   // });
-  data = data.a.b + "--DT--";
+  //data = data.a.b + "--DT--";
 
   response.success(data,output_type);
   //response.reject();
