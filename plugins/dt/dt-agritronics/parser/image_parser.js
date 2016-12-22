@@ -1,9 +1,8 @@
-var fs = require('fs');
-var request = require('request');
+var request = require('request').defaults({ encoding: null });;
 var async = require('async');
 
 exports.getValues = function(json, cb){
-
+	
 	let dataTemplate = {
 		"type": json.xhr.IO.Type,
 		"unit": json.xhr.IO.Unit,
@@ -35,6 +34,8 @@ exports.getValues = function(json, cb){
 
 			getImage(d.Value).then((data) =>{
 				values.push({"observeddatetime": d.IODateTime, "value": data});
+				//var bitmap = new Buffer(data, 'base64');
+				//fs.writeFileSync("./result.jpg", bitmap);
 				callback();
 				
 			}).catch((err) => {
@@ -62,7 +63,7 @@ function getImage(url) {
 	return new Promise((resolve, reject) => {
 		request(url, function (error, resp, body) {
 		    if (!error && resp.statusCode == 200) {
-		      resolve("data:" + resp.headers["content-type"] + ";base64," + new Buffer(body).toString('base64'));
+		      	resolve("data:" + resp.headers["content-type"] + ";base64," + new Buffer(body).toString('base64'));
 		    }else{
 		      return reject(error);
 		    }

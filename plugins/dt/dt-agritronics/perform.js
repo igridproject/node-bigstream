@@ -14,6 +14,7 @@ function perform_function(context,request,response){
 
   let idx = 0;
   let result = {
+    "object_type": 'iBitz',
     "station_id": di_data.station_id,
     "latitude": "",
     "longitude": "",
@@ -42,7 +43,8 @@ function perform_function(context,request,response){
       } else {
         console.log('data out...');
         fs.writeFileSync("./result.json", JSON.stringify(result));
-        console.log(JSON.stringify(result));
+        //console.log(JSON.stringify(result));
+        response.success(result,output_type);
       }
   });
 
@@ -56,7 +58,7 @@ function perform_function(context,request,response){
   // });
   //data = data + "--DT--"
 
-  response.success(result,output_type);
+  
   //response.reject();
   //response.error("error message")
 
