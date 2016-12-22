@@ -5,12 +5,13 @@ function execute_function(context,response){
 	var job_id = context.jobconfig.job_id;
 	var transaction_id = context.transaction_id;
 	var param = context.jobconfig.data_in.param;
-	var memstore = context.task.memstore
-	var output_type = 'jsonobject'
+	var memstore = context.task.memstore;
+	var output_type = 'object/agritronics';
 
 	var data = 'hello world';
 
 	let result = {
+		"object_type": 'agritronic',
 		"station_id": param.station_id,
 		"data":[]
 	};
@@ -21,7 +22,9 @@ function execute_function(context,response){
 	async.whilst(function() { return idx < param.data_types.length;}, function(callback) {
 		let dtype = param.data_types[idx].type;
 		let node_id = param.data_types[idx].node_id;
-		let url = param.url + `?appkey=${param.appkey}&p=${param.station_id},${node_id},${dtype},${param.init_date_observed},${param.init_time_observed}`;
+		let ts = memstore.getItem(`${param.station_id}-${dtype}`);
+		if(typeof(ts) === 'undefined') ts = `${param.init_observed_date},${param.init_observed_time}`;
+		let url = param.url + `?appkey=${param.appkey}&p=${param.station_id},${node_id},${dtype},${ts}`;
 		idx++;
 		getData(url).then((data) => {
 			if(data.search("denied") === -1){
