@@ -1,0 +1,47 @@
+{
+  "job_id" : "gistda-air",
+  "active" : true,
+  "triggerrrr" : {
+    "type": "cron",
+    "cmd": "*/10 * * * *"
+  },
+  "data_in" : {
+    "type": "gistda-air",
+    "profile": [
+       {"station_id": "Station1",
+        "latitude": "",
+        "longitude": ""
+       },
+       {"station_id": "Station2",
+        "latitude": "",
+        "longitude": ""
+       },
+       {"station_id": "Station3",
+        "latitude": "",
+        "longitude": ""
+       },
+       {"station_id": "Station4",
+        "latitude": "",
+        "longitude": ""
+       }
+    ],
+    "param": {
+      "source":"gistda_air",
+      "url": "203.150.19.51",
+      "port": "21",
+      "user": "bs",
+      "password": "UF13kczHdCPXpBb",
+      "init_observed_date": "2016-12-23",
+      "init_observed_time": "09:00:00"
+    }
+  },
+  "data_transform" : {
+    "type": "gistda-air" 
+  },
+  "data_out" : {
+    "type": "console",
+    "param" : {
+      "name": "sds.gistda-air"
+    }
+  }
+}
