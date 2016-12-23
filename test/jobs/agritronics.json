@@ -1,7 +1,7 @@
 {
   "job_id" : "001",
   "active" : true,
-  "triggerrrr" : {
+  "trigger" : {
     "type": "cron",
     "cmd": "*/10 * * * *"
   },
@@ -28,15 +28,15 @@
         {"type": "2021", "node_id": "7328"},
         {"type": "2022", "node_id": "7328"} 
       ],
-      "init_date_observed": "2016-11-23",
-      "init_time_observed": "09:00:05"
+      "init_observed_date": "2016-11-23",
+      "init_observed_time": "09:00:05"
     }
   },
   "data_transform" : {
     "type": "agritronics"
   },
   "data_out" : {
-    "type": "bss-storage",
+    "type": "console",
     "param" : {
       "name": "sds.agritronics"
     }
