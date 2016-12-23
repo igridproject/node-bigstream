@@ -37,11 +37,9 @@ function perform_function(context,request,response){
     }
       
   }, function(err) {
-    console.log("CB");
       if( err ) {
         console.log(err);
       } else {
-        console.log('data out...');
         fs.writeFileSync("./result.json", JSON.stringify(result));
         //console.log(JSON.stringify(result));
         response.success(result,output_type);
