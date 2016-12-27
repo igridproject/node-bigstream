@@ -30,9 +30,9 @@ RPCServer.prototype.start = function(cb)
 
         self.remote_function(req,function(err,resp){
           ch.sendToQueue(msg.properties.replyTo,new Buffer(JSON.stringify(resp)),{correlationId: msg.properties.correlationId});
-          ch.ack(msg);
-        });
 
+        });
+        ch.ack(msg);
       });
       cb(null);
 
