@@ -1,3 +1,4 @@
 {
-  "url" : "amqp://test:test@lab1.igridproject.info"
+  "type" : "rabbitmq",
+  "url" : "amqp://bigmaster.igridproject.info"
 }
