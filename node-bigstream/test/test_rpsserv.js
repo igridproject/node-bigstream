@@ -8,10 +8,10 @@ var server = new rpcserver({
             });
 
 server.set_remote_function(function(req,callback){
-  var n = parseInt(req);
+  var n = parseInt(req.t);
   console.log('REQUEST ' + req);
   setTimeout(function(){
-            callback(null,n);
+            callback(null,{'time':n,'data':req.d});
       },n);
 })
 
