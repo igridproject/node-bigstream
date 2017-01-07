@@ -4,7 +4,7 @@ var amqp_cfg = ctx.config.amqp;
 var rpcserver = ctx.getLib('lib/amqp/rpcserver');
 
 var server = new rpcserver({
-              url : "amqp://bigmaster.igridproject.info",
+              url : amqp_cfg.url,
             });
 
 server.set_remote_function(function(req,callback){
