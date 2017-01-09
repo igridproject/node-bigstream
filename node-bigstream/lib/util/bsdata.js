@@ -1,7 +1,12 @@
 
-module.exports.create = function(data)
+module.exports.create = function(obj)
 {
-  var tpy = "object";
+  switch (typeof obj) {
+    case 'string':
+      return new BSData(obj,'string');
+    case 'number':
+      return new BSData(obj,'number');
+  }
 
   return new BSData(data,tpy);
 }
