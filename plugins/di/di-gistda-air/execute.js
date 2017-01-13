@@ -97,10 +97,7 @@ function execute_function(context,response){
   //   response.success(value);
   // });
 
-
-  //response.success(data,output_type);
   //response.reject();
-  //response.error("error message")
 
 }
 
