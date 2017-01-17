@@ -1,4 +1,4 @@
-var amqp = require('amqplib/callback_api');
+ var amqp = require('amqplib/callback_api');
 
 function RPCServer(config)
 {

@@ -1,3 +1,4 @@
 module.exports = {
-  'amqp' : require('./amqp.json')
+  'amqp' : require('./amqp.json'),
+  'memstore' : require('./memstore.json')
 }
