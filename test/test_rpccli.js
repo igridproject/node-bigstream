@@ -4,7 +4,8 @@ var amqp_cfg = ctx.config.amqp;
 var RPCCaller = ctx.getLib('lib/amqp/rpccaller');
 
 var caller = new RPCCaller({
-  url : amqp_cfg.url
+  url : amqp_cfg.url,
+  name :'storage_request'
 });
 
 
