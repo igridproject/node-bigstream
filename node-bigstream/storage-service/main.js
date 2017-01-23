@@ -22,19 +22,19 @@ function amqp_start(cfg)
                 url : amqp_cfg.url,
                 name : 'storage_request'
               });
-              server.set_remote_function(function(req,callback){
-                var n = parseInt(req.t);
-                console.log('REQUEST ' + req);
-                setTimeout(function(){
-                          callback(null,{'time':n,'data':req.d});
-                    },n);
-              })
+  server.set_remote_function(function(req,callback){
+    var n = parseInt(req.t);
+    console.log('REQUEST ' + req);
+    setTimeout(function(){
+              callback(null,{'time':n,'data':req.d});
+        },n);
+  })
 
-              server.start(function(err){
-                if(!err){
-                  console.log('AMQP START\t\t\t[OK]');
-                }
-              });
+  server.start(function(err){
+    if(!err){
+      console.log('AMQP START\t\t\t[OK]');
+    }
+  });
 }
 
 function http_start(cfg)

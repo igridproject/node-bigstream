@@ -1,4 +1,5 @@
 var async = require('async');
+var domain = require('domain');
 var schedule = require('node-schedule');
 var storage = require('node-persist');
 storage.initSync({
@@ -55,7 +56,6 @@ if(jobcfg.trigger && jobcfg.trigger.type == 'cron' && ONTRIGGER)
 }
 
 
-
 function run_job(cfg)
 {
   var jobconfig = cfg;
@@ -82,13 +82,25 @@ function run_job(cfg)
     },
     function(request,callback){
       var dt_request = {'input_type':request.type,'data':request.data}
-      perform_dt(context,dt_request,function(err,dt_resp){
-        if(dt_resp.status == 'success'){
-          callback(null,dt_resp);
-        }else {
-          callback(dt_resp);
-        }
+      
+      var dm_t = domain.create();
+      dm_t.on('error', function(err) {
+        console.log('plugins error');
+        callback(err)
       });
+
+      dm_t.run(function() {
+
+        perform_dt(context,dt_request,function(err,dt_resp){
+          if(dt_resp.status == 'success'){
+            callback(null,dt_resp);
+          }else {
+            callback(dt_resp);
+          }
+        });
+
+      });
+
     },
     function(request,callback){
       var do_request = {'input_type':request.type,'data':request.data}
