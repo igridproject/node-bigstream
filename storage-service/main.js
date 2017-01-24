@@ -1,43 +1,53 @@
 var ctx = require('../context');
 var rpcserver = ctx.getLib('lib/amqp/rpcserver');
 
-module.exports = StorageService;
-function StorageService(cfg)
+module.exports.create = function(cfg)
+{
+  var ss = new SS(cfg);
+  return ss;
+}
+
+var SS = function StorageService(cfg)
 {
     this.config = cfg;
 }
 
-StorageService.prototype.start = function()
+SS.prototype.start = function()
 {
   console.log('Starting Storage Service ...\n');
-  amqp_start(this.config);
-  http_start(this.config);
+  this.amqp_start();
+  this.http_start();
 }
 
-function amqp_start(cfg)
+SS.prototype.amqp_start = function()
 {
-  var amqp_cfg = cfg.amqp;
+  var amqp_cfg = this.config.amqp;
 
-  var server = new rpcserver({
+  if(this.amqp_server){return;}
+
+  this.amqp_server = new rpcserver({
                 url : amqp_cfg.url,
                 name : 'storage_request'
               });
-  server.set_remote_function(function(req,callback){
+  this.amqp_server.set_remote_function(function(req,callback){
     var n = parseInt(req.t);
     console.log('REQUEST ' + req);
     setTimeout(function(){
               callback(null,{'time':n,'data':req.d});
         },n);
-  })
+  });
 
-  server.start(function(err){
+  this.amqp_server.start(function(err){
     if(!err){
-      console.log('AMQP START\t\t\t[OK]');
+      console.log('SS:AMQP START\t\t\t[OK]');
+    }else{
+      console.log('SS:AMQP START\t\t\t[ERR]');
+      console.log(err.message);
     }
   });
 }
 
-function http_start(cfg)
+SS.prototype.http_start = function()
 {
   var http = require('http');
   http.createServer(function (req, res) {
@@ -46,5 +56,6 @@ function http_start(cfg)
       });
       res.end("req http " + String( (new Date()).getTime() ));
 
-  }).listen(9080, "");
+  }).listen(19080, "");
+  console.log('SS:DATA_API START\t\t[OK]');
 }
