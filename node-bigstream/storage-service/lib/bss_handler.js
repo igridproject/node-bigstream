@@ -10,7 +10,7 @@ function BSSHandler(prm)
 
 BSSHandler.prototype.filepath = function()
 {
-  return this.repos_dir + '/' + this.name + '.bss';
+  return this.repos_dir + '/' + name2path(this.name) + '.bss';
 }
 
 BSSHandler.prototype.exists = function()
@@ -19,7 +19,17 @@ BSSHandler.prototype.exists = function()
   return path.existsSync(fp);
 }
 
-BSSHandler.prototype.open = function()
+BSSHandler.prototype.open = function(cb)
 {
-  
+  BinStream.open(this.filepath,function(err,bss){
+      if(!err){
+        this.bss = bss;
+      }
+
+      cb(err);
+  });
+}
+
+function name2path(n){
+  return n.split('.').join('/');
 }
