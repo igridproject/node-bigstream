@@ -23,6 +23,7 @@ function perform_function(context,request,response){
     
   //console.log(json_table.length);
   async.whilst(function() { return idx < di_data.data.length;}, function(callback) {
+    let dtype = di_data.data[idx].data_types;
     let json = parser.toJson(di_data.data[idx].value, {object: true});
     idx++;
     if(typeof json.xhr.IO.Data !== 'undefined') {
@@ -31,6 +32,8 @@ function perform_function(context,request,response){
             result.latitude = json.xhr.IO.Latitude;
             result.longitude = json.xhr.IO.Longitude;
             result.data.push(values);
+            console.log(`${di_data.station_id}-${dtype} ::: ` + values.values[values.values.length-1].observeddatetime);
+            //memstore.setItem(`${di_data.station_id}-${dtype}`, values.values[di_data.data.length-1].observeddatetime);
             callback();
         }
       });
