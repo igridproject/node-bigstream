@@ -1,4 +1,4 @@
-function execute_function(context,response){
+function perform_function(context,response){
   var job_id = context.jobconfig.job_id;
   var transaction_id = context.transaction.id;
   var param = context.jobconfig.data_in.param;
@@ -23,4 +23,4 @@ function execute_function(context,response){
 
 }
 
-module.exports = execute_function;
+module.exports = perform_function;
