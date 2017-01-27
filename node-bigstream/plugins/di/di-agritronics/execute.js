@@ -10,6 +10,8 @@ function execute_function(context,response){
 
 	var data = 'hello world';
 
+	var ct = new Date().getTime();
+
 	let result = {
 		"object_type": 'agritronic',
 		"station_id": param.station_id,
@@ -22,9 +24,10 @@ function execute_function(context,response){
 	async.whilst(function() { return idx < param.data_types.length;}, function(callback) {
 		let dtype = param.data_types[idx].type;
 		let node_id = param.data_types[idx].node_id;
-		let ts = memstore.getItem(`${param.station_id}-${dtype}`);
-		if(typeof(ts) === 'undefined') ts = `${param.init_observed_date},${param.init_observed_time}`;
-		let url = param.url + `?appkey=${param.appkey}&p=${param.station_id},${node_id},${dtype},${ts}`;
+		let lts = memstore.getItem(`${param.station_id}-${dtype}`);
+		console.log(`memstore: ${param.station_id}-${dtype} = ${lts}`);
+		if(typeof(lts) === 'undefined') lts = `${param.init_observed_date},${param.init_observed_time}`;
+		let url = param.url + `?appkey=${param.appkey}&p=${param.station_id},${node_id},${dtype},${lts}`;
 		idx++;
 		getData(url).then((data) => {
 			if(data.search("denied") === -1){
