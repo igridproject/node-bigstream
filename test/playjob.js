@@ -72,17 +72,29 @@ function run_job(cfg)
 
   async.waterfall([
     function(callback){
-      perform_di(context,function(err,resp){
-        if(resp.status == 'success'){
-          callback(null,resp);
-        }else{
-          callback(resp);
-        }
+
+      var dm_i = domain.create();
+      dm_i.on('error', function(err) {
+        console.log('plugins error');
+        callback(err)
       });
+
+      dm_i.run(function() {
+
+        perform_di(context,function(err,resp){
+          if(resp.status == 'success'){
+            callback(null,resp);
+          }else{
+            callback(resp);
+          }
+        });
+
+      });
+
     },
     function(request,callback){
       var dt_request = {'input_type':request.type,'data':request.data}
-      
+
       var dm_t = domain.create();
       dm_t.on('error', function(err) {
         console.log('plugins error');
@@ -104,13 +116,25 @@ function run_job(cfg)
     },
     function(request,callback){
       var do_request = {'input_type':request.type,'data':request.data}
-      perform_do(context,do_request,function(err,do_resp){
-        if(do_resp.status == 'success'){
-          callback(null,do_resp);
-        }else {
-          callback(dt_resp);
-        }
+
+      var dm_o = domain.create();
+      dm_o.on('error', function(err) {
+        console.log('plugins error');
+        callback(err)
       });
+
+      dm_o.run(function() {
+
+        perform_do(context,do_request,function(err,do_resp){
+          if(do_resp.status == 'success'){
+            callback(null,do_resp);
+          }else {
+            callback(dt_resp);
+          }
+        });
+
+      });
+
     }
   ],
   function(err,resp){
