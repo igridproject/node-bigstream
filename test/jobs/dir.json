@@ -14,7 +14,7 @@
   "data_out" : {
     "type": "dir",
 	"param": {
-		"path" : "D:/testfile"
+		"path" : "D:/testdata"
 	}
   }
 }

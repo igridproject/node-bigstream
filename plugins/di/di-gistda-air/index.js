@@ -8,6 +8,6 @@ function DITask(context){
 }
 util.inherits(DITask,DIPlugin);
 
-DITask.prototype.execute  =  require('./execute');
+DITask.prototype.perform  =  require('./perform');
 
 module.exports = DITask;

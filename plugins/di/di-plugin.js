@@ -15,12 +15,12 @@ DIPlugin.prototype.getname = function(){
   return this.name;
 }
 
-DIPlugin.prototype.execute = function(){}
+DIPlugin.prototype.perform = function(){}
 
 DIPlugin.prototype.run = function(){
   this.emit('start');
   var resp = new DIResponse(this);
-  this.execute(this.jobcontext,resp);
+  this.perform(this.jobcontext,resp);
 }
 
 module.exports = DIPlugin;
