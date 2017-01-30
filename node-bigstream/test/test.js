@@ -21,3 +21,10 @@ const crypto = require("crypto");
 // const id = crypto.randomBytes(16).toString("hex");
 //
 // console.log(id);
+
+var bss_handler = ctx.getLib('storage-service/lib/bss_handler');
+
+var bss = bss_handler.create('d:/testfile/hnd.bss');
+bss.open(function(err){
+  console.log('open');
+});
