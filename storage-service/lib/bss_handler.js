@@ -1,8 +1,13 @@
-var ctx = require('../context');
+var fs = require('fs');
+var ctx = require('../../context');
 var BinStream = ctx.getLib('lib/bss/binarystream_v1_1');
-var path = require('path');
 
 var importer = require('./importer');
+
+module.exports.create = function(prm)
+{
+  return new BSSHandler(prm);
+}
 
 function BSSHandler(prm)
 {
@@ -27,19 +32,36 @@ BSSHandler.prototype.filepath = function()
 BSSHandler.prototype.exists = function()
 {
   var fp = this.filepath();
-  return path.existsSync(fp);
+  return fs.existsSync(fp);
 }
 
 BSSHandler.prototype.open = function(cb)
 {
   var self = this;
-  BinStream.open(this.filepath,function(err,bss){
-      if(!err){
-        self.bss = bss;
-      }
 
-      cb(err);
-  });
+  if(self.exists())
+  {
+    open()
+  }else{
+    BinStream.format(self.filepath(),function(err){
+      if(!err){
+        open()
+      }else{
+        cb("format error")
+      }
+    });
+  }
+
+  function open(){
+    BinStream.open(self.filepath(),function(err,bss){
+        if(!err){
+          self.bss = bss;
+        }
+
+        cb(err);
+    });
+  }
+
 }
 
 BSSHandler.prototype.close = function(cb)
@@ -64,8 +86,6 @@ BSSHandler.prototype.cmd = function(cmd,cb)
 
 BSSHandler.prototype.cmd_write = function(prm,cb)
 {
-  if(typeof prm.data)
-
   var data = prm.data;
   var meta = prm.meta;
 
