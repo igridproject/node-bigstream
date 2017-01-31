@@ -22,9 +22,9 @@ const crypto = require("crypto");
 //
 // console.log(id);
 
-var bss_handler = ctx.getLib('storage-service/lib/bss_handler');
+var bss_handler = ctx.getLib('storage-service/lib/bss_engine');
 
-var bss = bss_handler.create('d:/testfile/hnd.bss');
+var bss = bss_handler.create('d:/testfile/new/slash/hnd.bss');
 bss.open(function(err){
   console.log('open');
 });
