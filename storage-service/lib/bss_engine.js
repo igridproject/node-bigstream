@@ -6,10 +6,10 @@ var importer = require('./importer');
 
 module.exports.create = function(prm)
 {
-  return new BSSHandler(prm);
+  return new BSSEngine(prm);
 }
 
-function BSSHandler(prm)
+function BSSEngine(prm)
 {
   if(typeof prm == 'string'){
     prm = {'file':prm};
@@ -17,25 +17,22 @@ function BSSHandler(prm)
   // this.repos_dir = prm.repos_dir;
   // this.name = prm.name;
   this.file = prm.file;
+  this.concurrent = 0;
 }
 
-function name2path(n){
-  return n.split('.').join('/');
-}
-
-BSSHandler.prototype.filepath = function()
+BSSEngine.prototype.filepath = function()
 {
   //return this.repos_dir + '/' + name2path(this.name) + '.bss';
   return this.file;
 }
 
-BSSHandler.prototype.exists = function()
+BSSEngine.prototype.exists = function()
 {
   var fp = this.filepath();
   return fs.existsSync(fp);
 }
 
-BSSHandler.prototype.open = function(cb)
+BSSEngine.prototype.open = function(cb)
 {
   var self = this;
 
@@ -64,13 +61,13 @@ BSSHandler.prototype.open = function(cb)
 
 }
 
-BSSHandler.prototype.close = function(cb)
+BSSEngine.prototype.close = function(cb)
 {
   this.bss.close(cb);
 }
 
 
-BSSHandler.prototype.cmd = function(cmd,cb)
+BSSEngine.prototype.cmd = function(cmd,cb)
 {
     var command = cmd.command;
     var param = cmd.param;
@@ -84,7 +81,7 @@ BSSHandler.prototype.cmd = function(cmd,cb)
     }
 }
 
-BSSHandler.prototype.cmd_write = function(prm,cb)
+BSSEngine.prototype.cmd_write = function(prm,cb)
 {
   var data = prm.data;
   var meta = prm.meta;

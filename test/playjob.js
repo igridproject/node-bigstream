@@ -76,6 +76,7 @@ function run_job(cfg)
       var dm_i = domain.create();
       dm_i.on('error', function(err) {
         console.log('plugins error');
+        console.log(err);
         callback(err)
       });
 
@@ -98,6 +99,7 @@ function run_job(cfg)
       var dm_t = domain.create();
       dm_t.on('error', function(err) {
         console.log('plugins error');
+        console.log(err);
         callback(err)
       });
 
@@ -120,6 +122,7 @@ function run_job(cfg)
       var dm_o = domain.create();
       dm_o.on('error', function(err) {
         console.log('plugins error');
+        console.log(err);
         callback(err)
       });
 
