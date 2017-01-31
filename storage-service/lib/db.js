@@ -1,5 +1,9 @@
 var BSSPool = require('./bsspool');
 
+module.exports.create = function(cfg){
+  return new Db(cfg);
+}
+
 function Db(cfg)
 {
   this.repos_dir = cfg.repos_dir;
@@ -9,7 +13,7 @@ function Db(cfg)
 
 Db.prototype.request = function(req,cb)
 {
-  if(req.object_type!='storage_service_request'){
+  if(req.object_type!='storage_request'){
     return cb(null,result_error('invalid request'));
   }
 
@@ -32,8 +36,30 @@ Db.prototype.request = function(req,cb)
 
 Db.prototype.bsscmd_w = function(cmd,cb)
 {
+    var self = this;
     var filepath = this.repos_dir + '/' + name2path(cmd.storage) + '.bss'
     var bssname = cmd.storage;
+    var w_cmd = {
+      'command' : 'write',
+      'param' : {
+        'meta' : cmd.meta,
+        'data' : cmd.data
+      }
+    }
+
+    this.bsspool.get(bssname,function(err,bss){
+      if(!err){
+        bss.cmd(w_cmd,function(err){
+          if(!err){
+            cb(null,result_ok('success'));
+          }else{
+            cb(null,result_error('write error'));
+          }
+        });
+      }else{
+        cb(null,result_error('bss error'));
+      }
+    });
 }
 
 
