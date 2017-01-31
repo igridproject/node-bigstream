@@ -22,9 +22,27 @@ const crypto = require("crypto");
 //
 // console.log(id);
 
-var bss_handler = ctx.getLib('storage-service/lib/bss_engine');
+// var bss_handler = ctx.getLib('storage-service/lib/bss_engine');
+//
+// var bss = bss_handler.create('d:/testfile/new/slash/hnd.bss');
+// bss.open(function(err){
+//   console.log('open');
+// });
 
-var bss = bss_handler.create('d:/testfile/new/slash/hnd.bss');
-bss.open(function(err){
-  console.log('open');
+var Db = ctx.getLib('storage-service/lib/db');
+
+var database = Db.create({'repos_dir':'D:/testfile'});
+
+var req = {
+    'object_type' : 'storage_request',
+    'command' : 'write',
+    'storage_name' : 'gcs.file.test',
+    'meta' : {'name':'gcs'},
+    'resource' : {
+      'value' : 'Kamron Aroonrua'
+    }
+}
+
+database.request(req,function(err,res){
+  console.log(res);
 });

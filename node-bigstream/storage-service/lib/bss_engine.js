@@ -88,9 +88,9 @@ BSSEngine.prototype.cmd_write = function(prm,cb)
 
   this.bss.write(data,{'meta':meta},function(err,obj){
     if(!err){
-      cb("write error");
-    }else {
       cb(null);
+    }else {
+      cb("write error");
     }
   });
 }
