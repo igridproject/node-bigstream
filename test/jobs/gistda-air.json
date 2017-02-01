@@ -1,9 +1,9 @@
 {
   "job_id" : "gistda-air",
   "active" : true,
-  "triggerrrr" : {
+  "trigger" : {
     "type": "cron",
-    "cmd": "*/10 * * * *"
+    "cmd": "0/2 * * * * *"
   },
   "data_in" : {
     "type": "gistda-air",
@@ -31,17 +31,17 @@
       "port": "21",
       "user": "bs",
       "password": "UF13kczHdCPXpBb",
-      "init_observed_date": "2016-12-23",
-      "init_observed_time": "09:00:00"
+      "init_observed_date": "2017-01-31",
+      "init_observed_time": "19:00:00"
     }
   },
   "data_transform" : {
     "type": "gistda-air" 
   },
   "data_out" : {
-    "type": "console",
-    "param" : {
-      "name": "sds.gistda-air"
+    "type": "bssfile",
+    "param": {
+      "filename" : "/Users/Naiyana/ibitz/gistda-air.bss"
     }
   }
 }
