@@ -4,7 +4,7 @@ function perform_function(context,request,response){
   var param = context.jobconfig.data_transform.param;
   var memstore = context.task.memstore
 
-  var output_type = request.input_type;
+  var output_type = request.input_type; // must be object/ibitz
   var data = request.data;
 
   let result = [];
