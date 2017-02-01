@@ -19,7 +19,11 @@ module.exports.parse = function(obj)
         var jsonobj = BSON.parse(obj);
         return new BSData(jsonobj.data,jsonobj.data_type);
       }else if(obj.data_type && obj.data){
-        return new BSData(obj.data,obj.data_type);
+        var oData = obj.data;
+        if(obj.encoding == 'base64'){
+          oData = new Buffer(obj.data,'base64');
+        }
+        return new BSData(oData,obj.data_type);
       }else{
         return null;
       }
@@ -78,6 +82,9 @@ BSData.prototype.serialize = function(type){
         bsdata.encoding = 'base64';
     }
 
+    if(type=='object-encoded'){
+      return bsdata;
+    }
     return JSON.stringify(bsdata);
   }
 

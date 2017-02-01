@@ -37,7 +37,7 @@ Db.prototype.request = function(req,cb)
 Db.prototype.bsscmd_w = function(cmd,cb)
 {
     var self = this;
-    var filepath = this.repos_dir + '/' + name2path(cmd.storage) + '.bss'
+    var filepath = this.repos_dir + '/' + name2path(cmd.storage) + '.bss';
     var bssname = cmd.storage;
     var w_cmd = {
       'command' : 'write',
