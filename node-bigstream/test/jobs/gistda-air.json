@@ -3,7 +3,7 @@
   "active" : true,
   "trigger" : {
     "type": "cron",
-    "cmd": "0/2 * * * * *"
+    "cmd": "0 15 * * * *"
   },
   "data_in" : {
     "type": "gistda-air",
