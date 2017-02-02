@@ -1,8 +1,12 @@
 var fs = require('fs');
+
 var ctx = require('../../context');
 var BinStream = ctx.getLib('lib/bss/binarystream_v1_1');
+var ObjId = ctx.getLib('lib/bss/objid');
+var bsdata = ctx.getLib('lib/model/bsdata');
 
 var importer = require('./importer');
+var dataevent = require('./dataevent');
 
 module.exports.create = function(prm)
 {
@@ -17,6 +21,7 @@ function BSSEngine(prm)
   // this.repos_dir = prm.repos_dir;
   // this.name = prm.name;
   this.file = prm.file;
+  this.name = prm.name;
   this.concurrent = 0;
 }
 
@@ -83,14 +88,38 @@ BSSEngine.prototype.cmd = function(cmd,cb)
 
 BSSEngine.prototype.cmd_write = function(prm,cb)
 {
-  var data = prm.data;
+  var self = this;
+  var data = parseData(prm.data);
   var meta = prm.meta;
 
   this.bss.write(data,{'meta':meta},function(err,obj){
     if(!err){
-      cb(null);
+      var head = obj.getHeader();
+      var obj_id = new ObjId(head.ID);
+      var resp = {
+        'resource_id' : obj_id.toString(),
+        'storage_name' : self.name
+      }
+      dataevent.newdata({'resourceId':obj_id.toString(),'storageId':self.name});
+      cb(null,resp);
     }else {
       cb("write error");
     }
   });
+}
+
+function parseData(dat)
+{
+  if(!dat.value){return null}
+
+  var ret;
+  if(dat.type && dat.type == 'bsdata')
+  {
+    var bs = bsdata.parse(dat.value);
+    ret = bs.data;
+  }else{
+    ret = dat.value;
+  }
+
+  return ret;
 }

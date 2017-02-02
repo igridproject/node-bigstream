@@ -1,5 +1,13 @@
 var ctx = require('../context');
 var rpcserver = ctx.getLib('lib/amqp/rpcserver');
+var Db = ctx.getLib('storage-service/lib/db');
+
+var express = require('express');
+var app = express();
+var bodyParser = require('body-parser');
+
+var cfg = ctx.config;
+var storage_cfg = cfg.storage;
 
 module.exports.create = function(cfg)
 {
@@ -10,6 +18,8 @@ module.exports.create = function(cfg)
 var SS = function StorageService(cfg)
 {
     this.config = cfg;
+
+    this.db = Db.create({'repos_dir':storage_cfg.repository});
 }
 
 SS.prototype.start = function()
@@ -21,6 +31,7 @@ SS.prototype.start = function()
 
 SS.prototype.amqp_start = function()
 {
+  var self = this;
   var amqp_cfg = this.config.amqp;
 
   if(this.amqp_server){return;}
@@ -30,11 +41,12 @@ SS.prototype.amqp_start = function()
                 name : 'storage_request'
               });
   this.amqp_server.set_remote_function(function(req,callback){
-    var n = parseInt(req.t);
-    console.log('REQUEST ' + req);
-    setTimeout(function(){
-              callback(null,{'time':n,'data':req.d});
-        },n);
+
+    self.db.request(req,function(err,res){
+      //console.log(res);
+      callback(err,res);
+    });
+
   });
 
   this.amqp_server.start(function(err){
@@ -49,13 +61,22 @@ SS.prototype.amqp_start = function()
 
 SS.prototype.http_start = function()
 {
-  var http = require('http');
-  http.createServer(function (req, res) {
-      res.writeHead(200, {
-          'Content-Type': 'text/plain; charset=UTF-8'
-      });
-      res.end("req http " + String( (new Date()).getTime() ));
+  var self = this;
 
-  }).listen(19080, "");
-  console.log('SS:DATA_API START\t\t[OK]');
+  var API_PORT = 19080;
+
+  app.use(bodyParser.json({limit: '5mb'}));
+  app.use(bodyParser.urlencoded({
+      extended: true
+  }));
+
+
+  app.use(require('./ws'));
+
+
+  app.listen(API_PORT, function () {
+    console.log('SS:DATA_API START\t\t[OK]');
+  });
+
+
 }

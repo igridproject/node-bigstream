@@ -33,13 +33,29 @@ var Db = ctx.getLib('storage-service/lib/db');
 
 var database = Db.create({'repos_dir':'D:/testfile'});
 
+// var req = {
+//     'object_type' : 'storage_request',
+//     'command' : 'write',
+//     'storage_name' : 'gcs.file.test',
+//     'meta' : {'name':'gcs'},
+//     'resource' : {
+//       'value' : 'Kamron Aroonrua'
+//     }
+// }
+
 var req = {
     'object_type' : 'storage_request',
     'command' : 'write',
-    'storage_name' : 'gcs.file.test',
-    'meta' : {'name':'gcs'},
-    'resource' : {
-      'value' : 'Kamron Aroonrua'
+    'param' : {
+      'storage_name' : 'gcs.file.test',
+      'meta' : {'name':'gcs'},
+      'data' : {
+        'type' : 'bsdata',
+        'value' : {
+          'data_type' : 'string',
+          'data' : 'AA00FFCC'
+        }
+      }
     }
 }
 

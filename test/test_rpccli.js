@@ -8,8 +8,23 @@ var caller = new RPCCaller({
   name :'storage_request'
 });
 
+var req = {
+    'object_type' : 'storage_request',
+    'command' : 'write',
+    'param' : {
+      'storage_name' : 'gcs.file.test',
+      'meta' : {'name':'gcs'},
+      'data' : {
+        'type' : 'bsdata',
+        'value' : {
+          'data_type' : 'text',
+          'data' : 'kamron'
+        }
+      }
+    }
+}
 
-caller.call({t:10000,d:'hello'},function(err,resp){
+caller.call(req,function(err,resp){
   console.log(resp);
 });
 
