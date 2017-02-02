@@ -25,7 +25,7 @@ module.exports.newdata = function(prm,cb){
                     'resource_id' : objId,
                     'resource_location' : obj_api_url + '/' + storageId + '.' + objId
                 }
-//console.log(objMsg);
+
                 var msg = JSON.stringify(objMsg);
 
                 ch.assertExchange(ex, 'topic', {durable: false});

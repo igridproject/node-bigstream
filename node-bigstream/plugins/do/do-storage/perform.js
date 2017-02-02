@@ -4,6 +4,8 @@ var RPCCaller = ctx.getLib('lib/amqp/rpccaller');
 var BinStream = ctx.getLib('lib/bss/binarystream_v1_1');
 var bsdata = ctx.getLib('lib/model/bsdata');
 
+var async = require('async');
+
 function perform_function(context,request,response){
   var job_id = context.jobconfig.job_id;
   var transaction_id = context.transaction.id;
@@ -26,8 +28,48 @@ function perform_function(context,request,response){
     "_tid" : transaction_id,
     "_ts" : Math.round((new Date).getTime() / 1000)
   }
-   var dc_data = bsdata.create(data).serialize('object-encoded');
 
+  if(Array.isArray(data)){
+    var idx = 0;
+    async.whilst(
+        function() { return idx < data.length; },
+        function(callback) {
+          var el_data = bsdata.create(data[idx]).serialize('object-encoded');
+          send_storage(caller,dc_meta,el_data,storage_name,function(err){
+            idx++;
+            if(!err){
+              callback(null);
+            }else{
+              callback(err);
+            }
+          });
+        },
+        function (err) {
+          if(!err){
+            response.success();
+          }else{
+            response.error("storage error");
+          }
+        }
+    );
+
+  }else{
+    var dc_data = bsdata.create(data).serialize('object-encoded');
+    send_storage(caller,dc_meta,dc_data,storage_name,function(err){
+      if(!err){
+        response.success();
+      }else{
+        response.error("storage error");
+      }
+    });
+
+  }
+
+}
+
+
+function send_storage(caller,dc_meta,dc_data,storage_name,cb)
+{
   var req = {
       'object_type' : 'storage_request',
       'command' : 'write',
@@ -44,15 +86,11 @@ function perform_function(context,request,response){
 
   caller.call(req,function(err,resp){
     if(!err && resp.status=='OK'){
-      response.success();
+      cb(null);
     }else{
-      response.error("storage error")
+      cb("error");
     }
   });
-
-  // response.success();
-  // response.reject();
-  // response.error("error message")
 
 }
 
