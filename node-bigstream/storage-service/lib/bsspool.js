@@ -19,7 +19,7 @@ BSSPool.prototype.get = function(name,cb)
       cb(null,bss.engine);
     });
   }else{
-    bss = BSSEngine.create(filepath);
+    bss = BSSEngine.create({'file' : filepath,'name' : bssname});
     bss.open(function(err){
       if(!err){
         self.pool.push({

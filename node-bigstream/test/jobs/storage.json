@@ -1,0 +1,20 @@
+{
+  "job_id" : "storage",
+  "active" : true,
+  "trigger" : {
+    "type": "cron",
+    "cmd": "*/10 * * * * *"
+  },
+  "data_in" : {
+    "type": "example"
+  },
+  "data_transform" : {
+    "type": "noop"
+  },
+  "data_out" : {
+    "type": "storage",
+	"param": {
+		"storage_name" : "test.plugin.do"
+	}
+  }
+}
