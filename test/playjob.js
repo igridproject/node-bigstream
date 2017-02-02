@@ -132,7 +132,7 @@ function run_job(cfg)
           if(do_resp.status == 'success'){
             callback(null,do_resp);
           }else {
-            callback(dt_resp);
+            callback(do_resp);
           }
         });
 
