@@ -55,6 +55,7 @@ SS.prototype.amqp_start = function()
     }else{
       console.log('SS:AMQP START\t\t\t[ERR]');
       console.log(err.message);
+      process.exit(1);
     }
   });
 }
