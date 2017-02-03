@@ -107,7 +107,7 @@ function execute_function(context,response){
                       if (err) {
                         response.error(err);
                       } else {
-                        if (result.data.length == 0)
+                        if (result.data.length == 0) 
                           response.reject();    // for no data
                         else
                           response.success(result, output_type);
