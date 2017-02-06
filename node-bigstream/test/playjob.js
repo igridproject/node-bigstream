@@ -60,6 +60,7 @@ function run_job(cfg)
 {
   var jobconfig = cfg;
   var tranId = "TR" + (new Date).getTime();
+  var jobId = jobconfig.job_id;
   var transaction = {
     "id" : tranId
   }
