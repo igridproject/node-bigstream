@@ -3,7 +3,7 @@
   "active" : true,
   "trigger" : {
     "type": "cron",
-    "cmd": "*/10 * * * *"
+    "cmd": "* */10 * * *"
   },
   "data_in" : {
     "type": "agritronics",
@@ -26,19 +26,19 @@
         {"type": "8", "node_id": "4096"},
         {"type": "10", "node_id": "4096"},
         {"type": "2021", "node_id": "7328"},
-        {"type": "2022", "node_id": "7328"} 
+        {"type": "2022", "node_id": "7328"}
       ],
-      "init_observed_date": "2017-01-20",
-      "init_observed_time": "00:00:00"
+      "init_observed_date": "2017-02-05",
+      "init_observed_time": "11:30:00"
     }
   },
   "data_transform" : {
     "type": "agritronics"
   },
   "data_out" : {
-    "type": "console",
+    "type": "storage",
     "param" : {
-      "name": "sds.agritronics"
+      "storage_name": "sds.agritronics"
     }
   }
 }
