@@ -63,9 +63,17 @@ function run_job(cfg)
   var transaction = {
     "id" : tranId
   }
+
+  var jobmempref = "ms." + jobId + '.mem';
+  var jobMem = new memstore(jobmempref,storage);
+  var ctxJob = {
+    "memstore" : jobMem
+  }
+
   var context = {
     "jobconfig" : jobconfig,
-    "transaction" : transaction
+    "transaction" : transaction,
+    "job" : ctxJob
   }
 
   track('***** JOB RUNNING *****\n[TRANSACTION ID]\t: ' + transaction.id + '\n',TRACKING>0);
