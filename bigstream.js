@@ -10,6 +10,6 @@ http.createServer(function (req, res) {
         'Content-Type': 'text/plain; charset=UTF-8'
     });
     
-    res.end('Hello from node-bigstream.\n');
+    res.end('Bigstream Server\n');
     
 }).listen(9080, "");
