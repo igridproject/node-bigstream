@@ -77,7 +77,10 @@ function run_job(cfg)
     "job" : ctxJob
   }
 
-  track('***** JOB RUNNING *****\n[TRANSACTION ID]\t: ' + transaction.id + '\n',TRACKING>0);
+
+  track('***** JOB RUNNING *****',TRACKING>0);
+  track('[START TIME]\t\t: ' + (new Date(Date.now())).toUTCString(),TRACKING>0);
+  track('[TRANSACTION ID]\t: ' + transaction.id + '\n',TRACKING>0);
 
   async.waterfall([
     function(callback){
@@ -150,10 +153,11 @@ function run_job(cfg)
     }
   ],
   function(err,resp){
+    track('\n[FINISH TIME]\t\t: ' + (new Date(Date.now())).toUTCString(),TRACKING>0);
     if(err){
-      track('\n***** JOB UNSUCCESSFULLY DONE *****\n\n',TRACKING>0);
+      track('***** JOB UNSUCCESSFULLY DONE *****\n\n',TRACKING>0);
     }else{
-      track('\n***** JOB SUCCESSFULLY DONE *****\n\n',TRACKING>0);
+      track('***** JOB SUCCESSFULLY DONE *****\n\n',TRACKING>0);
     }
   });
 
@@ -243,6 +247,7 @@ function perform_do(context,request,cb)
 
 function track(str,is_print)
 {
+
   if(is_print){
     console.log(str);
   }

@@ -62,15 +62,20 @@ var database = Db.create({'repos_dir':'D:/testfile'});
 // database.request(req,function(err,res){
 //   console.log(res);
 // });
-var dateFormat = require('dateformat');
-function getCurrentTime()
-{
-    var curDate = new Date();
-    var unix = Math.floor(curDate/1000) * 1000;
-    var sqlDate = dateFormat(unix, "yyyy-mm-dd H:MM:ss");
-    //var unix = Math.round(curDate/1000) * 1000;
+var cluster = require('cluster');
+var http = require('http');
+var numCPUs = 4;
 
-    return {date:curDate,sql:sqlDate,ts:unix}
+if (cluster.isMaster) {
+    for (var i = 0; i < numCPUs; i++) {
+        cluster.fork();
+    }
+} else {
+  console.log('process ' + process.pid + ' says hello!');
+
+    http.createServer(function(req, res) {
+
+        res.writeHead(200);
+        res.end('process ' + process.pid + ' says hello!');
+    }).listen(8000);
 }
-
-console.log(getCurrentTime());
