@@ -43,6 +43,9 @@ SS.prototype.amqp_start = function()
   this.amqp_server.set_remote_function(function(req,callback){
 
     self.db.request(req,function(err,res){
+      if(err){
+        console.log(err);
+      }
       //console.log(res);
       callback(err,res);
     });

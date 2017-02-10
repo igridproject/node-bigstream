@@ -3,7 +3,7 @@
   "active" : true,
   "trigger" : {
     "type": "cron",
-    "cmd": "*/10 * * * * *"
+    "cmd": "29,59 * * * * *"
   },
   "data_in" : {
     "type": "example"
