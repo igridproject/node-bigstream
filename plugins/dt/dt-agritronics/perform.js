@@ -1,6 +1,6 @@
 var async = require('async');
 var parser = require('xml2json');
-var fs = require('fs');
+//var fs = require('fs');
 var agriParser = require('./parser/agri_parser_factory');
 
 function perform_function(context,request,response){
@@ -10,7 +10,7 @@ function perform_function(context,request,response){
   var memstore = context.job.memstore
   // var memstore = context.task.memstore
 
-  var output_type = request.input_type;
+  var output_type = "object/sds";
   var di_data = request.data;
 
   let idx = 0;
@@ -49,7 +49,7 @@ function perform_function(context,request,response){
       if( err ) {
         console.log(err);
       } else {
-        fs.writeFileSync("./result.json", JSON.stringify(result));
+        //fs.writeFileSync("./result.json", JSON.stringify(result));
         //console.log(JSON.stringify(result));
         response.success(result, output_type);
       }
