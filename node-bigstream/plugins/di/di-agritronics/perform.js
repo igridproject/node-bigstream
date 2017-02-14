@@ -9,7 +9,7 @@ function execute_function(context,response){
 	var param = context.jobconfig.data_in.param;
 	// var memstore = context.task.memstore;
 	var memstore = context.job.memstore;
-	var output_type = 'object/agritronics';
+	var output_type = "object/agritronics";
 
 	var data = 'hello world';
 
@@ -31,11 +31,11 @@ function execute_function(context,response){
 
 		memstore.getItem(`${param.station_id}-${dtype}`, function(err, lts){  //latest timestamp, format: yyyy-MM-dd HH:mm:ss
 			idx++;
-			console.log(`memstore: ${param.station_id}-${dtype} = ${lts}`);
-			if (typeof lts === 'undefined') lts = moment(`${param.init_observed_date} ${param.init_observed_time}`);
-			else lts = moment(lts);
-			console.log(`memstore: ${param.station_id}-${dtype} = ${lts}`);
-			let recvTime = cts.diff(lts, 'days');
+			//console.log(`memstore: ${param.station_id}-${dtype} = ${lts}`);
+			if (typeof lts === "undefined") lts = moment(`${param.init_observed_date} ${param.init_observed_time}`);
+			else lts = moment(lts).add(1, 'seconds');
+			//console.log(`memstore: ${param.station_id}-${dtype} = ${lts}`);
+			let recvTime = cts.diff(lts, "days");
 			if(recvTime > 20) lts = new moment().add(-20, 'day').hours(0).minutes(0).seconds(0);
 			//console.log(cts.format("YYYY-MM-DD,HH:mm:ss") + " <<>> " + lts.format("YYYY-MM-DD,HH:mm:ss"));
 
@@ -72,7 +72,7 @@ function execute_function(context,response){
 function getData(url, lts, callback) {
 	let vals = [];
 	let req = url + `,${lts.format("YYYY-MM-DD,HH:mm:ss")}`;
-	//console.log(req);
+	console.log(req);
 	requestData(req).then((data) => {
 		if(data.search("denied") === -1 && data.search("invalid") === -1 && data.search("no data") === -1){
 			vals.push(data);
