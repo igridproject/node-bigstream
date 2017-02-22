@@ -1,0 +1,5 @@
+
+function ResourceStore(prm)
+{
+
+}
