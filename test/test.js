@@ -29,9 +29,9 @@ const crypto = require("crypto");
 //   console.log('open');
 // });
 
-var Db = ctx.getLib('storage-service/lib/db');
+//var Db = ctx.getLib('storage-service/lib/db');
 
-var database = Db.create({'repos_dir':'D:/testfile'});
+//var database = Db.create({'repos_dir':'D:/testfile'});
 
 // var req = {
 //     'object_type' : 'storage_request',
@@ -62,20 +62,33 @@ var database = Db.create({'repos_dir':'D:/testfile'});
 // database.request(req,function(err,res){
 //   console.log(res);
 // });
-var cluster = require('cluster');
-var http = require('http');
-var numCPUs = 4;
 
-if (cluster.isMaster) {
-    for (var i = 0; i < numCPUs; i++) {
-        cluster.fork();
-    }
-} else {
-  console.log('process ' + process.pid + ' says hello!');
+// var Redis = require("ioredis");
+// var redis = new Redis({
+//   port: 6379,          // Redis port
+//   host: 'lab1.igridproject.info',   // Redis host
+//   db: 0
+// })
 
-    http.createServer(function(req, res) {
+// var redis = new Redis('redis://:@lab1.igridproject.info:6379/4')
+// var a = [];
+// a.push({'appkey':'test-igrid','method':'get','jobid':'igrid'});
+// a.push({'appkey':'ibitz-test','method':'get','jobid':'ibitz'});
 
-        res.writeHead(200);
-        res.end('process ' + process.pid + ' says hello!');
-    }).listen(8000);
-}
+// atext = JSON.stringify(a);
+// redis.set('a',atext)
+
+var HttpACL = ctx.getLib('lib/mems/http-acl');
+
+var httpacl = HttpACL.create({'conn':'redis://:@lab1.igridproject.info:6379/1'});
+
+httpacl.add({'appkey':'app1','method':'get','jobid':'job1'})
+httpacl.add({'appkey':'app2','method':'get','jobid':'job2'})
+httpacl.add({'appkey':'app1','method':'get','jobid':'job3'})
+httpacl.commit();
+
+httpacl.update(function(err){
+  //console.log(httpacl.acl);
+  var j = httpacl.findJob('app1','get');
+  console.log(j);
+});
