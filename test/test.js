@@ -78,17 +78,24 @@ const crypto = require("crypto");
 // atext = JSON.stringify(a);
 // redis.set('a',atext)
 
-var HttpACL = ctx.getLib('lib/mems/http-acl');
+// var HttpACL = ctx.getLib('lib/mems/http-acl');
+//
+// var httpacl = HttpACL.create({'conn':'redis://:@lab1.igridproject.info:6379/1'});
+//
+// httpacl.add({'appkey':'app1','method':'get','jobid':'job1'})
+// httpacl.add({'appkey':'app2','method':'get','jobid':'job2'})
+// httpacl.add({'appkey':'app1','method':'get','jobid':'job3'})
+// httpacl.commit();
+//
+// httpacl.update(function(err){
+//   //console.log(httpacl.acl);
+//   var j = httpacl.findJob('app1','get');
+//   console.log(j);
+// });
 
-var httpacl = HttpACL.create({'conn':'redis://:@lab1.igridproject.info:6379/1'});
+var EvenPub = ctx.getLib('lib/amqp/event-pub');
 
-httpacl.add({'appkey':'app1','method':'get','jobid':'job1'})
-httpacl.add({'appkey':'app2','method':'get','jobid':'job2'})
-httpacl.add({'appkey':'app1','method':'get','jobid':'job3'})
-httpacl.commit();
+var evp = new EvenPub({'url':'amqp://lab1.igridproject.info','name':'topic_logs'});
 
-httpacl.update(function(err){
-  //console.log(httpacl.acl);
-  var j = httpacl.findJob('app1','get');
-  console.log(j);
-});
+evp.send('q.test.t1','kamron aroonrua');
+evp.send('q.test.t1','kamron aroonrua aaa');
