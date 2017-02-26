@@ -5,7 +5,10 @@ var app = express();
 var bodyParser = require('body-parser');
 
 var cfg = ctx.config;
+var HttpACL = ctx.getLib('lib/mems/http-acl');
+var EvenPub = ctx.getLib('lib/amqp/event-pub');
 
+const JOBCHANEL = 'job_trigger';
 
 module.exports.create = function(cfg)
 {
@@ -16,7 +19,8 @@ module.exports.create = function(cfg)
 function HTTPListener(cfg)
 {
     this.config = cfg;
-
+    this.httpacl = HttpACL.create({'conn':this.config.memstore.url});
+    this.evp = new EvenPub({'url':this.config.amqp.url,'name':JOBCHANEL});
 }
 
 HTTPListener.prototype.start = function()
@@ -31,13 +35,27 @@ HTTPListener.prototype.http_start = function()
 
   var API_PORT = 19180;
 
-  app.use(bodyParser.json({limit: '5mb'}));
+  this.httpacl.update(function(err){
+    if(!err){
+      console.log('WWW:ACL Update\t\t[OK]');
+    }else{
+      console.log('WWW:ACL Update\t\t[ERR]');
+    }
+  });
+
+  app.use(bodyParser.json({limit: '128mb'}));
   app.use(bodyParser.urlencoded({
       extended: true
   }));
 
+  var context = require('./lib/http-context');
+  app.use(context.middleware({
+    'httpacl' : self.httpacl,
+    'evp' : self.evp
+  }));
 
   app.use(require('./ws'));
+
 
 
   app.listen(API_PORT, function () {

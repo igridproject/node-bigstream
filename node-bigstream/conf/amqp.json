@@ -1,4 +1,4 @@
 {
   "type" : "rabbitmq",
-  "url" : "amqp://lab1.igridproject.info"
+  "url" : "amqp://bigmaster.igridproject.info"
 }
