@@ -6,7 +6,7 @@ var amqp = require('amqplib/callback_api');
 
 
 
-amqp.connect('amqp://lab1.igridproject.info', function(err, conn) {
+amqp.connect('amqp://bigmaster.igridproject.info', function(err, conn) {
   conn.createChannel(function(err, ch) {
     var ex = 'topic_logs';
 

@@ -12,9 +12,12 @@ router.get('/:akey',function (req, res) {
     var reqHelper = request.create(req);
     var respHelper = response.create(res);
     var appkey = req.params.akey;
+    var ctx = req.context;
 
-    respHelper.responseOK({'status':'OK','appkey':appkey});
+    var httpacl = req.context.httpacl;
+    var evp = req.context.evp;
 
+    var j = httpacl.findJob(appkey,'get');
+    respHelper.responseOK({'status':'OK','appkey':appkey,'res':j});
 });
-
 module.exports = router;
