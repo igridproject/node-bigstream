@@ -1,0 +1,21 @@
+{
+  "job_id" : "job1",
+  "active" : true,
+  "trigger" : {
+    "type": "http",
+    "appkey": "app1",
+	"method": "get"
+  },
+  "data_in" : {
+    "type": "input",
+	"param":{
+		"object":"httpdata"
+	}
+  },
+  "data_transform" : {
+    "type": "noop"
+  },
+  "data_out" : {
+    "type": "console"
+  }
+}

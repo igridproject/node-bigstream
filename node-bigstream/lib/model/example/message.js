@@ -35,8 +35,8 @@ var httpdata = {
   'data' : {}
 }
 
-var job_trigger = {
-  'object_type':'job_trigger',
+var job_execute = {
+  'object_type':'job_execute',
   'source' : 'http_listener',
   'jobId' : 'jobid',
   'option' : {},
