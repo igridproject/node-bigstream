@@ -2,6 +2,12 @@ var async = require('async');
 var domain = require('domain');
 var schedule = require('node-schedule');
 var storage = require('node-persist');
+
+var ctx = require('../context');
+var bscfg = ctx.config;
+var bsdata = ctx.getLib('lib/model/bsdata');
+var EvenSub = ctx.getLib('lib/amqp/event-sub');
+
 storage.initSync({
     dir:'db'
 });
@@ -40,23 +46,57 @@ if(args.length > 0){
 
 var jobcfg = require(CFG_FILE);
 
+var no_input_data = {};
+
 track('[SETTING UP JOB] : ' + CFG_FILE,TRACKING>0);
-if(jobcfg.trigger && jobcfg.trigger.type == 'cron' && ONTRIGGER)
+if(jobcfg.trigger && ONTRIGGER)
 {
   var triggercfg = jobcfg.trigger;
+  var triggertpy = jobcfg.trigger.type
+
+  if(triggertpy == 'cron'){
+    trigger_cron(jobcfg,no_input_data);
+  }else if(triggertpy == 'http'){
+    trigger_http(jobcfg);
+  }else{
+    run_job(jobcfg,no_input_data);
+  }
+}else{
+  run_job(jobcfg,no_input_data);
+}
+
+function trigger_cron(jobcfg,input)
+{
   var cron = jobcfg.trigger.cmd;
   track('[SCHEDULE MODE]',TRACKING>0);
   track('[CRON]\t\t: ' + cron,TRACKING>0);
-
   var j = schedule.scheduleJob(cron, function(){
-    run_job(jobcfg);
+    run_job(jobcfg,input);
   });
-}else{
-  run_job(jobcfg);
 }
 
+function trigger_http(jobcfg)
+{
+  var jobId = jobcfg.job_id;
+  var appkey = jobcfg.trigger.appkey;
+  track('[HTTP MODE]',TRACKING>0);
+  track('[APPKEY]\t\t: ' + appkey,TRACKING>0);
 
-function run_job(cfg)
+  var evs = new EvenSub({'url':bscfg.amqp.url,'name':'bs_job_cmd'});
+  evs.sub('cmd.execute.' + jobId  ,function(err,msg){
+    var input_data = msg.data.input_data;
+
+    if(input_data.type == 'bsdata')
+    {
+      var inp = bsdata.parse(input_data.value);
+      run_job(jobcfg,inp.data);
+    }else{
+      run_job(jobcfg,no_input_data);
+    }
+  });
+}
+
+function run_job(cfg,input)
 {
   var jobconfig = cfg;
   var tranId = "TR" + (new Date).getTime();
@@ -74,6 +114,7 @@ function run_job(cfg)
   var context = {
     "jobconfig" : jobconfig,
     "transaction" : transaction,
+    "input_data" : input,
     "job" : ctxJob
   }
 

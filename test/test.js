@@ -78,20 +78,20 @@ const crypto = require("crypto");
 // atext = JSON.stringify(a);
 // redis.set('a',atext)
 
-var HttpACL = ctx.getLib('lib/mems/http-acl');
-
-var httpacl = HttpACL.create({'conn':'redis://:@bigmaster.igridproject.info:6379/1'});
-
-httpacl.add({'appkey':'app1','method':'get','jobid':'job1'})
-httpacl.add({'appkey':'app2','method':'get','jobid':'job2'})
-httpacl.add({'appkey':'app1','method':'get','jobid':'job3'})
-httpacl.commit();
-
-httpacl.update(function(err){
-  //console.log(httpacl.acl);
-  var j = httpacl.findJob('app1','get');
-  console.log(j);
-});
+// var HttpACL = ctx.getLib('lib/mems/http-acl');
+//
+// var httpacl = HttpACL.create({'conn':'redis://:@bigmaster.igridproject.info:6379/1'});
+//
+// httpacl.add({'appkey':'app1','method':'get','jobid':'job1'})
+// httpacl.add({'appkey':'app2','method':'get','jobid':'job2'})
+// httpacl.add({'appkey':'app1','method':'get','jobid':'job3'})
+// httpacl.commit();
+//
+// httpacl.update(function(err){
+//   //console.log(httpacl.acl);
+//   var j = httpacl.findJob('app1','get');
+//   console.log(j);
+// });
 
 // var EvenPub = ctx.getLib('lib/amqp/event-pub');
 //
@@ -101,3 +101,11 @@ httpacl.update(function(err){
 // evp.send('q.test.t1','kamron aroonrua aaa');
 //
 // setTimeout(function() { evp.close(function(err){console.log('close');}); }, 1500);
+
+var EvenSub = ctx.getLib('lib/amqp/event-sub');
+
+var evs = new EvenSub({'url':'amqp://bigmaster.igridproject.info','name':'bs_job_cmd'});
+
+evs.sub('#',function(err,msg){
+  console.log(msg);
+});

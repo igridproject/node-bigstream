@@ -8,7 +8,7 @@ var cfg = ctx.config;
 var HttpACL = ctx.getLib('lib/mems/http-acl');
 var EvenPub = ctx.getLib('lib/amqp/event-pub');
 
-const JOBCHANEL = 'job_trigger';
+const JOBCHANEL = 'bs_job_cmd';
 
 module.exports.create = function(cfg)
 {
