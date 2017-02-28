@@ -1,0 +1,24 @@
+{
+  "job_id" : "igridenv",
+  "active" : true,
+  "trigger" : {
+    "type": "http",
+    "appkey": "igridenv",
+	"method": "get"
+  },
+  "data_in" : {
+    "type": "input",
+	"param":{
+		"object":"httpdata"
+	}
+  },
+  "data_transform" : {
+    "type": "noop"
+  },
+  "data_out" : {
+    "type": "storage",
+	"param": {
+		"storage_name" : "igrid.env"
+	}
+  }
+}
