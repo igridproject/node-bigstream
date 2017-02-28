@@ -1,0 +1,4 @@
+{
+  "type" : "rabbitmq",
+  "url" : "amqp://bigmaster.igridproject.info"
+}
