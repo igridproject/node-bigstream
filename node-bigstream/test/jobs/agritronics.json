@@ -3,7 +3,7 @@
   "active" : true,
   "trigger" : {
     "type": "cron",
-    "cmd": "* */10 * * *"
+    "cmd": "15,45 * * * *"
   },
   "data_in" : {
     "type": "agritronics",
@@ -29,7 +29,7 @@
         {"type": "2022", "node_id": "7328"}
       ],
       "init_observed_date": "2017-02-05",
-      "init_observed_time": "11:30:00"
+      "init_observed_time": "12:00:00"
     }
   },
   "data_transform" : {
