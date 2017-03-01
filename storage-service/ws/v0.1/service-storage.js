@@ -10,8 +10,8 @@ var cfg = ctx.config;
 var storage_cfg = cfg.storage;
 var response = ctx.getLib('lib/ws/response');
 var request = ctx.getLib('lib/ws/request');
-var BinStream = ctx.getLib('lib/storage/binarystream_v1_1');
-var ObjId = ctx.getLib('lib/storage/objid');
+var BinStream = ctx.getLib('lib/bss/binarystream_v1_1');
+var ObjId = ctx.getLib('lib/bss/objid');
 
 router.get('/:id/stats',function (req, res) {
     var reqHelper = request.create(req);
