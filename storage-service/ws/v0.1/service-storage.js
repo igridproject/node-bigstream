@@ -7,9 +7,10 @@ var fs = require('fs');
 var async = require('async');
 
 var cfg = ctx.config;
+var storage_cfg = cfg.storage;
 var response = ctx.getlib('lib/ws/response');
 var request = ctx.getlib('lib/ws/request');
-var BinStream = ctx.getlib('lib/storage/binarystream_v1_0');
+var BinStream = ctx.getlib('lib/storage/binarystream_v1_1');
 var ObjId = ctx.getlib('lib/storage/objid');
 
 router.get('/:id/stats',function (req, res) {
@@ -22,7 +23,7 @@ router.get('/:id/stats',function (req, res) {
     }
 
     var storage_path = sid.split('.').join('/');
-    var bss_full_path = cfg.repository.path + "/" + storage_path + ".bss";
+    var bss_full_path = storage_cfg.repository + "/" + storage_path + ".bss";
 
     fs.exists(bss_full_path,function(exists){
 
@@ -59,7 +60,7 @@ router.get('/:id/objects',function (req, res) {
     }
 
     var storage_path = sid.split('.').join('/');
-    var bss_full_path = cfg.repository.path + "/" + storage_path + ".bss";
+    var bss_full_path = storage_cfg.repository + "/" + storage_path + ".bss";
 
     var from_seq = 1;
     var limit = 0;
