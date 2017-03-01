@@ -8,10 +8,10 @@ var async = require('async');
 
 var cfg = ctx.config;
 var storage_cfg = cfg.storage;
-var response = ctx.getlib('lib/ws/response');
-var request = ctx.getlib('lib/ws/request');
-var BinStream = ctx.getlib('lib/storage/binarystream_v1_1');
-var ObjId = ctx.getlib('lib/storage/objid');
+var response = ctx.getLib('lib/ws/response');
+var request = ctx.getLib('lib/ws/request');
+var BinStream = ctx.getLib('lib/storage/binarystream_v1_1');
+var ObjId = ctx.getLib('lib/storage/objid');
 
 router.get('/:id/stats',function (req, res) {
     var reqHelper = request.create(req);
