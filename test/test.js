@@ -104,8 +104,8 @@ const crypto = require("crypto");
 
 var EvenSub = ctx.getLib('lib/amqp/event-sub');
 
-var evs = new EvenSub({'url':'amqp://bigmaster.igridproject.info','name':'bs_job_cmd'});
+var evs = new EvenSub({'url':'amqp://bigmaster.igridproject.info','name':'bs_storage'});
 
-evs.sub('#',function(err,msg){
+evs.sub('storage.sds.#',function(err,msg){
   console.log(msg);
 });
