@@ -21,10 +21,10 @@ function perform_function(context,request,response){
     "longitude": "",
     "data":[]
   };
-    
+
   async.whilst(function() { return idx < di_data.data.length;}, function(callback) {
     let dtype = di_data.data[idx].data_types;
-    
+
     if(di_data.data[idx].value.length > 0){
       let json = parser.toJson(di_data.data[idx].value[0], {object: true});
       agriParser.getParser(json.xhr.IO.Type).getValues(di_data.data[idx].value, function(values) {
@@ -39,19 +39,21 @@ function perform_function(context,request,response){
               callback();
             });
         }
-        else callback(); 
+        else callback();
       });
     }
-    
-    
-      
+
+
+
   }, function(err) {
       if( err ) {
         console.log(err);
       } else {
         //fs.writeFileSync("./result.json", JSON.stringify(result));
         //console.log(JSON.stringify(result));
-        response.success(result, output_type);
+        if(result.data.length > 0)
+          response.success(result, output_type);
+        else response.reject();
       }
   });
 
