@@ -59,7 +59,8 @@ function execute_function(context,response){
 
 	}, function(err) {
 	    if( err ) {
-	      response.error(err);
+	      //response.error(err);
+	      response.reject();
 	    } else {
 	    	//console.log(JSON.stringify(result));
 	    	response.success(result, output_type);
@@ -89,7 +90,7 @@ function getData(url, lts, callback) {
 						vals.push(val);
 						beforeDateCheck(ct, lt);
 					}
-				})}).catch((err) => {
+				}).catch((err) => {
 					callback(err);
 				});
 			}
