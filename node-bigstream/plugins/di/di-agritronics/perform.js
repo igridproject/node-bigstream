@@ -91,6 +91,7 @@ function getData(url, lts, callback) {
 						vals.push(val);
 						beforeDateCheck(ct, lt);
 					}
+					else callback(err);
 				}).catch((err) => {
 					callback(err);
 				});
