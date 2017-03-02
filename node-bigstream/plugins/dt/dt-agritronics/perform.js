@@ -42,12 +42,14 @@ function perform_function(context,request,response){
         else callback();
       });
     }
+    else callback()
 
 
 
   }, function(err) {
       if( err ) {
         console.log(err);
+        response.error(err);
       } else {
         //fs.writeFileSync("./result.json", JSON.stringify(result));
         //console.log(JSON.stringify(result));
