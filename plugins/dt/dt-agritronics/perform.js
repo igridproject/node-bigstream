@@ -26,7 +26,7 @@ function perform_function(context,request,response){
     let dtype = di_data.data[idx].data_types;
     //console.log('[DT] di_data length = ' + di_data.data[idx].value.length);
     if(typeof di_data.data[idx].value.length !== "undefined"){
-      console.log('data = ' + di_data.data[idx].value[0]);
+      //console.log('data = ' + di_data.data[idx].value[0]);
       let json = parser.toJson(di_data.data[idx].value[0], {object: true});
       agriParser.getParser(json.xhr.IO.Type).getValues(di_data.data[idx].value, function(values) {
         idx++;
@@ -37,15 +37,16 @@ function perform_function(context,request,response){
             //console.log(`STAMP : ${di_data.station_id}-${dtype} = `+ values.values[values.values.length-1].observeddatetime);
             memstore.setItem(`${di_data.station_id}-${dtype}`, values.values[values.values.length-1].observeddatetime, (err) =>{
               if(err) throw err;
-              callback();
+              callback(err);
             });
         }
         else callback();
       });
     }
-    else {
-      response.reject();
-    }
+    else{
+      idx++;
+      callback();
+    } 
 
 
 
