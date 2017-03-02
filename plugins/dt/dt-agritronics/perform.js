@@ -24,8 +24,9 @@ function perform_function(context,request,response){
 
   async.whilst(function() { return idx < di_data.data.length;}, function(callback) {
     let dtype = di_data.data[idx].data_types;
-
-    if(di_data.data[idx].value.length > 0){
+    //console.log('[DT] di_data length = ' + di_data.data[idx].value.length);
+    if(typeof di_data.data[idx].value.length !== "undefined"){
+      console.log('data = ' + di_data.data[idx].value[0]);
       let json = parser.toJson(di_data.data[idx].value[0], {object: true});
       agriParser.getParser(json.xhr.IO.Type).getValues(di_data.data[idx].value, function(values) {
         idx++;
@@ -42,14 +43,16 @@ function perform_function(context,request,response){
         else callback();
       });
     }
-    else callback()
+    else {
+      response.reject();
+    }
 
 
 
   }, function(err) {
       if( err ) {
         console.log(err);
-        response.error(err);
+        //response.error(err);
       } else {
         //fs.writeFileSync("./result.json", JSON.stringify(result));
         //console.log(JSON.stringify(result));
