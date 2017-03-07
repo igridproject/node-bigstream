@@ -11,18 +11,6 @@
        {"station_id": "Station1",
         "latitude": "",
         "longitude": ""
-       },
-       {"station_id": "Station2",
-        "latitude": "",
-        "longitude": ""
-       },
-       {"station_id": "Station3",
-        "latitude": "",
-        "longitude": ""
-       },
-       {"station_id": "Station4",
-        "latitude": "",
-        "longitude": ""
        }
     ],
     "param": {
@@ -31,17 +19,18 @@
       "port": "21",
       "user": "bs",
       "password": "UF13kczHdCPXpBb",
-      "init_observed_date": "2017-01-31",
-      "init_observed_time": "19:00:00"
+      "init_observed_date": "2017-02-02",
+      "init_observed_time": "13:00:00"
     }
   },
   "data_transform" : {
     "type": "gistda-air" 
   },
   "data_out" : {
-    "type": "bssfile",
+    "type": "storage",
     "param": {
-      "filename" : "/Users/Naiyana/ibitz/gistda-air.bss"
+      "storage_name" : "sds.gistda-air"
     }
   }
+
 }
