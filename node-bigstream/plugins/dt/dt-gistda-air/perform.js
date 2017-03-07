@@ -4,7 +4,7 @@ function perform_function(context,request,response){
   var param = context.jobconfig.data_transform.param;
   var memstore = context.task.memstore
 
-  var output_type = request.input_type; // must be object/ibitz
+  var output_type = "object/sds" 
   var data = request.data;
 
   let result = [];
@@ -23,8 +23,11 @@ function perform_function(context,request,response){
       var col = 1;
       
       let _result = {
-        "object_type":"ibitz",
-        "station_id" : filename,  // need to change to exact station, latitude, longitude
+        "object_type":"sds",
+        "station_id" : filename,  // need to change to exact station
+        "latitude":"",
+        "longitude";"", 
+        "altitude":"",
         "data":[]
       };
 
