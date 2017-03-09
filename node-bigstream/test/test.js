@@ -102,10 +102,10 @@ const crypto = require("crypto");
 //
 // setTimeout(function() { evp.close(function(err){console.log('close');}); }, 1500);
 
-var EvenSub = ctx.getLib('lib/amqp/event-sub');
-
-var evs = new EvenSub({'url':'amqp://bigmaster.igridproject.info','name':'bs_storage'});
-
-evs.sub('storage.sds.#',function(err,msg){
-  console.log(msg);
-});
+// var EvenSub = ctx.getLib('lib/amqp/event-sub');
+//
+// var evs = new EvenSub({'url':'amqp://bigmaster.igridproject.info','name':'bs_storage'});
+//
+// evs.sub('storage.sds.#',function(err,msg){
+//   console.log(msg);
+// });
