@@ -13,13 +13,20 @@ function memstore(conf){
 
 memstore.prototype.setItem = function(k,v,cb){
   var key = this.prefix + ":" + k;
-  this.mem.set(key,v,cb);
+  var value = JSON.stringify(v);
+  this.mem.set(key,value,cb);
 }
 
 memstore.prototype.getItem = function(k,cb)
 {
   var key = this.prefix + ":" + k;
-  this.mem.get(key,cb);
+  this.mem.get(key,function(err,v){
+    var value = null;
+    if(!err){
+      value = JSON.parse(v);
+    }
+    cb(err,value);
+  });
 }
 
 module.exports = memstore;

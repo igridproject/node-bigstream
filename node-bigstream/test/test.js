@@ -109,3 +109,14 @@ const crypto = require("crypto");
 // evs.sub('storage.sds.#',function(err,msg){
 //   console.log(msg);
 // });
+
+var memstore = ctx.getLib('jobexecutor/lib/memstore');
+
+var ms = new memstore({'job_id':'job01','cat':'global','conn':'redis://:@bigmaster.igridproject.info:6379/1'})
+
+var txt = "kamron\naroonrua"
+
+ms.setItem('test1',{'t':txt});
+ms.getItem('test1',function(err,val){
+  console.log(val.t);
+});
