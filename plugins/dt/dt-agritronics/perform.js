@@ -19,6 +19,7 @@ function perform_function(context,request,response){
     "station_id": di_data.station_id,
     "latitude": "",
     "longitude": "",
+    "altitude": "",
     "data":[]
   };
 
