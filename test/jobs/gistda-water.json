@@ -13,7 +13,7 @@
 	}
   },
   "data_transform" : {
-    "type": "noop"
+    "type": "gistda-water"
   },
   "data_out" : {
     "type": "storage",
