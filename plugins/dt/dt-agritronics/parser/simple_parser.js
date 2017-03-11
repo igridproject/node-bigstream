@@ -11,26 +11,25 @@ exports.getValues = function(dataSet, callback){
 
 	let values = [];
 
-	for (var i = 0; i < dataSet.length; i++) {
 		
-		let json = parser.toJson(dataSet[i], {object: true});
-		dataTemplate.type = json.xhr.IO.Type;
-		dataTemplate.unit = json.xhr.IO.Unit;
-		dataTemplate.value_type = json.xhr.IO.ValueType;
+	let json = parser.toJson(dataSet, {object: true});
+	dataTemplate.type = json.xhr.IO.Type;
+	dataTemplate.unit = json.xhr.IO.Unit;
+	dataTemplate.value_type = json.xhr.IO.ValueType;
 
-		if(parseInt(json.xhr.IO.Record) > 0){
-			if(parseInt(json.xhr.IO.Record) === 1){
-				values.push({"observeddatetime": json.xhr.IO.Data.IODateTime, "value": json.xhr.IO.Data.Value});
-			}
-			else{
-				for (var j = 0; j < json.xhr.IO.Data.length; j++) {
-					let d = json.xhr.IO.Data[j];
-					values.push({"observeddatetime": d.IODateTime, "value": d.Value});
-				}
+	if(parseInt(json.xhr.IO.Record) > 0){
+		if(parseInt(json.xhr.IO.Record) === 1){
+			values.push({"observeddatetime": json.xhr.IO.Data.IODateTime, "value": json.xhr.IO.Data.Value});
+		}
+		else{
+			for (var j = 0; j < json.xhr.IO.Data.length; j++) {
+				let d = json.xhr.IO.Data[j];
+				values.push({"observeddatetime": d.IODateTime, "value": d.Value});
 			}
 		}
-		
 	}
+		
+	
 
 	if(values.length > 0){
 		dataTemplate.values = values;

@@ -13,23 +13,35 @@ function perform_function(context,request,response){
   var output_type = "object/sds";
   var di_data = request.data;
 
-  let idx = 0;
-  let result = {
-    "object_type": 'iBitz',
-    "station_id": di_data.station_id,
-    "latitude": "",
-    "longitude": "",
-    "altitude": "",
-    "data":[]
-  };
+  
+  let out = [];
+  
 
-  async.whilst(function() { return idx < di_data.data.length;}, function(callback) {
-    let dtype = di_data.data[idx].data_types;
-    //console.log('[DT] di_data length = ' + di_data.data[idx].value.length);
-    if(typeof di_data.data[idx].value.length !== "undefined"){
-      //console.log('data = ' + di_data.data[idx].value[0]);
-      let json = parser.toJson(di_data.data[idx].value[0], {object: true});
-      agriParser.getParser(json.xhr.IO.Type).getValues(di_data.data[idx].value, function(values) {
+  var dataKeySeries = Object.keys(di_data.data);
+
+  // for (var i = 0; i < dataKeySeries.length; i++) {
+  //   console.log(di_data.data[dataKeySeries[i]]);
+  // }
+  let i = 0;
+  async.whilst(function() { return i < dataKeySeries.length;}, function(cb) {
+    let result = {
+      "object_type": 'iBitz',
+      "station_id": di_data.station_id,
+      "latitude": "",
+      "longitude": "",
+      "altitude": "",
+      "data":[]
+    };
+    let vals = di_data.data[dataKeySeries[i]];
+    i++;
+    let idx = 0;
+    async.whilst(function() { return idx < vals.length;}, function(callback) {
+      let dtype = vals[idx].data_types;
+      //console.log('[DT] di_data length = ' + vals[idx].value.length);
+      let json = parser.toJson(vals[idx].value, {object: true});
+      //console.log('Type = ' + json.xhr.IO.Type);
+      agriParser.getParser(json.xhr.IO.Type).getValues(vals[idx].value, function(values) {
+        //console.log('data = ' + vals[idx].value);
         idx++;
         if(values !== null){
             result.latitude = json.xhr.IO.Latitude;
@@ -37,32 +49,41 @@ function perform_function(context,request,response){
             result.data.push(values);
             //console.log(`STAMP : ${di_data.station_id}-${dtype} = `+ values.values[values.values.length-1].observeddatetime);
             memstore.setItem(`${di_data.station_id}-${dtype}`, values.values[values.values.length-1].observeddatetime, (err) =>{
-              if(err) throw err;
-              callback(err);
+              if(err){
+                throw err;
+                callback(err);
+              } 
+              else callback();
             });
         }
         else callback();
       });
-    }
-    else{
-      idx++;
-      callback();
-    } 
 
 
-
+    }, function(err) {
+        if( err ) {
+          console.log(err);
+          cb(err);
+          //response.error(err);
+        } else {
+          if(result.data.length > 0){
+            out.push(result);
+          }
+          cb();
+        }
+    });
   }, function(err) {
-      if( err ) {
-        console.log(err);
-        //response.error(err);
-      } else {
-        //fs.writeFileSync("./result.json", JSON.stringify(result));
-        //console.log(JSON.stringify(result));
-        if(result.data.length > 0)
-          response.success(result, output_type);
-        else response.reject();
-      }
-  });
+        if( err ) {
+          console.log(err);
+          //response.error(err);
+        } else {
+          //fs.writeFileSync("./result.json", JSON.stringify(out));
+          //console.log(JSON.stringify(out));
+          if(out.length > 0)
+            response.success(out, output_type);
+          else response.reject();
+        }
+    });
 
 }
 
