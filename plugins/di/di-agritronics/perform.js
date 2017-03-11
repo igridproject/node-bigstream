@@ -3,6 +3,8 @@ var async = require('async');
 var moment = require('moment');
 var cts = moment();
 
+let result = null;
+
 function execute_function(context,response){
 	var job_id = context.jobconfig.job_id;
 	var transaction_id = context.transaction_id;
@@ -16,10 +18,10 @@ function execute_function(context,response){
 	cts = moment().hours(0).minutes(0).seconds(0);
 	//console.log("moment cts: " + cts.format("YYYY-MM-DD,HH:mm:ss"));
 
-	let result = {
+	result = {
 		"object_type": 'agritronic',
 		"station_id": param.station_id,
-		"data":[]
+		"data":{}
 	};
 
 	let idx = 0;
@@ -40,26 +42,21 @@ function execute_function(context,response){
 			//console.log(cts.format("YYYY-MM-DD,HH:mm:ss") + " <<>> " + lts.format("YYYY-MM-DD,HH:mm:ss"));
 
 			let url = param.url + `?appkey=${param.appkey}&p=${param.station_id},${node_id},${dtype}`;
-			getData(url, lts, (vals, err) => {
+			getData(url, lts, dtype, (err) => {
 				if(err) {
 					callback(err);
 				}
 				else{
-					result.data.push({
-						"data_types": dtype,
-						"value" : vals
-					});	
 					callback();
 				}
-				
-				
+
 			});
 		}); 
 		
 
 	}, function(err) {
 	    if( err ) {
-	      response.error(err);
+	      	response.error(err);
 	      //response.reject();
 	    } else {
 	    	//console.log(JSON.stringify(result));
@@ -70,13 +67,16 @@ function execute_function(context,response){
 
 }
 
-function getData(url, lts, callback) {
-	let vals = [];
+function getData(url, lts, dtype, callback) {
 	let req = url + `,${lts.format("YYYY-MM-DD,HH:mm:ss")}`;
 	console.log(req);
 	requestData(req).then((data) => {
 		if(data.search("denied") === -1 && data.search("invalid") === -1 && data.search("no data") === -1){
-			vals.push(data);
+			if(typeof result.data[lts.format("YYYYMMDD")] === "undefined") result.data[lts.format("YYYYMMDD")] = [];
+			result.data[lts.format("YYYYMMDD")].push({
+				"data_types": dtype,
+				"value" : data
+			});
 			beforeDateCheck(cts, lts);
 		}
 		else callback(err);
@@ -88,7 +88,11 @@ function getData(url, lts, callback) {
 				console.log(req);
 				requestData(req).then((val) => {
 					if(val.search("denied") === -1 && val.search("invalid") === -1 && val.search("no data") === -1){
-						vals.push(val);
+						if(typeof result.data[lt.format("YYYYMMDD")] === "undefined") result.data[lt.format("YYYYMMDD")] = [];
+						result.data[lt.format("YYYYMMDD")].push({
+							"data_types": dtype,
+							"value" : val
+						});
 						beforeDateCheck(ct, lt);
 					}
 					else callback(err);
@@ -96,7 +100,7 @@ function getData(url, lts, callback) {
 					callback(err);
 				});
 			}
-			else callback(vals)
+			else callback();
 		}
 	}).catch((err) => {
 		callback(err);
