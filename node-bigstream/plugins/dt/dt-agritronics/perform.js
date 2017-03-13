@@ -19,8 +19,8 @@ function perform_function(context,request,response){
 
   var dataKeySeries = Object.keys(di_data.data);
 
-  // for (var i = 0; i < dataKeySeries.length; i++) {
-  //   console.log(di_data.data[dataKeySeries[i]]);
+  // for (var k = 0; k < dataKeySeries.length; k++) {
+  //   console.log(di_data.data[dataKeySeries[k]]);
   // }
   let i = 0;
   async.whilst(function() { return i < dataKeySeries.length;}, function(cb) {
@@ -41,7 +41,7 @@ function perform_function(context,request,response){
       let json = parser.toJson(vals[idx].value, {object: true});
       //console.log('Type = ' + json.xhr.IO.Type);
       agriParser.getParser(json.xhr.IO.Type).getValues(vals[idx].value, function(values) {
-        //console.log('data = ' + vals[idx].value);
+        
         idx++;
         if(values !== null){
             result.latitude = json.xhr.IO.Latitude;
@@ -57,6 +57,7 @@ function perform_function(context,request,response){
             });
         }
         else callback();
+        
       });
 
 

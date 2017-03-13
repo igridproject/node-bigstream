@@ -25,7 +25,8 @@ exports.getValues = function(dataSet, cb){
 	if(parseInt(json.xhr.IO.Record) > 0){
 		if(parseInt(json.xhr.IO.Record) === 1){
 			getImage(json.xhr.IO.Data.Value).then((data) =>{
-				values.push({"observeddatetime": json.xhr.IO.Data.IODateTime, "value": data});
+				dataTemplate.values.push({"observeddatetime": json.xhr.IO.Data.IODateTime, "value": data});
+				cb(dataTemplate);
 			}).catch((err) => {
 				cb(err);
 			})
@@ -49,6 +50,7 @@ exports.getValues = function(dataSet, cb){
 			}, function(err) {
 				if( err ) {
 					console.log(err);
+					cb(err);
 				} 
 				if(values.length > 0){
 					dataTemplate.values = values;
