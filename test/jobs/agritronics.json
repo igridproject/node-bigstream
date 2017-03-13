@@ -36,9 +36,9 @@
     "type": "agritronics"
   },
   "data_out" : {
-    "type": "storage",
-    "param" : {
-      "storage_name": "sds.agritronics"
+    "type": "bssfile",
+    "param": {
+      "filename" : "F:/testfile/MyBss.bss"
     }
   }
 }
