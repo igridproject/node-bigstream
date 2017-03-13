@@ -1,6 +1,7 @@
 var ctx = require('../../../context');
 var fs = require('fs');
 var BinStream = ctx.getLib('lib/bss/binarystream_v1_1');
+var async = require('async');
 
 function perform_function(context,request,response){
   var job_id = context.jobconfig.job_id;
@@ -44,17 +45,35 @@ function bss_write(fn,meta,data,response)
         response.error(err);
         return;
       }
-      bss.write(data,{meta:meta},function(err,obj){
-        if(!err){
-          bss.close(function(err){
-            response.success();
-          });
-        }else{
-          bss.close(function(err){
-            response.error("ERROR");
-          });
-        }
-      });
+
+      var arrData = [];
+
+      if(!Array.isArray(data)){
+        arrData.push(data);
+      }else{
+        arrData = data;
+      }
+
+      var idx = 0;
+      async.whilst(
+          function() { return idx < arrData.length; },
+          function(callback) {
+            bss.write(arrData,{meta:meta},function(err,obj){
+              callback(err);
+            });
+          },
+          function (err) {
+            if(!err){
+              bss.close(function(err){
+                response.success();
+              });
+            }else{
+              bss.close(function(err){
+                response.error("ERROR");
+              });
+            }
+          }
+      );
 
   });
 }
