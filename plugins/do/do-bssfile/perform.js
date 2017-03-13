@@ -59,6 +59,7 @@ function bss_write(fn,meta,data,response)
           function() { return idx < arrData.length; },
           function(callback) {
             bss.write(arrData,{meta:meta},function(err,obj){
+              idx++;
               callback(err);
             });
           },
