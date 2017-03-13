@@ -3,13 +3,7 @@
   "active" : true,
   "trigger" : {
     "type": "cron",
-<<<<<<< .mine
-    "cmd": "10 * * * *"
-||||||| .r931
-    "cmd": "* */10 * * *"
-=======
     "cmd": "15,45 * * * *"
->>>>>>> .r976
   },
   "data_in" : {
     "type": "agritronics",
@@ -34,16 +28,8 @@
         {"type": "2021", "node_id": "7328"},
         {"type": "2022", "node_id": "7328"}
       ],
-<<<<<<< .mine
-      "init_observed_date": "2017-03-10",
-      "init_observed_time": "00:00:00"
-||||||| .r931
-      "init_observed_date": "2017-02-05",
-      "init_observed_time": "11:30:00"
-=======
-      "init_observed_date": "2017-02-05",
+      "init_observed_date": "2017-03-12",
       "init_observed_time": "12:00:00"
->>>>>>> .r976
     }
   },
   "data_transform" : {
