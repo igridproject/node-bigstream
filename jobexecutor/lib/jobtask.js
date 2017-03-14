@@ -8,3 +8,7 @@ function JobTask(prm)
 };
 util.inherits(JobTask, EventEmitter);
 //handle.emit('done',{'status':'error','data':err});
+
+JobTask.prototype.run = function () {
+  
+}
