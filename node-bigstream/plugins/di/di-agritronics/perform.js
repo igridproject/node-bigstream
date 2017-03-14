@@ -79,7 +79,7 @@ function getData(url, lts, dtype, callback) {
 			});
 			beforeDateCheck(cts, lts);
 		}
-		else callback(err);
+		else callback();
 
 		function beforeDateCheck(ct, lt){
 			if (lt.isBefore(ct, 'days')) {
@@ -95,7 +95,7 @@ function getData(url, lts, dtype, callback) {
 						});
 						beforeDateCheck(ct, lt);
 					}
-					else callback(err);
+					else callback();
 				}).catch((err) => {
 					callback(err);
 				});
