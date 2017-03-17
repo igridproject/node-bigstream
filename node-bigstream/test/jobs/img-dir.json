@@ -1,0 +1,23 @@
+{
+  "job_id" : "img-dir",
+  "active" : true,
+  "trigger" : {
+    "type": "cron",
+    "cmd": "5,10,15,20,25,30,35,40,45,50,55,0 * * * *"
+  },
+  "data_in" : {
+    "type": "http-request",
+    "param": {
+      "url": "http://203.155.220.231/Radar/pics/zfiltered.jpg"
+    }
+  },
+  "data_transform" : {
+    "type": "noop"
+  },
+  "data_out" : {
+    "type": "dir",
+	"param": {
+		"path" : "D:/tmdimg"
+	}
+  }
+}
