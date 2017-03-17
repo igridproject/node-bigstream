@@ -1,4 +1,4 @@
-var request = require('request');
+var request = require('request').defaults({ encoding: null });
 
 function execute_function(context,response){
   var job_id = context.jobconfig.job_id;

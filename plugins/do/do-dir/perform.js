@@ -47,6 +47,7 @@ function to_string(obj)
         str_data = 'null';
       }else if(obj instanceof Buffer){
         str_data = obj.toString('base64');
+        //str_data = obj;
       }else{
         str_data = JSON.stringify(obj);
       }
