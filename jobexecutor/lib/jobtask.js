@@ -7,6 +7,7 @@ var ctx = require('../../context');
 var memstore = ctx.getLib('jobexecutor/lib/memstore');
 var bsdata = ctx.getLib('lib/model/bsdata');
 
+module.exports = JobTask;
 function JobTask (prm)
 {
   EventEmitter.call(this);
@@ -32,7 +33,7 @@ JobTask.prototype.run = function ()
 
 
   var ctx_transaction = {
-    "id" : tranId
+    "id" : transaction_id
   }
 
   var jobMem = new memstore({'job_id':job_id,'cat':'global','mem':self.mem})
@@ -46,18 +47,58 @@ JobTask.prototype.run = function ()
     "input_data" : input_data,
     "job" : ctx_job
   }
+
+  var task_di = function (callback) {
+    perform_di({'context':context,'handle':self} ,function(err,resp){
+      if(resp.status == 'success'){
+        callback(null,resp);
+      }else{
+        callback(resp);
+      }
+    });
+  }
+
+  var task_dt = function (request,callback) {
+    var dt_request = {'input_type':request.type,'data':request.data}
+    perform_dt({'context':context,'request':dt_request,'handle':self},function(err,dt_resp){
+      if(dt_resp.status == 'success'){
+        callback(null,dt_resp);
+      }else {
+        callback(dt_resp);
+      }
+    });
+  }
+
+  var task_do = function (request,callback) {
+    var do_request = {'input_type':request.type,'data':request.data}
+    perform_do({'context':context,'request':do_request,'handle':self},function(err,do_resp){
+      if(do_resp.status == 'success'){
+        callback(null,do_resp);
+      }else {
+        callback(do_resp);
+      }
+    });
+  }
+
+  async.waterfall([task_di,task_dt,task_do],function (err,resp) {
+    if(!err){
+      console.log('***** JOB SUCCESSFULLY DONE *****');
+    }else{
+      console.log('***** JOB UNSUCCESSFULLY DONE *****');
+    }
+  });
+
 }
 
 function perform_di(prm,cb)
 {
   var di_context = prm.context;
 
-  var jobId = di_context.jobconfig.job_id;
+  var job_id = di_context.jobconfig.job_id;
   var di_cfg = di_context.jobconfig.data_in;
 
   var DITask = getPlugins('di',di_cfg.type);
-  var mempref = "ms." + jobId + '.di';
-  var diMem = new memstore(mempref,storage);
+  var diMem = new memstore({'job_id':job_id,'cat':'di','mem':prm.handle.mem})
   di_context.task = {
     "memstore" : diMem
   }
@@ -73,12 +114,11 @@ function perform_dt(prm,cb)
 {
   var dt_context = prm.context
 
-  var jobId = dt_context.jobconfig.job_id;
+  var job_id = dt_context.jobconfig.job_id;
   var dt_cfg = dt_context.jobconfig.data_transform;
 
   var DITask = getPlugins('dt',dt_cfg.type);
-  var mempref = "ms." + jobId + '.dt';
-  var dtMem = new memstore(mempref,storage);
+  var dtMem = new memstore({'job_id':job_id,'cat':'dt','mem':prm.handle.mem})
   dt_context.task = {
     "memstore" : dtMem
   }
@@ -95,12 +135,11 @@ function perform_do(prm,cb)
 {
   var do_context = prm.context
 
-  var jobId = do_context.jobconfig.job_id;
+  var job_id = do_context.jobconfig.job_id;
   var do_cfg = do_context.jobconfig.data_out;
 
   var DOTask = getPlugins('do',do_cfg.type);
-  var mempref = "ms." + jobId + '.do';
-  var doMem = new memstore(mempref,storage);
+  var doMem = new memstore({'job_id':job_id,'cat':'do','mem':prm.handle.mem})
   do_context.task = {
     "memstore" : doMem
   }
@@ -114,7 +153,7 @@ function perform_do(prm,cb)
 
 function getPlugins(type,name)
 {
-  var path = '../plugins/' + type + '/' + type + '-' +name;
+  var path = '../../plugins/' + type + '/' + type + '-' +name;
   return require(path);
 }
 
