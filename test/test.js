@@ -143,7 +143,7 @@ var job_config = {
 }
 
 var ag = {
-  "job_id" : "002",
+  "job_id" : "agritronics-gistda-01",
   "active" : true,
   "trigger" : {
     "type": "cron",
@@ -152,14 +152,14 @@ var ag = {
   "data_in" : {
     "type": "agritronics",
     "profile": {
-      "station_id": "GISDA-02",
+      "station_id": "GISDA-01",
       "latitude": "",
       "longitude": ""
     },
     "param": {
       "url": "http://agritronics.nstda.or.th/ws/get.php",
       "appkey": "0c5a295bd8c07a081f4f0061eee6665c38",
-      "station_id": "GISTDA-02",
+      "station_id": "GISTDA-01",
       "data_types": [
         {"type": "1", "node_id": "4096"},
         {"type": "2", "node_id": "4096"},
@@ -172,7 +172,7 @@ var ag = {
         {"type": "2021", "node_id": "7328"},
         {"type": "2022", "node_id": "7328"}
       ],
-      "init_observed_date": "2017-03-21",
+      "init_observed_date": "2017-03-20",
       "init_observed_time": "12:00:00"
     }
   },
@@ -183,6 +183,7 @@ var ag = {
     "type": "console"
   }
 }
+
 
 var JobTask = ctx.getLib('jobexecutor/lib/jobtask');
 
