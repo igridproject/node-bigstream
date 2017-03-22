@@ -172,7 +172,7 @@ var ag = {
         {"type": "2021", "node_id": "7328"},
         {"type": "2022", "node_id": "7328"}
       ],
-      "init_observed_date": "2017-03-22",
+      "init_observed_date": "2017-03-21",
       "init_observed_time": "12:00:00"
     }
   },
