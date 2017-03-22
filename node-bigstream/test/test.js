@@ -110,13 +110,85 @@ const crypto = require("crypto");
 //   console.log(msg);
 // });
 
-var memstore = ctx.getLib('jobexecutor/lib/memstore');
+// var memstore = ctx.getLib('jobexecutor/lib/memstore');
+//
+// var ms = new memstore({'job_id':'job01','cat':'global','conn':'redis://:@bigmaster.igridproject.info:6379/1'})
+//
+// var txt = "kamron\naroonrua"
+//
+// ms.setItem('test1',{'t':txt});
+// ms.getItem('test1',function(err,val){
+//   console.log(val.t);
+// });
 
-var ms = new memstore({'job_id':'job01','cat':'global','conn':'redis://:@bigmaster.igridproject.info:6379/1'})
+var redis = require('redis');
+var handle = {'mem' : redis.createClient('redis://:@bigmaster.igridproject.info:6379/1')}
+var input_data = {};
+var job_config = {
+  "job_id" : "example",
+  "active" : true,
+  "trigger" : {
+    "type": "cron",
+    "cmd": "29,59 * * * * *"
+  },
+  "data_in" : {
+    "type": "example"
+  },
+  "data_transform" : {
+    "type": "noop"
+  },
+  "data_out" : {
+    "type": "console"
+  }
+}
 
-var txt = "kamron\naroonrua"
+var ag = {
+  "job_id" : "002",
+  "active" : true,
+  "trigger" : {
+    "type": "cron",
+    "cmd": "15,45 * * * *"
+  },
+  "data_in" : {
+    "type": "agritronics",
+    "profile": {
+      "station_id": "GISDA-02",
+      "latitude": "",
+      "longitude": ""
+    },
+    "param": {
+      "url": "http://agritronics.nstda.or.th/ws/get.php",
+      "appkey": "0c5a295bd8c07a081f4f0061eee6665c38",
+      "station_id": "GISTDA-02",
+      "data_types": [
+        {"type": "1", "node_id": "4096"},
+        {"type": "2", "node_id": "4096"},
+        {"type": "4", "node_id": "4096"},
+        {"type": "5", "node_id": "4096"},
+        {"type": "6", "node_id": "4096"},
+        {"type": "7", "node_id": "4096"},
+        {"type": "8", "node_id": "4096"},
+        {"type": "10", "node_id": "4096"},
+        {"type": "2021", "node_id": "7328"},
+        {"type": "2022", "node_id": "7328"}
+      ],
+      "init_observed_date": "2017-03-22",
+      "init_observed_time": "12:00:00"
+    }
+  },
+  "data_transform" : {
+    "type": "agritronics"
+  },
+  "data_out" : {
+    "type": "console"
+  }
+}
 
-ms.setItem('test1',{'t':txt});
-ms.getItem('test1',function(err,val){
-  console.log(val.t);
-});
+var JobTask = ctx.getLib('jobexecutor/lib/jobtask');
+
+var job = new JobTask({
+                        'handle' : handle,
+                        'job_config' : ag,
+                        'input_data' : input_data
+                      });
+job.run();
