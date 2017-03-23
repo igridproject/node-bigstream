@@ -12,12 +12,14 @@ function perform_function(context,response){
   //   response.success(data);
   // });
 
-  // memstore.getItem('lasttransaction',function(err,value){
-  //   response.success(value);
-  // });
+  memstore.getItem('lasttransaction2',function(err,value){
+    console.log('key');
+    console.log(value);
+    response.success(value);
+  });
 
 
-  response.success(data,output_type);
+  //response.success(data,output_type);
   //response.reject();
   //response.error("error message")
 
