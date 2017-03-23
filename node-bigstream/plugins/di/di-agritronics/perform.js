@@ -37,8 +37,8 @@ function execute_function(context,response){
 			if (typeof lts === "undefined") lts = moment(`${param.init_observed_date} ${param.init_observed_time}`);
 			else lts = moment(lts).add(1, 'seconds');
 			//console.log(`memstore: ${param.station_id}-${dtype} = ${lts}`);
-			let recvTime = cts.diff(lts, "days");
-			if(recvTime > 20) lts = new moment().add(-20, 'day').hours(0).minutes(0).seconds(0);
+			//let recvTime = cts.diff(lts, "days");
+			//if(recvTime > 20) lts = new moment().add(-20, 'day').hours(0).minutes(0).seconds(0);
 			//console.log(cts.format("YYYY-MM-DD,HH:mm:ss") + " <<>> " + lts.format("YYYY-MM-DD,HH:mm:ss"));
 
 			let url = param.url + `?appkey=${param.appkey}&p=${param.station_id},${node_id},${dtype}`;
