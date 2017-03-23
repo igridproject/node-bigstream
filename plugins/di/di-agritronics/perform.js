@@ -34,7 +34,7 @@ function execute_function(context,response){
 		memstore.getItem(`${param.station_id}-${dtype}`, function(err, lts){  //latest timestamp, format: yyyy-MM-dd HH:mm:ss
 			idx++;
 			//console.log(`memstore: ${param.station_id}-${dtype} = ${lts}`);
-			if (typeof lts === "undefined") lts = moment(`${param.init_observed_date} ${param.init_observed_time}`);
+			if (!lts) lts = moment(`${param.init_observed_date} ${param.init_observed_time}`);
 			else lts = moment(lts).add(1, 'seconds');
 			//console.log(`memstore: ${param.station_id}-${dtype} = ${lts}`);
 			//let recvTime = cts.diff(lts, "days");
