@@ -189,7 +189,7 @@ var JobTask = ctx.getLib('jobexecutor/lib/jobtask');
 
 var job = new JobTask({
                         'handle' : handle,
-                        'job_config' : ag,
+                        'job_config' : job_config,
                         'input_data' : input_data
                       });
 job.run();
