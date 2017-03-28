@@ -1,3 +1,4 @@
+var async = require('async');
 var ctx = require('../context');
 // var BSData = ctx.getLib('lib/model/bsdata');
 
@@ -121,26 +122,26 @@ const crypto = require("crypto");
 //   console.log(val.t);
 // });
 
-var redis = require('redis');
-var handle = {'mem' : redis.createClient('redis://:@bigmaster.igridproject.info:6379/1')}
-var input_data = {};
-var job_config = {
-  "job_id" : "example",
-  "active" : true,
-  "trigger" : {
-    "type": "cron",
-    "cmd": "29,59 * * * * *"
-  },
-  "data_in" : {
-    "type": "example"
-  },
-  "data_transform" : {
-    "type": "noop"
-  },
-  "data_out" : {
-    "type": "console"
-  }
-}
+// var redis = require('redis');
+// var handle = {'mem' : redis.createClient('redis://:@bigmaster.igridproject.info:6379/1')}
+// var input_data = {};
+// var job_config = {
+//   "job_id" : "example",
+//   "active" : true,
+//   "trigger" : {
+//     "type": "cron",
+//     "cmd": "29,59 * * * * *"
+//   },
+//   "data_in" : {
+//     "type": "example"
+//   },
+//   "data_transform" : {
+//     "type": "noop"
+//   },
+//   "data_out" : {
+//     "type": "console"
+//   }
+// }
 
 var ag = {
   "job_id" : "agritronics-gistda-01",
@@ -185,11 +186,30 @@ var ag = {
 }
 
 
-var JobTask = ctx.getLib('jobexecutor/lib/jobtask');
+// var JobTask = ctx.getLib('jobexecutor/lib/jobtask');
+//
+// var job = new JobTask({
+//                         'handle' : handle,
+//                         'job_config' : job_config,
+//                         'input_data' : input_data
+//                       });
+// job.run();
 
-var job = new JobTask({
-                        'handle' : handle,
-                        'job_config' : job_config,
-                        'input_data' : input_data
-                      });
-job.run();
+async.reduce([1,2,3], 0, function(memo, item, callback) {
+    // pointless async:
+    process.nextTick(function() {
+        console.log(item);
+        if(item==8){
+          callback('err')
+        }else{
+          callback(null,item)
+        }
+    });
+}, function(err, result) {
+    // result is now equal to the last value of memo, which is 6
+    if(err){
+      console.log(err);
+    }else{
+      console.log(result);
+    }
+});
