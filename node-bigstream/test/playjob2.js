@@ -238,27 +238,49 @@ function perform_dt(context,request,cb)
   var jobId = dt_context.jobconfig.job_id;
   var dt_cfg = dt_context.jobconfig.data_transform;
 
-  track('[DT_PLUGIN]\t\t: ' + dt_cfg.type,TRACKING>1);
-  var DTTask = getPlugins('dt',dt_cfg.type);
-  var mempref = "ms." + jobId + '.dt';
-  var dtMem = new memstore(mempref,storage);
-  dt_context.task = {
-    "memstore" : dtMem
+  //convert to array
+  var arr_dt_cfg = [];
+  if(!Array.isArray(dt_cfg)){
+    arr_dt_cfg.push(dt_cfg);
+  }else{
+    arr_dt_cfg = dt_cfg;
   }
 
-  var dt = new DTTask(dt_context,request);
+  var dt_count = arr_dt_cfg.length
+  var p_idx=0;
 
-  dt.run();
-  dt.on('error',function(err){
-    console.log('ERR');
-    console.log(err);
-  });
-  dt.on('done',function(resp){
-    track('[DT_OUTPUT_TYPE]\t: ' + resp.type,TRACKING>1);
-    track('[DT_STATUS]\t\t: ' + resp.status,TRACKING>1);
-    track('DATA>>' + resp.data,TRACKING>1);
-    cb(null,resp);
-  });
+  async.whilst(
+    function() { return p_idx < 5; },
+    function(callback) {
+
+      track('[DT_PLUGIN]\t\t: ' + dt_cfg.type,TRACKING>1);
+      var DTTask = getPlugins('dt',dt_cfg.type);
+      var mempref = "ms." + jobId + '.dt';
+      var dtMem = new memstore(mempref,storage);
+      dt_context.task = {
+        "memstore" : dtMem
+      }
+
+      var dt = new DTTask(dt_context,request);
+
+      dt.run();
+      dt.on('error',function(err){
+        console.log('ERR');
+        console.log(err);
+      });
+      dt.on('done',function(resp){
+        track('[DT_OUTPUT_TYPE]\t: ' + resp.type,TRACKING>1);
+        track('[DT_STATUS]\t\t: ' + resp.status,TRACKING>1);
+        track('DATA>>' + resp.data,TRACKING>1);
+        cb(null,resp);
+      });
+////do this
+    },
+    function (err, resp) {
+        // 5 seconds have passed, n = 5
+    }
+  );
+
 }
 
 function perform_do(context,request,cb)

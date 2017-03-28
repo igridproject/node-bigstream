@@ -117,13 +117,13 @@ function perform_dt(prm,cb)
   var job_id = dt_context.jobconfig.job_id;
   var dt_cfg = dt_context.jobconfig.data_transform;
 
-  var DITask = getPlugins('dt',dt_cfg.type);
+  var DTTask = getPlugins('dt',dt_cfg.type);
   var dtMem = new memstore({'job_id':job_id,'cat':'dt','mem':prm.handle.mem})
   dt_context.task = {
     "memstore" : dtMem
   }
 
-  var dt = new DITask(dt_context,prm.request);
+  var dt = new DTTask(dt_context,prm.request);
 
   dt.run();
   dt.on('done',function(resp){
