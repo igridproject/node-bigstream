@@ -186,30 +186,30 @@ var ag = {
 }
 
 
-// var JobTask = ctx.getLib('jobexecutor/lib/jobtask');
-//
-// var job = new JobTask({
-//                         'handle' : handle,
-//                         'job_config' : job_config,
-//                         'input_data' : input_data
-//                       });
-// job.run();
+var JobTask = ctx.getLib('jobexecutor/lib/jobtask');
 
-async.reduce([1,2,3], 0, function(memo, item, callback) {
-    // pointless async:
-    process.nextTick(function() {
-        console.log(item);
-        if(item==8){
-          callback('err')
-        }else{
-          callback(null,item)
-        }
-    });
-}, function(err, result) {
-    // result is now equal to the last value of memo, which is 6
-    if(err){
-      console.log(err);
-    }else{
-      console.log(result);
-    }
-});
+var job = new JobTask({
+                        'handle' : handle,
+                        'job_config' : job_config,
+                        'input_data' : input_data
+                      });
+job.run();
+
+// async.reduce([1,2,3], 0, function(memo, item, callback) {
+//     // pointless async:
+//     process.nextTick(function() {
+//         console.log(item);
+//         if(item==8){
+//           callback('err')
+//         }else{
+//           callback(null,item)
+//         }
+//     });
+// }, function(err, result) {
+//
+//     if(err){
+//       console.log(err);
+//     }else{
+//       console.log(result);
+//     }
+// });
