@@ -45,7 +45,7 @@ var process_get = function(req, res) {
     var msg = job_execute_msg;
     msg.jobId = item.jobid;
 
-    evp.send(topic,JSON.stringify(msg));
+    evp.send(topic,msg);
   });
 
   if(j.length > 0)
