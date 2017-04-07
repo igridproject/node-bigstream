@@ -186,7 +186,7 @@ var ag = {
 }
 
 
-var JobTask = ctx.getLib('jobexecutor/lib/jobtask');
+var JobTask = ctx.getLib('jobworker/lib/jobtask');
 
 var job = new JobTask({
                         'handle' : handle,
