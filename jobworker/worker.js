@@ -16,3 +16,13 @@ var JW = function JobWorker (prm)
   this.instance_name = param.name;
 
 }
+
+JW.prototype.start = function ()
+{
+  this.amqp_job_start();
+}
+
+JW.prototype.amqp_job_start = function ()
+{
+
+}
