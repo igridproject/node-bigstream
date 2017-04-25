@@ -7,18 +7,19 @@ function perform_function(context,response){
   var output_type = 'text'
   var data = 'hello world ' + transaction_id;
 
-
   // memstore.setItem('lasttransaction',transaction_id,function(err){
   //   response.success(data);
   // });
 
-  memstore.getItem('lasttransaction2',function(err,value){
-    console.log('key');
-    console.log(value);
-    response.success(value);
-  });
+  // memstore.getItem('lasttransaction2',function(err,value){
+  //   console.log('key');
+  //   console.log(value);
+  //   response.success(value);
+  // });
 
-
+  setTimeout(function(){
+    response.success(data,output_type);
+  },2000)
   //response.success(data,output_type);
   //response.reject();
   //response.error("error message")

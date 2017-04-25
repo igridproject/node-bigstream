@@ -16,3 +16,7 @@ module.exports.getPlugins = function(type,name)
 
   return require(path);
 }
+
+module.exports.sysenv = {
+  
+}

@@ -1,10 +1,12 @@
 var util = require('util');
+var domain = require('domain');
 var async = require('async');
 var domain = require('domain');
+var crypto = require("crypto");
 var EventEmitter = require('events').EventEmitter;
 
 var ctx = require('../../context');
-var memstore = ctx.getLib('jobexecutor/lib/memstore');
+var memstore = require('./memstore');
 var bsdata = ctx.getLib('lib/model/bsdata');
 
 module.exports = JobTask;
@@ -12,16 +14,30 @@ function JobTask (prm)
 {
   EventEmitter.call(this);
 
+  if(!prm.opt){prm.opt={};}
+
   this.handle = prm.handle;
   this.mem = prm.handle.mem;
 
   this.jobcfg = prm.job_config;
   this.input_data = prm.input_data;
   this.transaction_id = prm.transaction_id;
+  this.job_timeout = prm.opt.job_timeout || 3000;
+
+  //0=>IDLE,1=>RUNNING,2=>DONE
+  this.state = 0;
 
 };
 util.inherits(JobTask, EventEmitter);
 //handle.emit('done',{'status':'error','data':err});
+
+JobTask.prototype.stop = function (status)
+{
+  if(this.state==1){
+    this.state = 2;
+    this.emit('done', status);
+  }
+}
 
 JobTask.prototype.run = function ()
 {
@@ -31,6 +47,7 @@ JobTask.prototype.run = function ()
   var job_tr_config = this.jobcfg;
   var job_id = job_tr_config.job_id;
 
+  self.state = 1;
 
   var ctx_transaction = {
     "id" : transaction_id
@@ -80,13 +97,25 @@ JobTask.prototype.run = function ()
     });
   }
 
+
+  var jtimeout = setTimeout(function(){
+    self.stop({'status':'error','data':'job execution timeout'});
+
+    //self.emit('error',new Error('job execution timeout'))
+  },self.job_timeout);
+
   async.waterfall([task_di,task_dt,task_do],function (err,resp) {
+    clearTimeout(jtimeout);
     if(!err){
-      console.log('***** JOB SUCCESSFULLY DONE *****');
+      self.stop(resp)
+      //console.log('***** JOB SUCCESSFULLY DONE *****');
     }else{
-      console.log('***** JOB UNSUCCESSFULLY DONE *****');
+      self.stop(err)
+      //console.log('***** JOB UNSUCCESSFULLY DONE *****');
     }
   });
+
+
 
 }
 
@@ -147,6 +176,7 @@ function perform_do(prm,cb)
   var dout = new DOTask(do_context,prm.request);
   dout.run();
   dout.on('done',function(resp){
+
     cb(null,resp);
   });
 }
@@ -159,5 +189,6 @@ function getPlugins(type,name)
 
 function genTransactionId()
 {
-  return "TR" + (new Date).getTime();
+  var id = crypto.randomBytes(3).toString("hex");
+  return "TR" + (new Date).getTime() + id;
 }
