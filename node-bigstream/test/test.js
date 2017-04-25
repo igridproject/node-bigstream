@@ -122,26 +122,26 @@ const crypto = require("crypto");
 //   console.log(val.t);
 // });
 
-// var redis = require('redis');
-// var handle = {'mem' : redis.createClient('redis://:@bigmaster.igridproject.info:6379/1')}
-// var input_data = {};
-// var job_config = {
-//   "job_id" : "example",
-//   "active" : true,
-//   "trigger" : {
-//     "type": "cron",
-//     "cmd": "29,59 * * * * *"
-//   },
-//   "data_in" : {
-//     "type": "example"
-//   },
-//   "data_transform" : {
-//     "type": "noop"
-//   },
-//   "data_out" : {
-//     "type": "console"
-//   }
-// }
+var redis = require('redis');
+var handle = {'mem' : redis.createClient('redis://bigmaster.igridproject.info:6379/1')}
+var input_data = {};
+var job_config = {
+  "job_id" : "example",
+  "active" : true,
+  "trigger" : {
+    "type": "cron",
+    "cmd": "29,59 * * * * *"
+  },
+  "data_in" : {
+    "type": "example"
+  },
+  "data_transform" : {
+    "type": "noop"
+  },
+  "data_out" : {
+    "type": "console"
+  }
+}
 
 var ag = {
   "job_id" : "agritronics-gistda-01",
@@ -191,8 +191,12 @@ var JobTask = ctx.getLib('jobworker/lib/jobtask');
 var job = new JobTask({
                         'handle' : handle,
                         'job_config' : job_config,
-                        'input_data' : input_data
+                        'input_data' : input_data,
+                        'opt' : {'job_timeout' :30000}
                       });
+job.on('done',function(res){
+  console.log(res);
+});
 job.run();
 
 // async.reduce([1,2,3], 0, function(memo, item, callback) {
