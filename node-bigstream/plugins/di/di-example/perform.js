@@ -17,9 +17,16 @@ function perform_function(context,response){
   //   response.success(value);
   // });
 
+  var ts = (new Date).getTime();
+  var delay = 0;
+
+  if(ts%9==0){
+    //delay = 10000;
+  }
+
   setTimeout(function(){
     response.success(data,output_type);
-  },2000)
+  },delay)
   //response.success(data,output_type);
   //response.reject();
   //response.error("error message")

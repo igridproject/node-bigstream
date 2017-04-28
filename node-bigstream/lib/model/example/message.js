@@ -48,3 +48,9 @@ var job_execute = {
     }
   }
 }
+
+var cron = {
+  'name':'job01',
+  'cron':'*/10 * * * * *',
+  'jobid':'job01'
+}

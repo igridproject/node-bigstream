@@ -186,18 +186,18 @@ var ag = {
 }
 
 
-var JobTask = ctx.getLib('jobworker/lib/jobtask');
-
-var job = new JobTask({
-                        'handle' : handle,
-                        'job_config' : job_config,
-                        'input_data' : input_data,
-                        'opt' : {'job_timeout' :30000}
-                      });
-job.on('done',function(res){
-  console.log(res);
-});
-job.run();
+// var JobTask = ctx.getLib('jobworker/lib/jobtask');
+//
+// var job = new JobTask({
+//                         'handle' : handle,
+//                         'job_config' : job_config,
+//                         'input_data' : input_data,
+//                         'opt' : {'job_timeout' :30000}
+//                       });
+// job.on('done',function(res){
+//   console.log(res);
+// });
+//job.run();
 
 // async.reduce([1,2,3], 0, function(memo, item, callback) {
 //     // pointless async:
@@ -217,3 +217,37 @@ job.run();
 //       console.log(result);
 //     }
 // });
+
+
+var client = redis.createClient('redis://bigmaster.igridproject.info:6379/1');
+//
+// client.keys('bs:jobs:*', function (err, keys) {
+//   if (err) return console.log(err);
+//
+//   for(var i = 0, len = keys.length; i < len; i++) {
+//     console.log(keys[i]);
+//     client.get(keys[i], function(err, data){
+//                     console.log(data);
+//             });
+//   }
+// });
+
+// var CronList = ctx.getLib('lib/mems/cronlist');
+//
+// var crons = CronList.create({'conn':'redis://:@bigmaster.igridproject.info:6379/1'});
+//
+// crons.add({'name':'job01','cmd':'*/10 * * * * *','jobid':'job01'})
+// crons.commit();
+//
+// crons.update(function(err){
+//   console.log(crons.list);
+// });
+
+var schedule = require('node-schedule');
+var cron = '*/10 * * * * *';
+var x = 'Tada!';
+var j = schedule.scheduleJob(cron, function(y){
+  console.log(y);
+}.bind(null,x));
+x = 'Changing Data';
+console.log(x);
