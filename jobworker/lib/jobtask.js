@@ -22,14 +22,14 @@ function JobTask (prm)
   this.jobcfg = prm.job_config;
   this.input_data = prm.input_data;
   this.transaction_id = prm.transaction_id;
-  this.job_timeout = prm.opt.job_timeout || 3000;
+  this.job_timeout = prm.opt.job_timeout || 60000;
 
   //0=>IDLE,1=>RUNNING,2=>DONE
   this.state = 0;
 
 };
 util.inherits(JobTask, EventEmitter);
-//handle.emit('done',{'status':'error','data':err});
+
 
 JobTask.prototype.stop = function (status)
 {

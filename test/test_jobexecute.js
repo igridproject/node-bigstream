@@ -6,10 +6,10 @@ var QueueCaller = ctx.getLib('lib/amqp/queuecaller');
 var qc = new QueueCaller({'url':'amqp://bigmaster.igridproject.info','name':'bs_jobs_queue'});
 
 
-var job_execute_cmd = {
+var cmd = {
   'object_type':'job_execute',
   'source' : 'http_listener',
-  'jobId' : 'job01',
+  'jobId' : 'job02',
   'option' : {},
   'input_data' : {
     'type' : 'bsdata',
@@ -20,9 +20,11 @@ var job_execute_cmd = {
   }
 }
 
-// setInterval(function(){
-//   console.log('send');
-//   qc.send(job_execute_cmd);
-// },1000)
 
-qc.send(job_execute_cmd);
+qc.send(cmd);
+
+setTimeout(function(){
+  qc.close(function(){
+    console.log('closed');
+  })
+},500)
