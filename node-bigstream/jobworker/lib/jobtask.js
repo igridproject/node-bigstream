@@ -75,7 +75,7 @@ JobTask.prototype.run = function ()
 
     dm_i.run(function() {
       perform_di({'context':context,'handle':self} ,function(err,resp){
-        if(di_resp){console.log('[DI STATUS]\t\t: ' + di_resp.status);}
+        if(resp){console.log('[DI STATUS]\t\t: ' + resp.status);}
         if(resp.status == 'success'){
           callback(null,resp);
         }else{
