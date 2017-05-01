@@ -29,7 +29,7 @@ function perform_function(context,response){
 
 function extract_httpdata(dat)
 {
-  if(dat.object_type == 'httpdata'){
+  if(dat.object_type && dat.object_type == 'httpdata'){
     return dat.data;
   }else{
     return dat;
