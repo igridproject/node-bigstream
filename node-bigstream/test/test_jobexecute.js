@@ -9,7 +9,7 @@ var qc = new QueueCaller({'url':'amqp://bigmaster.igridproject.info','name':'bs_
 var cmd = {
   'object_type':'job_execute',
   'source' : 'http_listener',
-  'jobId' : 'job02',
+  'jobId' : 'job03',
   'option' : {},
   'input_data' : {
     'type' : 'bsdata',
@@ -22,9 +22,3 @@ var cmd = {
 
 
 qc.send(cmd);
-
-setTimeout(function(){
-  qc.close(function(){
-    console.log('closed');
-  })
-},500)
