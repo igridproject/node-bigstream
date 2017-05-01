@@ -68,13 +68,14 @@ JobTask.prototype.run = function ()
   var task_di = function (callback) {
     var dm_i = domain.create();
     dm_i.on('error', function(err) {
-      console.log('[di] plugins error');
+      console.log('[DI] plugins error');
       console.log(err);
       callback(err)
     });
 
     dm_i.run(function() {
       perform_di({'context':context,'handle':self} ,function(err,resp){
+        if(di_resp){console.log('[DI STATUS]\t\t: ' + di_resp.status);}
         if(resp.status == 'success'){
           callback(null,resp);
         }else{
@@ -90,13 +91,14 @@ JobTask.prototype.run = function ()
 
     var dm_t = domain.create();
     dm_t.on('error', function(err) {
-      console.log('[dt] plugins error');
+      console.log('[DT] plugins error');
       console.log(err);
       callback(err)
     });
 
     dm_t.run(function() {
       perform_dt({'context':context,'request':dt_request,'handle':self},function(err,dt_resp){
+        if(dt_resp){console.log('[DT STATUS]\t\t: ' + dt_resp.status);}
         if(dt_resp.status == 'success'){
           callback(null,dt_resp);
         }else {
@@ -112,13 +114,14 @@ JobTask.prototype.run = function ()
 
     var dm_o = domain.create();
     dm_o.on('error', function(err) {
-      console.log('[do] plugins error');
+      console.log('[DO] plugins error');
       console.log(err);
       callback(err)
     });
 
     dm_o.run(function() {
       perform_do({'context':context,'request':do_request,'handle':self},function(err,do_resp){
+        if(do_resp){console.log('[DO STATUS]\t\t: ' + do_resp.status);}
         if(do_resp.status == 'success'){
           callback(null,do_resp);
         }else {
@@ -141,7 +144,6 @@ JobTask.prototype.run = function ()
 
   async.waterfall([task_di,task_dt,task_do],function (err,resp) {
     clearTimeout(jtimeout);
-    if(resp){console.log('[STATUS]\t\t: ' + resp.status);}
     if(!err){
       self.stop(resp)
       console.log('***** JOB SUCCESSFULLY DONE *****\n');
