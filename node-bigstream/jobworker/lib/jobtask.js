@@ -43,7 +43,7 @@ JobTask.prototype.run = function ()
 {
   var self=this;
   var transaction_id = this.transaction_id || genTransactionId();
-  var input_data = this.input_data;
+  var obj_input_data = getInputData(this.input_data);
   var job_tr_config = this.jobcfg;
   var job_id = job_tr_config.job_id;
 
@@ -61,61 +61,94 @@ JobTask.prototype.run = function ()
   var context = {
     "jobconfig" : job_tr_config,
     "transaction" : ctx_transaction,
-    "input_data" : input_data,
+    "input_data" : obj_input_data,
     "job" : ctx_job
   }
 
   var task_di = function (callback) {
-    perform_di({'context':context,'handle':self} ,function(err,resp){
-      if(resp.status == 'success'){
-        callback(null,resp);
-      }else{
-        callback(resp);
-      }
+    var dm_i = domain.create();
+    dm_i.on('error', function(err) {
+      console.log('[di] plugins error');
+      console.log(err);
+      callback(err)
     });
+
+    dm_i.run(function() {
+      perform_di({'context':context,'handle':self} ,function(err,resp){
+        if(resp.status == 'success'){
+          callback(null,resp);
+        }else{
+          callback(resp);
+        }
+      });
+    });
+
   }
 
   var task_dt = function (request,callback) {
     var dt_request = {'input_type':request.type,'data':request.data}
-    perform_dt({'context':context,'request':dt_request,'handle':self},function(err,dt_resp){
-      if(dt_resp.status == 'success'){
-        callback(null,dt_resp);
-      }else {
-        callback(dt_resp);
-      }
+
+    var dm_t = domain.create();
+    dm_t.on('error', function(err) {
+      console.log('[dt] plugins error');
+      console.log(err);
+      callback(err)
     });
+
+    dm_t.run(function() {
+      perform_dt({'context':context,'request':dt_request,'handle':self},function(err,dt_resp){
+        if(dt_resp.status == 'success'){
+          callback(null,dt_resp);
+        }else {
+          callback(dt_resp);
+        }
+      });
+    });
+
   }
 
   var task_do = function (request,callback) {
     var do_request = {'input_type':request.type,'data':request.data}
-    perform_do({'context':context,'request':do_request,'handle':self},function(err,do_resp){
-      if(do_resp.status == 'success'){
-        callback(null,do_resp);
-      }else {
-        callback(do_resp);
-      }
+
+    var dm_o = domain.create();
+    dm_o.on('error', function(err) {
+      console.log('[do] plugins error');
+      console.log(err);
+      callback(err)
     });
+
+    dm_o.run(function() {
+      perform_do({'context':context,'request':do_request,'handle':self},function(err,do_resp){
+        if(do_resp.status == 'success'){
+          callback(null,do_resp);
+        }else {
+          callback(do_resp);
+        }
+      });
+    });
+
   }
 
 
   var jtimeout = setTimeout(function(){
     self.stop({'status':'error','data':'job execution timeout'});
-
     //self.emit('error',new Error('job execution timeout'))
   },self.job_timeout);
+
+  console.log('***** JOB RUNNING *****');
+  console.log('[JOB ID]\t\t: ' + job_id);
+  console.log('[TRANSACTION ID]\t: ' + transaction_id);
 
   async.waterfall([task_di,task_dt,task_do],function (err,resp) {
     clearTimeout(jtimeout);
     if(!err){
       self.stop(resp)
-      //console.log('***** JOB SUCCESSFULLY DONE *****');
+      console.log('***** JOB SUCCESSFULLY DONE *****\n');
     }else{
       self.stop(err)
-      //console.log('***** JOB UNSUCCESSFULLY DONE *****');
+      console.log('***** JOB UNSUCCESSFULLY DONE *****\n');
     }
   });
-
-
 
 }
 
@@ -185,6 +218,18 @@ function getPlugins(type,name)
 {
   var path = '../../plugins/' + type + '/' + type + '-' +name;
   return require(path);
+}
+
+function getInputData(obj)
+{
+  if(obj.type == 'bsdata')
+  {
+    var inp = bsdata.parse(obj.value);
+    return inp.data;
+  }else{
+    return {};
+  }
+
 }
 
 function genTransactionId()

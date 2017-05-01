@@ -46,7 +46,7 @@ JT.prototype.run = function (done)
     var task_prm = {
                   'handle' : self.handle,
                   'job_config' : jobCfg,
-                  'input_data' : self.input_data,
+                  'input_data' : command.input_data,
                   'opt' : {'job_timeout' :60000}
                 }
     if(jobCfg.job_timeout){

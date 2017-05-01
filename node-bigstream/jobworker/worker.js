@@ -39,7 +39,6 @@ JW.prototype.amqp_job_start = function ()
               });
 
   self.amqp_server.set_execute_function(function(data,callback){
-
     var jt = new JobTransaction({'handle':self,'cmd':data});
     jt.run(function(err){
       if(err){
