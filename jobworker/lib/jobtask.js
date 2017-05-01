@@ -141,6 +141,7 @@ JobTask.prototype.run = function ()
 
   async.waterfall([task_di,task_dt,task_do],function (err,resp) {
     clearTimeout(jtimeout);
+    if(resp){console.log('[STATUS]\t\t: ' + resp.status);}
     if(!err){
       self.stop(resp)
       console.log('***** JOB SUCCESSFULLY DONE *****\n');
