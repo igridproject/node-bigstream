@@ -54,3 +54,9 @@ var cron = {
   'cron':'*/10 * * * * *',
   'jobid':'job01'
 }
+
+var trigger_cmd = {
+  'trigger_type' : 'cron',
+  'cmd' : 'reload',
+  'param':{}
+}

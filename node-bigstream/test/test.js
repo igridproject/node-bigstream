@@ -242,12 +242,3 @@ var client = redis.createClient('redis://bigmaster.igridproject.info:6379/1');
 // crons.update(function(err){
 //   console.log(crons.list);
 // });
-
-var schedule = require('node-schedule');
-var cron = '*/10 * * * * *';
-var x = 'Tada!';
-var j = schedule.scheduleJob(cron, function(y){
-  console.log(y);
-}.bind(null,x));
-x = 'Changing Data';
-console.log(x);
