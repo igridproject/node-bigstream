@@ -12,7 +12,7 @@ var qc = new QueueCaller({'url':amp,'name':'bs_jobs_queue'});
 var cmd = {
   'object_type':'job_execute',
   'source' : 'http_listener',
-  'jobId' : 'job01',
+  'jobId' : 'job03',
   'option' : {},
   'input_data' : {
     'type' : 'bsdata',
