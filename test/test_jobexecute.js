@@ -3,13 +3,16 @@ var amqp_cfg = ctx.config.amqp;
 
 var QueueCaller = ctx.getLib('lib/amqp/queuecaller');
 
-var qc = new QueueCaller({'url':'amqp://bigmaster.igridproject.info','name':'bs_jobs_queue'});
+var amp = 'amqp://lab1.igridproject.info';
+
+
+var qc = new QueueCaller({'url':amp,'name':'bs_jobs_queue'});
 
 
 var cmd = {
   'object_type':'job_execute',
   'source' : 'http_listener',
-  'jobId' : 'job03',
+  'jobId' : 'job01',
   'option' : {},
   'input_data' : {
     'type' : 'bsdata',
@@ -22,3 +25,7 @@ var cmd = {
 
 
 qc.send(cmd);
+
+setTimeout(function(){
+    qc.close()
+},500)
