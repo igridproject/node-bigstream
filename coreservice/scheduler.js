@@ -71,7 +71,7 @@ SchedulerService.prototype._callJob = function(cron)
     'object_type':'job_execute',
     'source' : 'scheduler',
     'jobId' : cron.jobid,
-    'option' : {},
+    'option' : {'exe_level':'secondary'},
     'input_data' : {
       'type' : 'bsdata',
       'value' : {
