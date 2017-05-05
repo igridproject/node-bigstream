@@ -5,8 +5,10 @@ var express = require('express');
 var router = express.Router();
 
 var cfg = ctx.config;
+
 var response = ctx.getLib('lib/ws/response');
 var request = ctx.getLib('lib/ws/request');
+
 
 var process_get = function(req, res) {
   var reqHelper = request.create(req);
@@ -15,7 +17,8 @@ var process_get = function(req, res) {
   var ctx = req.context;
 
   var httpacl = req.context.httpacl;
-  var evp = req.context.evp;
+  //var evp = req.context.evp;
+  var jobcaller = req.context.jobcaller;
 
   var j = httpacl.findJob(appkey,'get');
 
@@ -45,7 +48,8 @@ var process_get = function(req, res) {
     var msg = job_execute_msg;
     msg.jobId = item.jobid;
 
-    evp.send(topic,msg);
+    jobcaller.send(msg);
+    //evp.send(topic,msg);
   });
 
   if(j.length > 0)
