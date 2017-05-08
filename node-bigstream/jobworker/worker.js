@@ -45,6 +45,7 @@ JW.prototype.amqp_pmr_start = function ()
               });
 
   self.amqp_server_pmr.set_execute_function(function(data,callback){
+    console.log(data);
     if(data.option && data.option.exe_level && data.option.exe_level=='secondary')
     {
       console.log('WORKER:Forword job[' + data.jobId + '] to SJW');
