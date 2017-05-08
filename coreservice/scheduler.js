@@ -20,7 +20,7 @@ function SchedulerService(cfg)
 
   this.conn = ConnCtx.create(this.config);
   this.mem = this.conn.getMemstore();
-  this.jobcaller = new QueueCaller({'url':amqp_cfg.url,'name':'bs_jobs_queue'});
+  this.jobcaller = new QueueCaller({'url':amqp_cfg.url,'name':'bs_jobs_cmd'});
   this.evs = new EvenSub({'url':amqp_cfg.url,'name':'bs_trigger_cmd'});
 
   this.crons = CronList.create({'redis':this.mem});
