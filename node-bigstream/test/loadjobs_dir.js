@@ -64,9 +64,12 @@ function edit_job(job)
 {
   eJob = job;
 
-  eJob.trigger.cmd = '29,59 * * * *';
-  eJob.data_in.param.url = 'http://122.155.1.142/ws/get2.php';
-  eJob.data_in.param.init_observed_date = '2017-05-01';
+  if(eJob.data_in.type == 'agritronics'){
+    eJob.trigger.cmd = '29,59 * * * *';
+    eJob.data_in.param.url = 'http://122.155.1.142/ws/get2.php';
+    eJob.data_in.param.init_observed_date = '2017-05-01';
 
+  }
+  
   return eJob;
 }
