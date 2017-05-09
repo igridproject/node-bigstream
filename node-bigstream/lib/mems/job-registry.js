@@ -25,6 +25,24 @@ JobRegistry.prototype.getJob = function(jobid,cb)
   var jobKey = PREFIX + ':' + jobid;
 
   this.mem.get(jobKey,function(err,data){
+    if(err || !data)
+    {
+      return cb(err,null);
+    }
+
     cb(err,JSON.parse(data));
   });
+}
+
+JobRegistry.prototype.setJob = function(jobid,job,cb)
+{
+  var self = this;
+  var jobKey = PREFIX + ':' + jobid;
+  var strjob = JSON.stringify(job);
+  this.mem.set(jobKey,strjob);
+
+  if(typeof cb == 'function'){
+    cb();
+  }
+
 }
