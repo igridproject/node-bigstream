@@ -12,6 +12,7 @@ var QueueCaller = ctx.getLib('lib/amqp/queuecaller');
 var EvenSub = ctx.getLib('lib/amqp/event-sub');
 
 const JOBCHANEL = 'bs_job_cmd';
+const API_PORT = 19180;
 
 module.exports.create = function(cfg)
 {
@@ -31,15 +32,13 @@ function HTTPListener(cfg)
 HTTPListener.prototype.start = function()
 {
   console.log('Starting HTTP Listener ...\n');
-  this.http_start();
+  this._http_start();
   this._controller_start();
 }
 
-HTTPListener.prototype.http_start = function()
+HTTPListener.prototype._http_start = function()
 {
   var self = this;
-
-  var API_PORT = 19180;
 
   this.httpacl.update(function(err){
     if(!err){
