@@ -5,6 +5,7 @@ var app = express();
 var bodyParser = require('body-parser');
 
 var ConnCtx = ctx.getLib('lib/conn/connection-context');
+var JobManager = require('./lib/job-manager')
 
 var API_PORT = 19980;
 module.exports.create = function(cfg)
@@ -36,11 +37,11 @@ ControllerAPI.prototype._http_start = function()
       extended: true
   }));
 
-  // var context = ctx.getLib('lib/ws/http-context');
-  // app.use(context.middleware({
-  //   'httpacl' : self.httpacl,
-  //   'jobcaller' : self.jobcaller
-  // }));
+  var context = ctx.getLib('lib/ws/http-context');
+  app.use(context.middleware({
+    'conn' : self.conn,
+    'jobManager' : JobManager.create({'conn' : self.conn})
+  }));
 
   app.use(require('./ws'));
 
