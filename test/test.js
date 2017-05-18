@@ -125,23 +125,23 @@ const crypto = require("crypto");
 var redis = require('redis');
 // var handle = {'mem' : redis.createClient('redis://bigmaster.igridproject.info:6379/1')}
 // var input_data = {};
-// var job_config = {
-//   "job_id" : "example",
-//   "active" : true,
-//   "trigger" : {
-//     "type": "cron",
-//     "cmd": "29,59 * * * * *"
-//   },
-//   "data_in" : {
-//     "type": "example"
-//   },
-//   "data_transform" : {
-//     "type": "noop"
-//   },
-//   "data_out" : {
-//     "type": "console"
-//   }
-// }
+var job_config = {
+  "job_id" : "example",
+  "active" : true,
+  "trigger" : {
+    "type": "cron",
+    "cmd": "29,59 * * * * *"
+  },
+  "data_in" : {
+    "type": "example"
+  },
+  "data_transform" : {
+    "type": "noop"
+  },
+  "data_out" : {
+    "type": "console"
+  }
+}
 //
 // var ag = {
 //   "job_id" : "agritronics-gistda-01",
@@ -219,24 +219,16 @@ var redis = require('redis');
 // });
 
 
-//var client = redis.createClient('redis://bigmaster.igridproject.info:6379/1');
-var client = redis.createClient('redis://localhost:9736/1');
+var client = redis.createClient('redis://lab1.igridproject.info:6379/1');
+//var client = redis.createClient('redis://localhost:9736/1');
 
-client.keys('bs:regis:jobs:*', function (err, keys) {
-  if (err) return console.log(err);
-
-  var arr =[];
-  for(var i = 0, len = keys.length; i < len; i++) {
-    //console.log(keys[i]);
-    arr.push(keys[i].split(':')[3]);
-    client.get(keys[i], function(err, data){
-        var obj_data = JSON.parse(data);
-        //arr.push(obj_data);
-    });
-  }
-
-  console.log(arr);
+client.hgetall('bs:regis:triggers', function (err, rep) {
+  Object.keys(rep).forEach(function(a,b){
+    console.log(b);
+  })
+  //console.log(Object.keys(rep));
 });
+//client.hset('bs:regis:triggers','job01',JSON.stringify(job_config));
 
 // var CronList = ctx.getLib('lib/mems/cronlist');
 //
