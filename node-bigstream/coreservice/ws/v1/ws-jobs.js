@@ -34,4 +34,22 @@ router.get('/:jid',function (req, res) {
     })
 });
 
+router.post('/',function (req, res) {
+    var reqHelper = request.create(req);
+    var respHelper = response.create(res);
+    var jm = req.context.jobManager;
+    
+    var json_job = req.body;
+
+    jm.setJob({'job':json_job},function(err,res){
+      if(err)
+      {
+        respHelper.response400(err);
+      }else{
+        respHelper.response201();
+      }
+    });
+
+});
+
 module.exports = router;

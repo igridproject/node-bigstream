@@ -41,6 +41,7 @@ SchedulerService.prototype.reload = function ()
   self.clean();
   self.crons.update(function(err){
     var cl = self.crons.list;
+    console.log(cl);
     for(var i=0;i<cl.length;i++)
     {
       var c = cl[i];
