@@ -37,7 +37,7 @@ router.get('/:jid',function (req, res) {
 router.post('/',function (req, res) {
     var reqHelper = request.create(req);
     var respHelper = response.create(res);
-    var q = req.getQuery()
+    var q = reqHelper.getQuery()
     var jm = req.context.jobManager;
     var tm = req.context.triggerManager;
 
