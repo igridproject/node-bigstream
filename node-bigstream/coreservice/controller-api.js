@@ -42,7 +42,7 @@ ControllerAPI.prototype._http_start = function()
   app.use(context.middleware({
     'conn' : self.conn,
     'jobManager' : JobManager.create({'conn' : self.conn}),
-    'triggerManager' : triggerManager.create({'conn' : self.conn})
+    'triggerManager' : TriggerManager.create({'conn' : self.conn})
   }));
 
   app.use(require('./ws'));
