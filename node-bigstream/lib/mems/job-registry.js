@@ -39,11 +39,20 @@ JobRegistry.prototype.setJob = function(jobid,job,cb)
   var self = this;
   var jobKey = PREFIX + ':' + jobid;
   var strjob = JSON.stringify(job);
-  this.mem.set(jobKey,strjob);
+  this.mem.set(jobKey,strjob,cb);
 
-  if(typeof cb == 'function'){
-    cb();
-  }
+  // if(typeof cb == 'function'){
+  //   cb();
+  // }
+
+}
+
+JobRegistry.prototype.deleteJob = function(jobid,cb)
+{
+  var self = this;
+  var jobKey = PREFIX + ':' + jobid;
+
+  this.mem.del(jobKey,cb);
 
 }
 
