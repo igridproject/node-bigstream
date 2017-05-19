@@ -33,5 +33,6 @@ TriggerManager.prototype.reload = function (prm,cb)
   }
 
   self.evp.send(topic,msg);
-  cb(null);
+
+  if(typeof cb == 'function'){cb(null);}
 }
