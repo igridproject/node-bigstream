@@ -42,7 +42,10 @@ TR.prototype.deleteTrigger = function (id,cb)
 
 TR.prototype.deleteByJobId = function (jobid,cb)
 {
-  
+  var self = this;
+  var id = 'def.' + jobid;
+
+  self.deleteTrigger(id,cb);
 }
 
 TR.prototype.setByJob = function(job,cb)
