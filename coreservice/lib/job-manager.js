@@ -42,9 +42,19 @@ JobManager.prototype.getJob = function (prm,cb)
 {
   var self = this;
 
-  self.job_registry.getJob(prm.jid,function (err,jobcfg){
+  self.job_registry.getJob(prm.job_id,function (err,jobcfg){
     cb(err,jobcfg)
   })
+}
+
+JobManager.prototype.deleteJob = function (prm,cb)
+{
+  var self = this;
+  var job_id = prm.job_id;
+
+  self.trigger_registry.deleteByJobId(job_id,function(err){
+    self.job_registry.deleteJob(job_id,cb);
+  });
 }
 
 JobManager.prototype.setJob = function (prm,cb)

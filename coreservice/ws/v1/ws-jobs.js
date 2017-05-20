@@ -24,7 +24,7 @@ router.get('/:jid',function (req, res) {
     var jid = req.params.jid;
     var jm = req.context.jobManager;
 
-    jm.getJob({'jid':jid},function (err,jobs){
+    jm.getJob({'job_id':jid},function (err,jobs){
       if(jobs)
       {
         respHelper.responseOK(jobs);
@@ -32,6 +32,18 @@ router.get('/:jid',function (req, res) {
         respHelper.response404('Not found');
       }
     })
+});
+
+router.delete('/:jid',function (req, res) {
+    var reqHelper = request.create(req);
+    var respHelper = response.create(res);
+
+    var jid = req.params.jid;
+    var jm = req.context.jobManager;
+
+    jm.deleteJob({'job_id':jid},function(err){
+      respHelper.response200();
+    });
 });
 
 router.post('/',function (req, res) {
