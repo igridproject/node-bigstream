@@ -37,11 +37,15 @@ router.get('/:jid',function (req, res) {
 router.delete('/:jid',function (req, res) {
     var reqHelper = request.create(req);
     var respHelper = response.create(res);
-
+    var q = reqHelper.getQuery()
     var jid = req.params.jid;
     var jm = req.context.jobManager;
+    var tm = req.context.triggerManager;
 
     jm.deleteJob({'job_id':jid},function(err){
+      if(q.reload){
+        tm.reload();
+      }
       respHelper.response200();
     });
 });
