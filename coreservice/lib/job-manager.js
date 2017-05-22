@@ -64,8 +64,11 @@ JobManager.prototype.setJob = function (prm,cb)
 
   if(JUtils.validate(job)){
     self.job_registry.setJob(job.job_id,job);
-    self.trigger_registry.setByJob(job);
-    cb(null);
+    if(job.trigger){
+      self.trigger_registry.setByJob(job,cb);
+    }else{
+      self.trigger_registry.deleteByJobId(job.job_id,cb);
+    }
   }else{
     cb('Invalid job config');
   }
