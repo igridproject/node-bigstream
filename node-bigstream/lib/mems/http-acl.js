@@ -1,12 +1,14 @@
 var Redis = require('redis');
 const PREFIX = 'bs:http:acl';
+const KEYS = 'bs:regis:triggers';
 
 module.exports.create = function(cfg)
 {
   return new HttpACL(cfg);
 }
 
-module.exports.mkACL = function(appkey,method,jobid,opt)
+module.exports.mkACL = mkACL;
+function mkACL(appkey,method,jobid,opt)
 {
   var a = {
     'appkey' : appkey,
@@ -54,24 +56,45 @@ HttpACL.prototype.clean = function()
 HttpACL.prototype.update = function(cb)
 {
   var self=this;
-  this.mem.get(PREFIX, function (err, result) {
-    if(!err && result){
+  self.clean()
+  self.mem.hgetall(KEYS,function (err,res){
+    if(!err && res){
 
-      self.acl = JSON.parse(result);
+      var ks = Object.keys(res);
+      for(var i=0;i<ks.length;i++)
+      {
+        var k = ks[i];
+        var trigger = JSON.parse(res[k]);
+        if(trigger.type == 'http')
+        {
+          var acl = mkACL(trigger.appkey,trigger.method,trigger.job_id);
+          self.add(acl);
+        }
+      }
     }
+
     cb(err);
   });
+
+
+  // this.mem.get(PREFIX, function (err, result) {
+  //   if(!err && result){
+  //
+  //     self.acl = JSON.parse(result);
+  //   }
+  //   cb(err);
+  // });
 }
 
-HttpACL.prototype.commit = function(cb)
-{
-  var stracl = JSON.stringify(this.acl);
-  this.mem.set(PREFIX,stracl);
-
-  if(typeof cb == 'function'){
-    cb();
-  }
-}
+// HttpACL.prototype.commit = function(cb)
+// {
+//   var stracl = JSON.stringify(this.acl);
+//   this.mem.set(PREFIX,stracl);
+//
+//   if(typeof cb == 'function'){
+//     cb();
+//   }
+// }
 
 HttpACL.prototype.findJob= function(appkey,method)
 {
