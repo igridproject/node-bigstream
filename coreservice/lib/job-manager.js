@@ -1,3 +1,4 @@
+var async = require('async');
 var ctx = require('../../context');
 var cfg = ctx.config;
 
@@ -72,4 +73,46 @@ JobManager.prototype.setJob = function (prm,cb)
   }else{
     cb('Invalid job config');
   }
+}
+
+JobManager.prototype.resetTrigger = function (prm,cb)
+{
+  var self = this;
+
+  self.job_registry.listJob(function (err,jobs){
+    if(!jobs){return cb(null);}
+    async.eachSeries(jobs,function (jobid,callback){
+      self.job_registry.getJob(jobid,function (err,jobcfg){
+        if(jobcfg.trigger){
+          self.trigger_registry.setByJob(jobcfg,callback);
+        }else{
+          self.trigger_registry.deleteByJobId(jobcfg.job_id,callback);
+        }
+      });
+    },function (err){
+      cb(err);
+    });
+  });
+
+}
+
+
+JobManager.prototype.action = function (prm,cb)
+{
+  var self = this;
+  var action = prm.action;
+
+  if(!action){return cb(new Error('Invalid Command'))}
+  if(!action.cmd){return cb(new Error('Invalid Command'))}
+
+  var cmd = action.cmd;
+  var param = action.param || {};
+  switch (cmd) {
+    case 'reset_trigger':
+      self.resetTrigger(param,cb);
+      break;
+    default:
+      cb(new Error('Invalid Command'));
+  }
+
 }
