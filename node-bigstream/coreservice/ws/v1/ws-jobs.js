@@ -37,7 +37,7 @@ router.get('/:jid',function (req, res) {
 router.delete('/:jid',function (req, res) {
     var reqHelper = request.create(req);
     var respHelper = response.create(res);
-    var q = reqHelper.getQuery()
+    var q = reqHelper.getQuery();
     var jid = req.params.jid;
     var jm = req.context.jobManager;
     var tm = req.context.triggerManager;
@@ -53,7 +53,7 @@ router.delete('/:jid',function (req, res) {
 router.post('/',function (req, res) {
     var reqHelper = request.create(req);
     var respHelper = response.create(res);
-    var q = reqHelper.getQuery()
+    var q = reqHelper.getQuery();
     var jm = req.context.jobManager;
     var tm = req.context.triggerManager;
 
@@ -63,6 +63,28 @@ router.post('/',function (req, res) {
       if(err)
       {
         respHelper.response400(err);
+      }else{
+        if(q.reload){
+          tm.reload();
+        }
+        respHelper.response201();
+      }
+    });
+
+});
+
+router.post('/action',function (req, res) {
+    var reqHelper = request.create(req);
+    var respHelper = response.create(res);
+    var q = reqHelper.getQuery();
+    var jm = req.context.jobManager;
+    var tm = req.context.triggerManager;
+
+    var action = req.body;
+    jm.action({'action':action},function(err){
+      if(err)
+      {
+        respHelper.response400(err.message);
       }else{
         if(q.reload){
           tm.reload();
