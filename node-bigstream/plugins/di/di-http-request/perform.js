@@ -15,7 +15,7 @@ function execute_function(context,response){
     output_type = 'binary'
   }
 
-  request({'url':url, 'encoding':null, function (error, resp, body) {
+  request({'url':url, 'encoding':null}, function (error, resp, body) {
     if (!error && resp.statusCode == 200) {
       response.success(body);
     }else{
