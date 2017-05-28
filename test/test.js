@@ -219,15 +219,15 @@ var job_config = {
 // });
 
 
-var client = redis.createClient('redis://lab1.igridproject.info:6379/1');
-//var client = redis.createClient('redis://localhost:9736/1');
-
-client.hgetall('bs:regis:triggers', function (err, rep) {
-  Object.keys(rep).forEach(function(a,b){
-    console.log(b);
-  })
-  //console.log(Object.keys(rep));
-});
+// var client = redis.createClient('redis://lab1.igridproject.info:6379/1');
+// //var client = redis.createClient('redis://localhost:9736/1');
+//
+// client.hgetall('bs:regis:triggers', function (err, rep) {
+//   Object.keys(rep).forEach(function(a,b){
+//     console.log(b);
+//   })
+//   //console.log(Object.keys(rep));
+// });
 //client.hset('bs:regis:triggers','job01',JSON.stringify(job_config));
 
 // var CronList = ctx.getLib('lib/mems/cronlist');
@@ -240,3 +240,9 @@ client.hgetall('bs:regis:triggers', function (err, rep) {
 // crons.update(function(err){
 //   console.log(crons.list);
 // });
+
+var wUrl = "http://203.155.220.231/Radar/pics/zfiltered.jpg";
+var request = require('request').defa
+request.get(wUrl, function (err, res, body) {
+      console.log(body);
+});
