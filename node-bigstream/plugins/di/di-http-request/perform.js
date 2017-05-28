@@ -6,10 +6,16 @@ function execute_function(context,response){
   var param = context.jobconfig.data_in.param;
   var memstore = context.task.memstore
 
-  var output_type = 'text'
+  var output_type = 'text';
   var url = param.url;
 
-  request(url, function (error, resp, body) {
+  var encode = 'utf8';
+  if(param.encoding == 'binary'){
+    encode = null;
+    output_type = 'binary'
+  }
+
+  request({'url':url, 'encoding':null, function (error, resp, body) {
     if (!error && resp.statusCode == 200) {
       response.success(body);
     }else{
