@@ -107,6 +107,7 @@ router.get('/:id/objects',function (req, res) {
           //start stream response
           res.type('application/json');
           res.write('[');
+          var resultIdx=0;
           async.whilst(
               function() { return cont; },
               function(callback){
@@ -116,15 +117,12 @@ router.get('/:id/objects',function (req, res) {
                     cont=false;
                   }else{
                     var objout = obj_out(obj);
+                    if(resultIdx>0){res.write(',');}
                     res.write(JSON.stringify(objout));
                     if(limit>0 && idx>=from_seq+limit){
                       cont=false;
                     }
-
-                    if(cont){
-                      res.write(',');
-                    }
-                    
+                    resultIdx++;
                   }
                   callback();
                 });
