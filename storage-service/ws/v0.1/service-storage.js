@@ -106,7 +106,7 @@ router.get('/:id/objects',function (req, res) {
 
           //start stream response
           res.type('application/json');
-          res.send('[');
+          res.write('[');
           async.whilst(
               function() { return cont; },
               function(callback){
@@ -116,17 +116,17 @@ router.get('/:id/objects',function (req, res) {
                     cont=false;
                   }else{
                     var objout = obj_out(obj);
-                    res.send(objout);
+                    res.write(JSON.stringify(objout));
                     if(limit>0 && idx>=from_seq+limit){
                       cont=false;
                     }else{
-                      res.send(',');
+                      res.write(',');
                     }
                   }
                   callback();
                 });
               },function(err){
-                res.send(']');
+                res.write(']');
                 bss.close(function(err){
                   res.status(200).end();
                   //respHelper.responseOK(obj_return);
