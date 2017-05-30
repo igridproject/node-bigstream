@@ -119,9 +119,12 @@ router.get('/:id/objects',function (req, res) {
                     res.write(JSON.stringify(objout));
                     if(limit>0 && idx>=from_seq+limit){
                       cont=false;
-                    }else{
+                    }
+
+                    if(cont){
                       res.write(',');
                     }
+                    
                   }
                   callback();
                 });
