@@ -64,7 +64,7 @@ router.get('/:id/objects',function (req, res) {
 
     var from_seq = 1;
     var limit = 0;
-    var sizelimit = 10 * 1000 * 1000;
+    var sizelimit = 20 * 1000 * 1000;
 
     if(query.obj_after){
       var o_seq;
