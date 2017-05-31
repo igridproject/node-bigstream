@@ -122,7 +122,7 @@ router.get('/:id/objects',function (req, res) {
                     res.write(dataout);
                     counter+=dataout.length;
                     if(counter>1000000){
-                      res.flush();
+                      //res.flush();
                       counter=0;
                     }
                     if(limit>0 && idx>=from_seq+limit){
