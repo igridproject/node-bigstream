@@ -21,9 +21,20 @@ router.get('/:id',function (req, res) {
 
 });
 
+router.get('/:id/data',function (req, res) {
+    var reqHelper = request.create(req);
+    var respHelper = response.create(res);
+    var query = reqHelper.getQuery();
+    var oid = req.params.id;
 
-function get_object(reqHelper,respHelper,oid)
+    get_object(reqHelper,respHelper,oid);
+
+});
+
+function get_object(reqHelper,respHelper,oid,opt)
 {
+  opt=opt||{};
+  
   if(!oid){
     return respHelper.response404();
   }
@@ -78,7 +89,7 @@ function get_object(reqHelper,respHelper,oid)
 
 }
 
-function obj_out(obj){
+function obj_out(obj,opt){
   return {"_id" : (new ObjId(obj.header.ID)).toString(),
           "meta" : obj.meta,
           "data" : obj.data
