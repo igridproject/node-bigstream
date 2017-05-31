@@ -28,12 +28,14 @@ router.get('/:id/stats',function (req, res) {
     fs.exists(bss_full_path,function(exists){
 
       if(exists){
+        var fstat = stats = fs.statSync(bss_full_path);
         BinStream.open(bss_full_path,function(err,bss){
           var rd = bss.reader();
           var obj_stat = {
             "storagename" : sid,
             "count" : rd.count(),
-            "filename" : storage_path + ".bss"
+            "filename" : storage_path + ".bss",
+            "filesize" : fstat.size
           }
           bss.close(function(err){
             respHelper.responseOK(obj_stat);
