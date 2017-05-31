@@ -92,10 +92,10 @@ router.get('/:id/objects',function (req, res) {
     }
 
     var objOpt = {'meta':true,'data':true}
-    if(query.show == 'id'){
+    if(query.field == 'id'){
       objOpt.meta = false;
       objOpt.data = false;
-    }else if(query.show == 'meta'){
+    }else if(query.field == 'meta'){
       objOpt.data = false;
     }
 
