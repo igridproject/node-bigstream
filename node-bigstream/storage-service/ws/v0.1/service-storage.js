@@ -91,6 +91,14 @@ router.get('/:id/objects',function (req, res) {
       from_seq = Number(query.seq_from);
     }
 
+    var objOpt = {'meta':true,'data':true}
+    if(query.show == 'id'){
+      objOpt.meta = false;
+      objOpt.data = false;
+    }else if(query.show == 'meta'){
+      objOpt.data = false;
+    }
+
     fs.exists(bss_full_path,function(exists){
 
       if(exists){
@@ -124,7 +132,7 @@ router.get('/:id/objects',function (req, res) {
                   if(!obj){
                     cont=false;
                   }else{
-                    var dataout = JSON.stringify(obj_out(obj));
+                    var dataout = JSON.stringify(obj_out(obj,objOpt));
                     if(resultIdx>0){res.write(',');}
                     res.write(dataout);
                     counter+=dataout.length;
@@ -156,11 +164,15 @@ router.get('/:id/objects',function (req, res) {
 
 });
 
-function obj_out(obj){
-  return {"_id" : (new ObjId(obj.header.ID)).toString(),
-          "meta" : obj.meta,
-          "data" : obj.data
-        }
+function obj_out(obj,opt){
+  var ret = {
+              "_id" : (new ObjId(obj.header.ID)).toString()
+            }
+
+  if(opt.meta){ret.meta = obj.meta;}
+  if(opt.data){ret.data = obj.data;}
+
+  return ret
 }
 
 

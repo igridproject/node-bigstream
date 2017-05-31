@@ -23,6 +23,18 @@ Reader.prototype.moveTo = function(idx){
   }
 }
 
+Reader.prototype.next = function(cb){
+  var self=this;
+
+  this.readAt(++this.cursorIdx,function(err,obj){
+    if(!err && obj){
+      cb(null,obj)
+    }else{
+      cb(err,null);
+    }
+  });
+}
+
 Reader.prototype.nextObject = function(cb){
   var self=this;
 
@@ -70,7 +82,7 @@ Reader.prototype.readAt = function(seq,opt,cb){
 
   var oatNo = Math.ceil(seq / rootData.OATZ);
   var slotNo = (seq-1)%rootData.OATZ;
-  
+
   // var hobj3 = {
   //     "ID":new Buffer(12),
   //     "TY":3,
