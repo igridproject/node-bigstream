@@ -64,6 +64,7 @@ router.get('/:id/objects',function (req, res) {
 
     var from_seq = 1;
     var limit = 0;
+    var sizelimit = 10 * 1000 * 1000;
 
     if(query.obj_after){
       var o_seq;
@@ -78,6 +79,10 @@ router.get('/:id/objects',function (req, res) {
 
     if(query.limit){
       limit = Number(query.limit);
+    }
+
+    if(query.sizelimit){
+      sizelimit = Number(query.sizelimit) * 1000 * 1000;
     }
 
     if(query.seq_from){
@@ -121,9 +126,8 @@ router.get('/:id/objects',function (req, res) {
                     if(resultIdx>0){res.write(',');}
                     res.write(dataout);
                     counter+=dataout.length;
-                    if(counter>1000000){
-                      //res.flush();
-                      counter=0;
+                    if(sizelimit>0 && counter>=sizelimit){
+                      cont=false;
                     }
                     if(limit>0 && idx>=from_seq+limit){
                       cont=false;
