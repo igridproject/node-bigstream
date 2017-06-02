@@ -98,10 +98,16 @@ function get_object(reqHelper,respHelper,prm)
 
 function output(resp,obj,opt)
 {
-  obj_out(resp,obj,opt);
+  if(opt.filed=='data')
+  {
+    data_out(resp,obj,opt);
+  }else{
+    obj_out(resp,obj,opt);
+  }
 }
 
-function obj_out(resp,obj,opt){
+function obj_out(resp,obj,opt)
+{
   var ret = {"_id" : (new ObjId(obj.header.ID)).toString(),
               "meta" : obj.meta,
               "data" : obj.data
@@ -109,6 +115,11 @@ function obj_out(resp,obj,opt){
   resp.responseOK(ret);
 }
 
+function data_out(resp,obj,opt)
+{
+  var objType = obj.header;
+  resp.responseOK(objType);
+}
 
 
 module.exports = router;
