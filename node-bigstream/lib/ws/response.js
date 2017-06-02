@@ -40,6 +40,17 @@ responseHelper.prototype.setLastModified = function(lm){
 }
 
 responseHelper.prototype.responseOK = responseResult;
+
+responseHelper.prototype.write = function (data)
+{
+  this.response.write(data);
+}
+
+responseHelper.prototype.endOK = function ()
+{
+  this.response.status(200).end();
+}
+
 responseHelper.prototype.response304 = function(){
     this.response.status(304).send('Not Modified');
 }
