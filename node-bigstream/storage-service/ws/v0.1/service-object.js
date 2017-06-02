@@ -31,6 +31,8 @@ router.get('/:id/data',function (req, res) {
     var opt = {
       'field' : 'data'
     }
+    opt.filetype = (query.filetype)?query.filetype:null
+
     get_object(reqHelper,respHelper,{'oid':oid,'opt':opt});
 
 });
@@ -98,7 +100,7 @@ function get_object(reqHelper,respHelper,prm)
 
 function output(resp,obj,opt)
 {
-  if(opt.filed=='data')
+  if(opt.field=='data')
   {
     data_out(resp,obj,opt);
   }else{
@@ -117,8 +119,23 @@ function obj_out(resp,obj,opt)
 
 function data_out(resp,obj,opt)
 {
-  var objType = obj.header;
-  resp.responseOK(objType);
+  var objType = obj.header.TY;
+
+  if(objType == BinStream.BINARY_TYPE){
+    if(opt.filetype){
+      resp.response.type(opt.filetype);
+    }else{
+
+    }
+
+    resp.response.send(obj.data);
+    //resp.endOK();
+  }else if(objType == BinStream.STRING_TYPE){
+    resp.response.send(obj.data);
+  }else{
+    resp.responseOK(obj.data);
+  }
+
 }
 
 

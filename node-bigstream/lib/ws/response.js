@@ -41,6 +41,11 @@ responseHelper.prototype.setLastModified = function(lm){
 
 responseHelper.prototype.responseOK = responseResult;
 
+responseHelper.prototype.type = function (tpy)
+{
+  this.response.type(tpy);
+}
+
 responseHelper.prototype.write = function (data)
 {
   this.response.write(data);

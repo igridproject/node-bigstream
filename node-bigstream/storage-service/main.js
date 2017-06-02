@@ -25,7 +25,7 @@ var SS = function StorageService(cfg)
 SS.prototype.start = function()
 {
   console.log('Starting Storage Service ...\n');
-  this.amqp_start();
+  //this.amqp_start();
   this.http_start();
 }
 
