@@ -17,7 +17,8 @@ router.get('/:id',function (req, res) {
     var respHelper = response.create(res);
     var oid = req.params.id;
 
-    get_object(reqHelper,respHelper,oid);
+    var opt = {}
+    get_object(reqHelper,respHelper,{'oid':oid,'opt':opt});
 
 });
 
@@ -27,14 +28,20 @@ router.get('/:id/data',function (req, res) {
     var query = reqHelper.getQuery();
     var oid = req.params.id;
 
-    get_object(reqHelper,respHelper,oid);
+    var opt = {
+      'field' : 'data'
+    }
+    get_object(reqHelper,respHelper,{'oid':oid,'opt':opt});
 
 });
 
-function get_object(reqHelper,respHelper,oid,opt)
+function get_object(reqHelper,respHelper,prm)
 {
-  opt=opt||{};
-  
+  prm=prm||{};
+
+  var oid = prm.oid;
+  var opt = prm.opt || {};
+
   if(!oid){
     return respHelper.response404();
   }
@@ -75,7 +82,7 @@ function get_object(reqHelper,respHelper,oid,opt)
         rd.objectAt(seq,function(err,obj){
           bss.close(function(err){
             if(obj && obj_id.toString() == (new ObjId(obj.header.ID)).toString()){
-                respHelper.responseOK(obj_out(obj));
+                output(respHelper,obj,opt);
             }else{respHelper.response404();}
           });
         });
@@ -89,12 +96,19 @@ function get_object(reqHelper,respHelper,oid,opt)
 
 }
 
-function obj_out(obj,opt){
-  return {"_id" : (new ObjId(obj.header.ID)).toString(),
-          "meta" : obj.meta,
-          "data" : obj.data
-        }
+function output(resp,obj,opt)
+{
+  obj_out(resp,obj,opt);
 }
+
+function obj_out(resp,obj,opt){
+  var ret = {"_id" : (new ObjId(obj.header.ID)).toString(),
+              "meta" : obj.meta,
+              "data" : obj.data
+            }
+  resp.responseOK(ret);
+}
+
 
 
 module.exports = router;

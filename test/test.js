@@ -241,8 +241,4 @@ var job_config = {
 //   console.log(crons.list);
 // });
 
-var wUrl = "http://203.155.220.231/Radar/pics/zfiltered.jpg";
-var request = require('request').defa
-request.get(wUrl, function (err, res, body) {
-      console.log(body);
-});
+var dat = 'hello';
