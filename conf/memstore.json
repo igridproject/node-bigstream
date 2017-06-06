@@ -1,4 +1,4 @@
 {
   "type" : "redis",
-  "url" : "redis://:@bigmaster.igridproject.info:6379/1"
+  "url" : "redis://:@localhost:6379/1"
 }

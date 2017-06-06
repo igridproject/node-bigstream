@@ -1,4 +1,4 @@
 {
   "api_hostname" : "http://localhost:19080",
-  "repository" : "D:/testfile"
+  "repository" : "/tmp/data"
 }
