@@ -1,4 +1,0 @@
-{
-  "type" : "redis",
-  "url" : "redis://:@bigmaster.igridproject.info:6379/1"
-}
