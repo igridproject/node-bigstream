@@ -1,6 +1,7 @@
 var ctx = require('../context');
 var rpcserver = ctx.getLib('lib/amqp/rpcserver');
 var Db = ctx.getLib('storage-service/lib/db');
+var WorkerPool = ctx.getLib('storage-service/lib/worker_pool');
 
 var express = require('express');
 var app = express();
@@ -18,8 +19,9 @@ module.exports.create = function(cfg)
 var SS = function StorageService(cfg)
 {
     this.config = cfg;
-
+    storage_cfg = cfg.storage;
     this.db = Db.create({'repos_dir':storage_cfg.repository});
+    this.worker_pool = WorkerPool.create({'size':2});
 }
 
 SS.prototype.start = function()
@@ -66,14 +68,20 @@ SS.prototype.amqp_start = function()
 SS.prototype.http_start = function()
 {
   var self = this;
+  var amqp_cfg = this.config.amqp;
 
-  var API_PORT = 19080;
+  var API_PORT = (this.config.storage.api_port)?this.config.storage.api_port:19080;
 
   app.use(bodyParser.json({limit: '5mb'}));
   app.use(bodyParser.urlencoded({
       extended: true
   }));
 
+  var context = ctx.getLib('lib/ws/http-context');
+  this.worker_pool.initWorker();
+  app.use(context.middleware({
+    'worker_pool' : self.worker_pool
+  }));
 
   app.use(require('./ws'));
 

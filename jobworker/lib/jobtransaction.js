@@ -46,6 +46,7 @@ JT.prototype.run = function (done)
     var task_prm = {
                   'handle' : self.handle,
                   'job_config' : jobCfg,
+                  'input_meta' : command.input_meta,
                   'input_data' : command.input_data,
                   'opt' : {'job_timeout' :60000}
                 }
@@ -84,5 +85,5 @@ function validate_execute_cmd(cmd)
 function genTransactionId()
 {
   var id = crypto.randomBytes(3).toString("hex");
-  return "TR" + (new Date).getTime() + id;
+  return "TR" + (new Date).getTime() + id.toUpperCase();
 }

@@ -92,6 +92,8 @@ BSSEngine.prototype.cmd_write = function(prm,cb)
   var data = parseData(prm.data);
   var meta = prm.meta;
 
+  if(!data){return cb("null data")}
+
   this.bss.write(data,{'meta':meta},function(err,obj){
     if(!err){
       var head = obj.getHeader();
@@ -116,7 +118,9 @@ function parseData(dat)
   if(dat.type && dat.type == 'bsdata')
   {
     var bs = bsdata.parse(dat.value);
-    ret = bs.data;
+    if(bs){
+      ret = bs.data;
+    }
   }else{
     ret = dat.value;
   }

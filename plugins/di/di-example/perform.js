@@ -6,6 +6,7 @@ function perform_function(context,response){
 
   var output_type = 'text'
   var data = 'hello world ' + transaction_id;
+  var meta = {'module':'example','tid':transaction_id}
 
   // memstore.setItem('lasttransaction',transaction_id,function(err){
   //   response.success(data);
@@ -17,15 +18,10 @@ function perform_function(context,response){
   //   response.success(value);
   // });
 
-  var ts = (new Date).getTime();
   var delay = 0;
 
-  if(ts%9==0){
-    //delay = 10000;
-  }
-
   setTimeout(function(){
-    response.success(data,output_type);
+    response.success(data,{'meta':meta,'output_type':output_type});
   },delay)
   //response.success(data,output_type);
   //response.reject();

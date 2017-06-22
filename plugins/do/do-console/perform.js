@@ -6,8 +6,11 @@ function perform_function(context,request,response){
 
   var output_type = request.input_type;
   var data = request.data;
+  var meta = request.meta;
 
 
+  if(meta){console.log('meta => ' + JSON.stringify(meta));}
+  console.log('--- data ---');
   console.log(data);
 
   response.success();

@@ -20,7 +20,9 @@ var JW = function JobWorker (prm)
   this.instance_name = param.name;
 
   this.conn = ConnCtx.create(this.config);
-  this.mem = this.conn.getMemstore()
+  this.mem = this.conn.getMemstore();
+
+  this.jobcaller = new QueueCaller({'url':this.conn.getAmqpUrl(),'name':'bs_jobs_cmd'});
   this.job_registry = JobRegistry.create({'redis':this.mem});
 }
 

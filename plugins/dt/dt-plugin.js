@@ -35,17 +35,26 @@ function DTResponse(handle){
   this.handle = handle;
   this.status = null;
   this.data = null;
+  this.meta = null;
   this.output_type = '';
 }
 
 DTResponse.prototype.success = function(data,type){
   var self=this;
   var handle = this.handle;
-  this.data = data;
+
+  if(typeof type == 'string'){
+    this.output_type=type;
+  }else if(typeof type == 'object' && type){
+    this.output_type=(type.output_type)?type.output_type:this.output_type;
+    this.meta=(type.meta)?type.meta:this.meta;
+  }
+
+  this.data = (data)?data:this.data ;
   this.status = 'success';
-  if(type){this.output_type=type;}
+
   process.nextTick(function(){
-    handle.emit('done',{'status':'success','data':data,'type':self.output_type});
+    handle.emit('done',{'status':'success','meta':self.meta,'data':self.data,'type':self.output_type});
   });
 
 }

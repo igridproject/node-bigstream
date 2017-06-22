@@ -11,6 +11,7 @@ var response = ctx.getLib('lib/ws/response');
 var request = ctx.getLib('lib/ws/request');
 var BinStream = ctx.getLib('lib/bss/binarystream_v1_1');
 var ObjId = ctx.getLib('lib/bss/objid');
+var BSData = ctx.getLib('lib/model/bsdata');
 
 router.get('/:id',function (req, res) {
     var reqHelper = request.create(req);
@@ -111,9 +112,16 @@ function output(resp,obj,opt)
 function obj_out(resp,obj,opt)
 {
   var ret = {"_id" : (new ObjId(obj.header.ID)).toString(),
-              "meta" : obj.meta,
-              "data" : obj.data
+              "meta" : obj.meta
             }
+
+  if(obj.header.TY==BinStream.BINARY_TYPE)
+  {
+    var bs = BSData.create(obj.data);
+    ret.data = bs.serialize('object-encoded');
+  }else{
+    ret.data = obj.data;
+  }
   resp.responseOK(ret);
 }
 
@@ -129,7 +137,6 @@ function data_out(resp,obj,opt)
     }
 
     resp.response.send(obj.data);
-    //resp.endOK();
   }else if(objType == BinStream.STRING_TYPE){
     resp.response.send(obj.data);
   }else{

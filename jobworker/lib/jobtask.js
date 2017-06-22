@@ -1,5 +1,4 @@
 var util = require('util');
-var domain = require('domain');
 var async = require('async');
 var domain = require('domain');
 var crypto = require("crypto");
@@ -18,8 +17,10 @@ function JobTask (prm)
 
   this.handle = prm.handle;
   this.mem = prm.handle.mem;
+  this.jobcaller = prm.handle.jobcaller;
 
   this.jobcfg = prm.job_config;
+  this.input_meta = prm.input_meta;
   this.input_data = prm.input_data;
   this.transaction_id = prm.transaction_id;
   this.job_timeout = prm.opt.job_timeout || 60000;
@@ -43,6 +44,7 @@ JobTask.prototype.run = function ()
 {
   var self=this;
   var transaction_id = this.transaction_id || genTransactionId();
+  var input_meta = this.input_meta;
   var obj_input_data = getInputData(this.input_data);
   var job_tr_config = this.jobcfg;
   var job_id = job_tr_config.job_id;
@@ -61,7 +63,7 @@ JobTask.prototype.run = function ()
   var context = {
     "jobconfig" : job_tr_config,
     "transaction" : ctx_transaction,
-    "input_data" : obj_input_data,
+    "input" : {'data':obj_input_data,'meta':input_meta} ,
     "job" : ctx_job
   }
 
@@ -87,7 +89,7 @@ JobTask.prototype.run = function ()
   }
 
   var task_dt = function (request,callback) {
-    var dt_request = {'input_type':request.type,'data':request.data}
+    var dt_request = {'input_type':request.type,'meta':request.meta,'data':request.data}
 
     var dm_t = domain.create();
     dm_t.on('error', function(err) {
@@ -110,7 +112,7 @@ JobTask.prototype.run = function ()
   }
 
   var task_do = function (request,callback) {
-    var do_request = {'input_type':request.type,'data':request.data}
+    var do_request = {'input_type':request.type,'meta':request.meta,'data':request.data}
 
     var dm_o = domain.create();
     dm_o.on('error', function(err) {
@@ -204,9 +206,11 @@ function perform_do(prm,cb)
   var do_cfg = do_context.jobconfig.data_out;
 
   var DOTask = getPlugins('do',do_cfg.type);
-  var doMem = new memstore({'job_id':job_id,'cat':'do','mem':prm.handle.mem})
+  var doMem = new memstore({'job_id':job_id,'cat':'do','mem':prm.handle.mem});
+  var jobcaller = prm.handle.jobcaller;
   do_context.task = {
-    "memstore" : doMem
+    "memstore" : doMem,
+    "jobcaller" : jobcaller
   }
 
   var dout = new DOTask(do_context,prm.request);
@@ -219,7 +223,17 @@ function perform_do(prm,cb)
 
 function getPlugins(type,name)
 {
-  var path = '../../plugins/' + type + '/' + type + '-' +name;
+  var path = '../../plugins/';
+  var path_token= name.split('.');
+
+  if(path_token.length >=2)
+  {
+    var pName = path_token.pop();
+    var pPath = path_token.join('/');
+    path = path + type + '/' + pPath + '/' + type + '-' + pName;
+  }else{
+    path += type + '/' + type + '-' + name;
+  }
   return require(path);
 }
 

@@ -6,6 +6,7 @@ function perform_function(context,request,response){
 
   var output_type = request.input_type;
   var data = request.data;
+  var meta = request.meta;
 
 
   // memstore.setItem('lasttransaction',transaction_id,function(err){
@@ -17,7 +18,7 @@ function perform_function(context,request,response){
   // });
   //data = data.a.b + "--DT--";
 
-  response.success(data,output_type);
+  response.success(data,{'meta':meta,'output_type':output_type});
   //response.reject();
   //response.error("error message")
 
