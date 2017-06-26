@@ -202,12 +202,8 @@ var job_config = {
 // async.reduce([1,2,3], 0, function(memo, item, callback) {
 //     // pointless async:
 //     process.nextTick(function() {
-//         console.log(item);
-//         if(item==8){
-//           callback('err')
-//         }else{
-//           callback(null,item)
-//         }
+//         console.log(String(memo) + ' ' +  String(item));
+//         callback(null, memo + item)
 //     });
 // }, function(err, result) {
 //
@@ -241,4 +237,8 @@ var job_config = {
 //   console.log(crons.list);
 // });
 
-var dat = 'hello';
+var hash = require('object-hash');
+var dat = {'a':'hello','b':10};
+var dat2 = new Buffer(10);
+console.log(dat2);
+console.log(hash(dat2));

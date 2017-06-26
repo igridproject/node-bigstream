@@ -15,9 +15,17 @@ function execute_function(context,response){
     output_type = 'binary'
   }
 
-  request({'url':url, 'encoding':null}, function (error, resp, body) {
+  request({'url':url, 'encoding':encode}, function (error, resp, body) {
     if (!error && resp.statusCode == 200) {
-      response.success(body);
+      if(param.encoding=='json'){
+        try{
+          var j = JSON.parse(body);
+          response.success(j);
+        }catch(err){
+          response.error(new Error('JSON Parsing Error'));
+        }
+      }
+
     }else{
       response.error(error);
     }

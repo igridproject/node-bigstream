@@ -1,4 +1,4 @@
 {
   "api_hostname" : "http://localhost:19080",
-  "repository" : "/tmp/data"
+  "repository" : "/var/bigstream/data"
 }

@@ -1,7 +1,7 @@
 function perform_function(context,request,response){
   var job_id = context.jobconfig.job_id;
   var transaction_id = context.transaction.id;
-  var param = context.jobconfig.data_transform.param;
+  var param = context.task.config.param;
   var memstore = context.task.memstore
 
   var output_type = request.input_type;
@@ -16,7 +16,6 @@ function perform_function(context,request,response){
   // memstore.getItem('lasttransaction',function(err,value){
   //   response.success(value);
   // });
-  //data = data.a.b + "--DT--";
 
   response.success(data,{'meta':meta,'output_type':output_type});
   //response.reject();

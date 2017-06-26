@@ -89,7 +89,6 @@ JobTask.prototype.run = function ()
   }
 
   var task_dt = function (request,callback) {
-    var dt_request = {'input_type':request.type,'meta':request.meta,'data':request.data}
 
     var dm_t = domain.create();
     dm_t.on('error', function(err) {
@@ -99,14 +98,40 @@ JobTask.prototype.run = function ()
     });
 
     dm_t.run(function() {
-      perform_dt({'context':context,'request':dt_request,'handle':self},function(err,dt_resp){
-        if(dt_resp){console.log('[DT STATUS]\t\t: ' + dt_resp.status);}
-        if(dt_resp.status == 'success'){
-          callback(null,dt_resp);
+      var dt_cfg = context.jobconfig.data_transform;
+      if(!Array.isArray(dt_cfg)){
+        dt_cfg = [dt_cfg];
+      }
+      idx=0;
+      async.reduce(dt_cfg, request, function(req, cur_cfg, cb) {
+        var dt_name = (cur_cfg.tag)?cur_cfg.tag:String(idx);
+        var dt_request = {'input_type':req.type,'meta':req.meta,'data':req.data};
+        context.jobconfig.data_transform = cur_cfg;
+
+        perform_dt({'cfg':cur_cfg,'name':dt_name,'context':context,'request':dt_request,'handle':self},function(err,dt_resp){
+
+          if(dt_resp){console.log('[DT:' + dt_name + ' STATUS]\t\t: ' + dt_resp.status);}
+
+          idx++;
+          if(dt_resp.status == 'success'){
+            cb(null,dt_resp);
+          }else {
+            cb(dt_resp);
+          }
+
+        });
+
+      }, function(err, result) {
+
+        if(!err && result.status == 'success'){
+          callback(null,result);
         }else {
-          callback(dt_resp);
+          callback(err);
         }
+
       });
+
+    //end dm_t run
     });
 
   }
@@ -182,11 +207,14 @@ function perform_dt(prm,cb)
   var dt_context = prm.context
 
   var job_id = dt_context.jobconfig.job_id;
-  var dt_cfg = dt_context.jobconfig.data_transform;
+  var dt_cfg = prm.cfg;
+  var dt_name=prm.name;
+  //var dt_cfg = dt_context.jobconfig.data_transform;
 
   var DTTask = getPlugins('dt',dt_cfg.type);
-  var dtMem = new memstore({'job_id':job_id,'cat':'dt','mem':prm.handle.mem})
+  var dtMem = new memstore({'job_id':job_id,'cat':'dt:'+ dt_name,'mem':prm.handle.mem})
   dt_context.task = {
+    "config" : dt_cfg,
     "memstore" : dtMem
   }
 
@@ -196,6 +224,7 @@ function perform_dt(prm,cb)
   dt.on('done',function(resp){
     cb(null,resp);
   });
+
 }
 
 function perform_do(prm,cb)
