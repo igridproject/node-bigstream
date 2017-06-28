@@ -1,4 +1,4 @@
 {
   "type" : "rabbitmq",
-  "url" : "amqp://localhost"
+  "url" : "amqp://127.0.0.1"
 }
