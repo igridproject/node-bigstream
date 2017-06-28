@@ -11,8 +11,10 @@
 	"exec_mode"   : "cluster"
   },
   {
-    "name"        : "bs.worker.ins0",
-    "script"      : "./work-jobworker.js"
+    "name"        : "bs.worker",
+    "script"      : "./work-jobworker.js",
+	"exec_mode"   : "cluster",
+	"instances"   : 0
   },
   {
     "name"        : "bs.trigger.scheduler",

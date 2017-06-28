@@ -89,6 +89,13 @@ SchedulerService.prototype._start_controller = function ()
   var self=this;
   var topic = 'ctl.trigger.#';
   self.evs.sub(topic,function(err,msg){
+    if(err){
+      console.log('SCHEDULER:AMQP ERROR Restarting ...');
+      setTimeout(function(){
+        process.exit(1);
+      },5000);
+    }
+
     if(!msg){return;}
 
     var ctl = msg.data;

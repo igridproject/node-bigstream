@@ -60,7 +60,14 @@ JW.prototype.amqp_pmr_start = function ()
   });
 
   self.amqp_server_pmr.start(function(err){
-    console.log('WORKER:Primary Start\t\t[OK]');
+    if(err){
+      console.log('WORKER:AMQP ERROR Restarting ...');
+      setTimeout(function(){
+        process.exit(1);
+      },5000);
+    }else{
+      console.log('WORKER:Primary Start\t\t[OK]');
+    }
   })
 
 }
@@ -80,7 +87,13 @@ JW.prototype.amqp_snd_start = function ()
   });
 
   self.amqp_server_snd.start(function(err){
-    console.log('WORKER:Secondary Start\t\t[OK]');
+    if(err){
+      console.log('WORKER:AMQP ERROR Restarting ...');
+      setTimeout(function(){
+        process.exit(1);
+      },5000);
+    }else{console.log('WORKER:Secondary Start\t\t[OK]');}
+
   })
 
 }
