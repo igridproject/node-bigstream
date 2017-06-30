@@ -9,27 +9,37 @@ function execute_function(context,response){
   var output_type = 'text';
   var url = param.url;
 
+  var reject = true;
+  if(param.reject==false){reject=false;}
+
   var encode = 'utf8';
   if(param.encoding == 'binary'){
     encode = null;
     output_type = 'binary'
   }
 
+  if(param.encoding=='json'){output_type='object'}
+
   request({'url':url, 'encoding':encode}, function (error, resp, body) {
+    response.meta = {'_status':(error)?0:resp.statusCode,'_error':(error)?true:false}
     if (!error && resp.statusCode == 200) {
       if(param.encoding=='json'){
         try{
           var j = JSON.parse(body);
-          response.success(j);
+          response.success(j,output_type);
         }catch(err){
           response.error(new Error('JSON Parsing Error'));
         }
+      }else{
+        response.success(body,output_type);
       }
 
+    }else if(!reject){
+      response.success(null,output_type);
     }else{
-      response.error(error);
+      response.reject();
     }
-  })
+  });
   // memstore.setItem('lasttransaction',transaction_id,function(err){
   //   response.success(data);
   // });
