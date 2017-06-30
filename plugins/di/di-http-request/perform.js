@@ -21,7 +21,7 @@ function execute_function(context,response){
   if(param.encoding=='json'){output_type='object'}
 
   request({'url':url, 'encoding':encode}, function (error, resp, body) {
-    response.meta = {'_status':(error)?0:resp.statusCode,'_error':(error)?true:false}
+    response.meta = {'_status_code':(error)?0:resp.statusCode,'_error':(error)?true:false}
     if (!error && resp.statusCode == 200) {
       if(param.encoding=='json'){
         try{
