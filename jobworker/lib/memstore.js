@@ -22,8 +22,13 @@ memstore.prototype.getItem = function(k,cb)
   var key = this.prefix + ":" + k;
   this.mem.get(key,function(err,v){
     var value = null;
-    if(!err){
-      value = JSON.parse(v);
+    if(!err && v){
+      if(typeof v == 'object' && v.type == 'Buffer')
+      {
+        value = new Buffer(v.data);
+      }else{
+        value = JSON.parse(v);
+      }
     }
     cb(err,value);
   });

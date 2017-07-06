@@ -11,6 +11,8 @@ function perform_function(context,request,response){
   var data = request.data;
   var meta = request.meta;
 
+  var prm_name = (param.name)?'dupkey-'+param.name:'dupkey';
+
   var datakey = data;
 
   if(param.key){
@@ -32,12 +34,12 @@ function perform_function(context,request,response){
   }
 
   var hash_key = hash(datakey);
-  memstore.getItem('dupkey',function(err,value){
+  memstore.getItem(prm_name,function(err,value){
     if(value && value==hash_key)
     {
       response.reject();
     }else{
-      memstore.setItem('dupkey',hash_key,function(err){})
+      memstore.setItem(prm_name,hash_key,function(err){})
       response.success(data,{'meta':meta,'output_type':output_type});
     }
   });
