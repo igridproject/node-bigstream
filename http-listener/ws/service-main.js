@@ -23,27 +23,29 @@ var process_get = function(req, res) {
   var j = httpacl.findJob(appkey,'get');
 
   var topic_prex = 'cmd.execute.';
-  var httpdata = {
-    'object_type' : 'httpdata',
-    'method' : 'get',
-    'data' : reqHelper.getQuery()
-  }
 
-  var job_execute_msg = {
-    'object_type':'job_execute',
-    'source' : 'http_listener',
-    'jobId' : '',
-    'option' : {},
-    'input_data' : {
-      'type' : 'bsdata',
-      'value' : {
-        'data_type' : 'object',
-        'data' : httpdata
-      }
-    }
-  }
 
   j.forEach(function(item){
+    var httpdata = {
+      'object_type' : 'httpdata',
+      'method' : 'get',
+      'data' : reqHelper.getQuery()
+    }
+
+    var job_execute_msg = {
+      'object_type':'job_execute',
+      'source' : 'http_listener',
+      'jobId' : '',
+      'option' : {},
+      'input_data' : {
+        'type' : 'bsdata',
+        'value' : {
+          'data_type' : 'object',
+          'data' : httpdata
+        }
+      }
+    }
+
     var topic = topic_prex + item.jobid;
     var msg = job_execute_msg;
     msg.jobId = item.jobid;

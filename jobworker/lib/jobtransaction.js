@@ -35,7 +35,9 @@ JT.prototype.run = function (done)
     //red jobconfig
     job_registry.getJob(jobId,function(err,data){
       if(!data){
-        callback('job ' + jobId + ' does not exits');
+        callback('job ' + jobId + ' :: does not exits');
+      }else if(!data.active){
+        callback('job ' + jobId + ' :: unactive');
       }else{
         callback(err,data);
       }
@@ -48,7 +50,7 @@ JT.prototype.run = function (done)
                   'job_config' : jobCfg,
                   'input_meta' : command.input_meta,
                   'input_data' : command.input_data,
-                  'opt' : {'job_timeout' :60000}
+                  'opt' : {'job_timeout' :90000}
                 }
     if(jobCfg.job_timeout){
       task_prm.opt.job_timeout = jobCfg.job_timeout;

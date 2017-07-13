@@ -237,8 +237,31 @@ var job_config = {
 //   console.log(crons.list);
 // });
 
-var hash = require('object-hash');
-var dat = {'a':'hello','b':10};
-var dat2 = new Buffer(10);
-console.log(dat2);
-console.log(hash(dat2));
+// var hash = require('object-hash');
+// var dat = {'a':'hello','b':10};
+// var dat2 = new Buffer(10);
+// console.log(dat2);
+// console.log(hash(dat2));
+var path = require('path');
+var fs = fs || require('fs')
+
+var walkSync = function(dir, filelist,cat) {
+            files = fs.readdirSync(dir);
+            filelist = filelist || [];
+            cat = cat || '';
+            files.forEach(function(file) {
+                if (fs.statSync(path.join(dir, file)).isDirectory()) {
+                  var base_cat = cat + file + '.'
+                  filelist = walkSync(path.join(dir, file), filelist,base_cat);
+                }
+                else {
+                  if(path.extname(file) == '.bss'){
+                    var storage = cat + path.basename(file,'.bss');
+                    filelist.push(storage);
+                  }
+                }
+            });
+            return filelist;
+        };
+
+console.log(walkSync('D:/testfile/BSDATA'));

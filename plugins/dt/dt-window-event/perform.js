@@ -10,6 +10,9 @@ function perform_function(context,request,response){
   var in_meta = request.meta;
 
   //parameter
+  //prm_size :: int
+  //prm_reject :: bool
+  //prm_name :: text
   var prm_size = (param.size && Number(param.size)>0)?Number(param.size):1;
   var prm_reject = (param.reject==false)?false:true;
   var prm_name = (param.name)?'windw-'+param.name:'windw';

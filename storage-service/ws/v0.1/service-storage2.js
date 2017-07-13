@@ -15,6 +15,16 @@ var BinStream = ctx.getLib('lib/bss/binarystream_v1_1');
 var ObjId = ctx.getLib('lib/bss/objid');
 var BSData = ctx.getLib('lib/model/bsdata');
 
+var StorageUtils = ctx.getLib('storage-service/lib/storage-utils');
+
+router.get('/',function (req, res) {
+    var reqHelper = request.create(req);
+    var respHelper = response.create(res);
+
+    respHelper.responseOK(StorageUtils.list(storage_cfg.repository));
+
+});
+
 router.get('/:id/stats',function (req, res) {
     var reqHelper = request.create(req);
     var respHelper = response.create(res);
