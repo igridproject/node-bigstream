@@ -53,7 +53,7 @@ JobTask.prototype.stop = function (status)
     this.stats.end_time = (new Date).getTime();
     var dmsg = {
       'job_id':self.jobcfg.job_id,
-      'transaction_id':self.transaction_idม
+      'transaction_id':self.transaction_id,
       'stats':self.stats,
       'result':status
     }
