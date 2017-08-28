@@ -7,8 +7,9 @@ module.exports.create = function(cfg){
 function Db(cfg)
 {
   this.repos_dir = cfg.repos_dir;
+  this.context = cfg.context;
 
-  this.bsspool = new BSSPool({'repos_dir':this.repos_dir});
+  this.bsspool = new BSSPool({'repos_dir':this.repos_dir,'context':this.context});
 }
 
 Db.prototype.request = function(req,cb)

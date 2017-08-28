@@ -25,18 +25,39 @@ function JobTask (prm)
   this.transaction_id = prm.transaction_id;
   this.job_timeout = prm.opt.job_timeout || 60000;
 
+  this.flag_continue = false;
   //0=>IDLE,1=>RUNNING,2=>DONE
   this.state = 0;
 
+  this.stats = {
+    'start_time':0,
+    'end_time':0,
+    'di':null,
+    'dt':null,
+    'do':null
+  }
 };
 util.inherits(JobTask, EventEmitter);
 
 
 JobTask.prototype.stop = function (status)
 {
+  var self=this;
   if(this.state==1){
     this.state = 2;
-    this.emit('done', status);
+    if(this.flag_continue && status.status != "error"){
+      //console.log(status);
+      console.log('FLAG :: Continue JOB Transaction >>');
+      repeat_job(this);
+    }
+    this.stats.end_time = (new Date).getTime();
+    var dmsg = {
+      'job_id':self.jobcfg.job_id,
+      'transaction_id':self.transaction_idม
+      'stats':self.stats,
+      'result':status
+    }
+    this.emit('done', dmsg);
   }
 }
 
@@ -44,10 +65,14 @@ JobTask.prototype.run = function ()
 {
   var self=this;
   var transaction_id = this.transaction_id || genTransactionId();
+  this.transaction_id = transaction_id;
+
   var input_meta = this.input_meta;
   var obj_input_data = getInputData(this.input_data);
   var job_tr_config = this.jobcfg;
   var job_id = job_tr_config.job_id;
+
+  this.stats.start_time = (new Date).getTime();
 
   self.state = 1;
 
@@ -72,14 +97,23 @@ JobTask.prototype.run = function ()
     dm_i.on('error', function(err) {
       console.log('[DI] plugins error');
       console.log(err);
-      callback(err)
+      self.stats.di = {'status':'error','data':'plugins error'};
+      callback({'status':'error','data':'plugins error'});
     });
 
     dm_i.run(function() {
       perform_di({'context':context,'handle':self} ,function(err,resp){
-        if(resp){console.log('[DI STATUS]\t\t: ' + resp.status);}
+
+        if(resp){
+          console.log('[DI STATUS]\t\t: ' + resp.status);
+          self.stats.di = resp;
+        }
         if(resp.status == 'success'){
+          self.flag_continue = resp.flag.continue;
           callback(null,resp);
+        }else if(resp.status == 'reject'){
+          self.flag_continue = resp.flag.continue;
+          callback(resp);
         }else{
           callback(resp);
         }
@@ -94,7 +128,8 @@ JobTask.prototype.run = function ()
     dm_t.on('error', function(err) {
       console.log('[DT] plugins error');
       console.log(err);
-      callback(err)
+      self.stats.dt = {'status':'error','data':'plugins error'};
+      callback({'status':'error','data':'plugins error'});
     });
 
     dm_t.run(function() {
@@ -110,7 +145,9 @@ JobTask.prototype.run = function ()
 
         perform_dt({'cfg':cur_cfg,'name':dt_name,'context':context,'request':dt_request,'handle':self},function(err,dt_resp){
 
-          if(dt_resp){console.log('[DT:' + dt_name + ' STATUS]\t\t: ' + dt_resp.status);}
+          if(dt_resp){
+            console.log('[DT:' + dt_name + ' STATUS]\t\t: ' + dt_resp.status);
+          }
 
           idx++;
           if(dt_resp.status == 'success'){
@@ -143,7 +180,7 @@ JobTask.prototype.run = function ()
     dm_o.on('error', function(err) {
       console.log('[DO] plugins error');
       console.log(err);
-      callback(err)
+      callback({'status':'error','data':'plugins error'});
     });
 
     dm_o.run(function() {
@@ -182,8 +219,24 @@ JobTask.prototype.run = function ()
 
 }
 
+function repeat_job(self)
+{
+  var jobcaller = self.jobcaller
+  var cmd = {
+    'object_type':'job_execute',
+    'source' : 'worker',
+    'jobId' : self.jobcfg.job_id,
+    'option' : {'exe_level':'secondary'},
+    'input_meta' : self.input_meta,
+    'input_data' : self.input_data
+  }
+
+  jobcaller.send(cmd);
+}
+
 function perform_di(prm,cb)
 {
+
   var di_context = prm.context;
 
   var job_id = di_context.jobconfig.job_id;

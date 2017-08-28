@@ -4,7 +4,9 @@ module.exports = BSSPool;
 function BSSPool(prm)
 {
   this.repos_dir = prm.repos_dir
+  this.context = prm.context;
   this.pool = [];
+  this.size = 32;
 }
 
 BSSPool.prototype.get = function(name,cb)
@@ -15,11 +17,13 @@ BSSPool.prototype.get = function(name,cb)
 
   var bss = this.search(name);
   if(bss){
-    process.nextTick(function() {
-      cb(null,bss.engine);
+    self.clean(function(err){
+      process.nextTick(function() {
+        cb(null,bss.engine);
+      });
     });
   }else{
-    bss = BSSEngine.create({'file' : filepath,'name' : bssname});
+    bss = BSSEngine.create({'context':self.context,'file' : filepath,'name' : bssname});
     bss.open(function(err){
       if(!err){
         self.pool.push({
@@ -27,23 +31,49 @@ BSSPool.prototype.get = function(name,cb)
           'engine':bss
         });
       }
-      cb(err,bss);
+      self.clean(function(err){
+        cb(err,bss);
+      });
     });
   }
 
 }
 
+BSSPool.prototype.clean = function(cb)
+{
+  if(this.size<2){this.size=2}
+  if(this.pool.length>this.size)
+  {
+    var garb = this.pool.shift();
+    garb.engine.close(cb);
+    console.log('SS :: release storage >> ' + garb.name);
+  }else{
+    cb();
+  }
+}
+
 BSSPool.prototype.search = function(name)
 {
   var ret=null;
-  for(var i=0;i<this.pool.length;i++)
-  {
-    var bssI = this.pool[i]
+  var newpool=[];
+
+  this.pool.forEach((bssI)=>{
     if(bssI.name == name){
       ret = bssI;
-      break;
+    }else{
+      newpool.push(bssI)
     }
-  }
+  });
+  if(ret){newpool.push(ret)}
+  this.pool = newpool;
+  // for(var i=0;i<this.pool.length;i++)
+  // {
+  //   var bssI = this.pool[i];
+  //   if(bssI.name == name){
+  //     ret = bssI;
+  //     break;
+  //   }
+  // }
 
   return ret;
 }

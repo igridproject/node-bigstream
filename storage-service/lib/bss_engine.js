@@ -16,12 +16,13 @@ module.exports.create = function(prm)
 function BSSEngine(prm)
 {
   if(typeof prm == 'string'){
-    prm = {'file':prm};
+    prm = {'file':prm,'context':null};
   }
   // this.repos_dir = prm.repos_dir;
   // this.name = prm.name;
   this.file = prm.file;
   this.name = prm.name;
+  this.context = (prm.context)?prm.context:null;
   this.concurrent = 0;
 }
 
@@ -102,12 +103,36 @@ BSSEngine.prototype.cmd_write = function(prm,cb)
         'resource_id' : obj_id.toString(),
         'storage_name' : self.name
       }
-      dataevent.newdata({'resourceId':obj_id.toString(),'storageId':self.name});
+
+      //dataevent.newdata({'resourceId':obj_id.toString(),'storageId':self.name});
+      if(self.context){
+          newdata_event(self.context,{'resourceId':obj_id.toString(),'storageId':self.name});
+      }
+
       cb(null,resp);
     }else {
       cb("write error");
     }
   });
+}
+
+function newdata_event(ctx,prm)
+{
+  var objId = prm.resourceId;
+  var storageId = prm.storageId;
+  var hostname = ctx.cfg.storage.api_hostname;
+  var obj_api_url = hostname + '/v1/object'
+
+  var key = 'storage.' + storageId + '.dataevent.newdata';
+  var objMsg = {
+      'event' : 'newdata',
+      'resourceId' : objId,
+      'resource_id' : objId,
+      'resource_location' : obj_api_url + '/' + storageId + '.' + objId
+  }
+
+  var evp = ctx.evp;
+  evp.send(key,objMsg);
 }
 
 function parseData(dat)

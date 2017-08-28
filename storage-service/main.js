@@ -7,8 +7,8 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 
+var EventPub = ctx.getLib('lib/amqp/event-pub');
 var cfg = ctx.config;
-var storage_cfg = cfg.storage;
 
 module.exports.create = function(cfg)
 {
@@ -16,11 +16,18 @@ module.exports.create = function(cfg)
   return ss;
 }
 
-var SS = function StorageService(cfg)
+var SS = function StorageService(p_cfg)
 {
-    this.config = cfg;
-    storage_cfg = cfg.storage;
-    this.db = Db.create({'repos_dir':storage_cfg.repository});
+    this.config = p_cfg;
+    var storage_cfg = p_cfg.storage;
+    var amqp_cfg = p_cfg.amqp;
+
+    this.context = {
+      'cfg':p_cfg,
+      'evp':new EventPub({'url':amqp_cfg.url,'name':'bs_storage'})
+    }
+
+    this.db = Db.create({'repos_dir':storage_cfg.repository,'context':this.context});
     this.worker_pool = WorkerPool.create({'size':2});
 }
 

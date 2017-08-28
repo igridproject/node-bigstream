@@ -1,5 +1,5 @@
 var path = require('path');
-var fs = fs || require('fs')
+var fs = require('fs')
 
 var bss_walk_sync = function(dir, filelist,cat) {
     files = fs.readdirSync(dir);

@@ -242,26 +242,25 @@ var job_config = {
 // var dat2 = new Buffer(10);
 // console.log(dat2);
 // console.log(hash(dat2));
-var path = require('path');
-var fs = fs || require('fs')
 
-var walkSync = function(dir, filelist,cat) {
-            files = fs.readdirSync(dir);
-            filelist = filelist || [];
-            cat = cat || '';
-            files.forEach(function(file) {
-                if (fs.statSync(path.join(dir, file)).isDirectory()) {
-                  var base_cat = cat + file + '.'
-                  filelist = walkSync(path.join(dir, file), filelist,base_cat);
-                }
-                else {
-                  if(path.extname(file) == '.bss'){
-                    var storage = cat + path.basename(file,'.bss');
-                    filelist.push(storage);
-                  }
-                }
-            });
-            return filelist;
-        };
+// var Git = require("nodegit");
+//
+// Git.Clone("https://github.com/igridproject/bigstream-docker.git", "../bigstream-docker").then(function(repository) {
+//   // Work with the repository object here.
+//   console.log(repository);
+// });
 
-console.log(walkSync('D:/testfile/BSDATA'));
+// var exec = require('child_process').exec;
+// exec('npm install',{'cwd':'../plugins/dt/dt-agritronics'}, function(error, stdout, stderr) {
+//     console.log('stdout: ' + stdout);
+//     console.log('stderr: ' + stderr);
+//     if (error !== null) {
+//         console.log('exec error: ' + error);
+//     }
+// });
+
+var PluginManager = ctx.getLib('lib/plugin/plugin-manager');
+
+var pm = PluginManager.create();
+//pm.npm_install_plugin('dt','agritronics')
+console.log(pm.list('di'));
