@@ -1,0 +1,35 @@
+{
+  "job_id" : "123",
+  "active" : true,
+  "trigger" : {
+    "type": "cron",
+    "cmd": "15,45 * * * *"
+  },
+  "data_in" : {
+    "type": "tanpibut",
+    "profile": {
+      "station_id": "CM-LS-155",
+      "latitude": "",
+      "longitude": ""
+    },
+    "param": {
+      "recover": false,
+      "url": "http://122.155.1.142/ws/get2.php",
+      "appkey": "0c5a295bd8c07a0806411b79e1fd73",
+      "station_id": "CM-LS-150",
+      "data_type": {"type": "6", "name": "Rain", "node_id": "4096"},
+      "init_observed_date": "2017-08-05",
+      "init_observed_time": "00:00:00",
+      "limit": 5
+    }
+  },
+  "data_transform" : {
+    "type": "tanpibut"
+  },
+  "data_out" : {
+    "type": "bssfile",
+    "param": {
+      "filename" : "F:/testfile/MyBss.bss"
+    }
+  }
+}
