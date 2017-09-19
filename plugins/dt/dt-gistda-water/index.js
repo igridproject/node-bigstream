@@ -4,7 +4,7 @@ var DTPlugin = require('../dt-plugin');
 
 function DTTask(context,request){
   DTPlugin.call(this,context,request);
-  this.name = "noop";
+  this.name = "gistda-water";
   this.output_type = "";
 }
 util.inherits(DTTask,DTPlugin);

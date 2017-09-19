@@ -37,6 +37,7 @@ function perform_function(context,request,response){
   memstore.getItem(prm_name,function(err,value){
     if(value && value==hash_key)
     {
+      memstore.setItem(prm_name,hash_key,function(err){})
       response.reject();
     }else{
       memstore.setItem(prm_name,hash_key,function(err){})

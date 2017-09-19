@@ -3,7 +3,7 @@ var async = require('async');
 
 var BinStream = ctx.getLib('lib/bss/binarystream_v1_1');
 
-var FNAME = "D:/testfile/env.bss";
+var FNAME = "D:/testfile/agritronics.bss";
 
 
 // BinStream.open(FNAME,function(err,bss){
@@ -54,10 +54,13 @@ BinStream.open(FNAME,function(err,bss){
             cont=false;
             callback();
           }else{
-            obj.readMeta(function(err,meta){
+            obj.readMeta(function(err,obj){
               idx++;
-              if(idx%100000 == 0){
-                console.log(meta);
+              if(idx%10000 == 0){
+                console.log(obj);
+              }
+              if(idx==86639){
+                console.log(obj);
               }
               callback();
             });
