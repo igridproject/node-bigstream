@@ -10,28 +10,35 @@ function perform_function(context,request,response){
   var output_type = request.input_type;
   var data = request.data;
   var meta = request.meta;
-
-  var prm_name = (param.name)?'dupkey-'+param.name:'dupkey';
-
   var datakey = data;
 
-  if(param.key){
-    var env = {
+  var env = {
       'type' : output_type,
       'data' : data,
       'meta' : meta,
-      'key' : data
-    }
-
-    var script = new vm.Script("key=`" + param.key + "`");
-    var context = new vm.createContext(env);
-    script.runInContext(context);
-
-    datakey = env.key;
-    data = env.data;
-    meta = env.meta;
-    output_type = env.type;
+      'key' : data,
+      'name' : ''
   }
+  var get_name = "name='dupkey-'+`" + param.name + "`";
+  var get_key = "key=`" + param.key + "`";
+  var sandbox = "";
+  var prm_name = env.dupkey;
+  
+  if(param.name) {
+    sandbox = sandbox + get_name;
+  } 
+  if(param.key){
+    sandbox = sandbox + ";" + get_key;
+  }
+  var script = new vm.Script(sandbox);
+  var context = new vm.createContext(env);
+  script.runInContext(context);
+
+  datakey = env.key;
+  data = env.data;
+  meta = env.meta;
+  output_type = env.type;
+  prm_name = env.name;
 
   var hash_key = hash(datakey);
   memstore.getItem(prm_name,function(err,value){
