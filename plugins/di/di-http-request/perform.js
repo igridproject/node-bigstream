@@ -10,7 +10,7 @@ function execute_function(context,response){
   var url = param.url;
 
   var reject = true;
-  if(param.reject=='false'){reject=false;}
+  if(param.reject==false){reject=false;}
 
   var encode = 'utf8';
   if(param.encoding == 'binary'){

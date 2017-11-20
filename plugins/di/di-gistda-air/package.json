@@ -16,6 +16,8 @@
     "path": "0.12.7",
     "fs": "0.0.1-security",
     "dateformat":"2.0.0",
-    "ftp":"0.3.10"
+    "ftp":"0.3.10",
+    "moment":"2.18.1",
+    "hashtable":"2.0.2"
   }
 }

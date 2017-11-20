@@ -3,10 +3,11 @@ var fs = require('fs');
 var async = require('async');
 var dateFormat = require('dateformat');
 var Client = require('ftp');
-
+   
 function execute_function(context,response){
   var job_id = context.jobconfig.job_id;
   var transaction_id = context.transaction.id;
+  var profile = context.jobconfig.data_in.profile;
   var param = context.jobconfig.data_in.param;
   var memstore = context.task.memstore
 
@@ -28,26 +29,24 @@ function execute_function(context,response){
 
   var c = new Client();
 
+  var key = param.path + '-lasttransaction';
+
   c.on('ready', function() {
-      c.list(function(err, list) {
+
+      c.list(param.path, function(err, list) {
           if (err) throw err;
 
-          memstore.getItem('lasttransaction',function(err,value) {
+          memstore.getItem(key,function(err,value) {
               if (err) throw err;
 
               var latestDate;
-              if (typeof value == 'undefined') {
+              if (!value) {
                 var latestDateStr = param.init_observed_date + ' ' + param.init_observed_time; //'2016-12-20T10:00:00+04:00';
                 latestDate = new Date(latestDateStr);
               } else {
-                // var date = value.substring(0, 10);
-                // var time = value.substring(11,19)
-                // latestDate = new Date(date + ' ' + time);
                 latestDate = new Date(value);
               }
 
-              console.log(value + " !!! " + latestDate);
-              
               async.eachSeries(
                   list,
                   function(element, callback) {
@@ -56,10 +55,17 @@ function execute_function(context,response){
                               var filename = element.name;
                               var filedate = element.date;
                               var filetype = element.type;
+//                              if ((path.extname(filename) === '.dat' || path.extname(filename) === '.jpg') && filename.indexOf("debug") == -1) {  
+                              if ((path.extname(filename) === '.dat' && 
+                                    (filename.indexOf("Every_5m") > 0 || (filename.indexOf("MS700") > 0 && filename.indexOf("debug") == -1)))
+                                  || path.extname(filename) === '.jpg')  {  
 
-                              if (path.extname(filename) === '.dat' && filename.indexOf("debug") == -1) {  
+                                  var type = 'text';
+                                  if (path.extname(filename) === '.jpg')
+                                    type = 'image';
+                                  
                                   if (filedate - latestDate > 0) {  // filter out old files
-                                      c.get(filename, function (err, stream) {
+                                      c.get(param.path+"/"+filename, function (err, stream) {
                                           if (err) throw err;
                                           var data = '';
                                           stream.setEncoding('utf8');
@@ -71,6 +77,11 @@ function execute_function(context,response){
                                           stream.on('end', function () {  // insert a data file
                                               result.data.push({
                                                 "filename": filename,
+                                                "station_id": profile.station_id,
+                                                "latitude": profile.latitude,
+                                                "longitude": profile.longitude,
+                                                "type": type,
+                                                "observeddatetime": dateFormat(filedate, 'yyyy-mm-dd HH:MM:ss'),
                                                 "value" : data
                                               });
                                               if (typeof maxdate == 'undefined') {
@@ -80,7 +91,7 @@ function execute_function(context,response){
                                                    maxdate = filedate;
                                                  }
                                               }
-                                              memstore.setItem('lasttransaction',dateFormat(maxdate, "isoDateTime"),function(err){
+                                              memstore.setItem(key,dateFormat(maxdate, 'yyyy-mm-dd HH:MM:ss'),function(err){
                                                 if (err) throw err;
                                                 callback();
                                               });

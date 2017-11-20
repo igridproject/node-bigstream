@@ -31,6 +31,15 @@ function perform_function(context,request,response){
     "_ts" : Math.round((new Date).getTime() / 1000)
   }
 
+  if(meta && typeof meta == 'object')
+  {
+    Object.keys(meta).forEach((item)=>{
+      if(!item.startsWith('_')){
+        dc_meta[item] = meta[item];
+      }
+    });
+  }
+
   var idx = 0;
   async.whilst(
       function() { return idx < data.length; },
@@ -61,6 +70,7 @@ function perform_function(context,request,response){
         if(!err){
           response.success();
         }else{
+          console.log(err);
           response.error("storage error");
         }
       }
