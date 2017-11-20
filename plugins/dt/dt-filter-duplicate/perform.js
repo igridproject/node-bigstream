@@ -22,7 +22,7 @@ function perform_function(context,request,response){
   var get_name = "name='dupkey-'+`" + param.name + "`";
   var get_key = "key=`" + param.key + "`";
   var sandbox = "";
-  var prm_name = env.dupkey;
+  var prm_name = env.name;
   
   if(param.name) {
     sandbox = sandbox + get_name;
