@@ -17,7 +17,7 @@ function perform_function(context,request,response){
       'data' : data,
       'meta' : meta,
       'key' : data,
-      'name' : ''
+      'name' : 'dupkey'
   }
   var get_name = "name='dupkey-'+`" + param.name + "`";
   var get_key = "key=`" + param.key + "`";
