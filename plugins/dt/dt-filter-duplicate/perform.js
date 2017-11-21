@@ -11,8 +11,23 @@ function perform_function(context,request,response){
   var data = request.data;
   var meta = request.meta;
 
-  var prm_name = (param.name)?'dupkey-'+param.name:'dupkey';
+//keyname
+  //var prm_name = (param.name)?'dupkey-'+param.name:'dupkey';
+  var prm_name = 'dupkey';
+  if(param.name){
+    var name_env = {
+      'type' : output_type,
+      'data' : data,
+      'meta' : meta,
+      'name_posfix' : ''
+    }
+    var nscript = new vm.Script("name_posfix=`" + param.name + "`");
+    var ncontext = new vm.createContext(name_env);
+    nscript.runInContext(ncontext);
+    prm_name = 'dupkey-' + name_env.name_posfix;
+  }
 
+//keydata
   var datakey = data;
 
   if(param.key){
@@ -28,9 +43,6 @@ function perform_function(context,request,response){
     script.runInContext(context);
 
     datakey = env.key;
-    data = env.data;
-    meta = env.meta;
-    output_type = env.type;
   }
 
   var hash_key = hash(datakey);

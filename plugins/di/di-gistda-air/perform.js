@@ -46,7 +46,6 @@ function execute_function(context,response){
               } else {
                 latestDate = new Date(value);
               }
-
               async.eachSeries(
                   list,
                   function(element, callback) {
@@ -55,7 +54,6 @@ function execute_function(context,response){
                               var filename = element.name;
                               var filedate = element.date;
                               var filetype = element.type;
-//                              if ((path.extname(filename) === '.dat' || path.extname(filename) === '.jpg') && filename.indexOf("debug") == -1) {  
                               if ((path.extname(filename) === '.dat' && 
                                     (filename.indexOf("Every_5m") > 0 || (filename.indexOf("MS700") > 0 && filename.indexOf("debug") == -1)))
                                   || path.extname(filename) === '.jpg')  {  
@@ -67,13 +65,26 @@ function execute_function(context,response){
                                   if (filedate - latestDate > 0) {  // filter out old files
                                       c.get(param.path+"/"+filename, function (err, stream) {
                                           if (err) throw err;
-                                          var data = '';
-                                          stream.setEncoding('utf8');
+  
+                                          // for text only, not for binary data  
+                                          // var data = '';
+                                          // stream.setEncoding('utf8');
+                                          // console.log("downloading .... : " + filename + ", " + dateFormat(filedate, "isoDateTime")); 
+                                          // stream.on('data', function(chunk) {  // donwload each individual chunk as per a downloading file
+                                          //     if (chunk != '')
+                                          //       data = data + chunk;                                        
+                                          // });
+
+                                          var buf_data = Buffer.from('');
                                           console.log("downloading .... : " + filename + ", " + dateFormat(filedate, "isoDateTime")); 
+                                          var nb;  
                                           stream.on('data', function(chunk) {  // donwload each individual chunk as per a downloading file
-                                              if (chunk != '')
-                                                data = data + chunk;                                        
+                                              if (chunk != '') {
+                                                 var buf_chunk = Buffer.from(chunk);
+                                                 buf_data = Buffer.concat([buf_data, buf_chunk]);
+                                               }
                                           });
+
                                           stream.on('end', function () {  // insert a data file
                                               result.data.push({
                                                 "filename": filename,
@@ -82,8 +93,11 @@ function execute_function(context,response){
                                                 "longitude": profile.longitude,
                                                 "type": type,
                                                 "observeddatetime": dateFormat(filedate, 'yyyy-mm-dd HH:MM:ss'),
-                                                "value" : data
+                                                "value" : buf_data // data if text download only
                                               });
+
+                                              console.log(buf_data);
+
                                               if (typeof maxdate == 'undefined') {
                                                   maxdate = filedate;
                                               } else {

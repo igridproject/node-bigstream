@@ -5,6 +5,8 @@ function execute_function(context,response){
   var transaction_id = context.transaction.id;
   var param = context.jobconfig.data_in.param;
   var memstore = context.task.memstore
+  var input_data = context.input.data;
+  var input_meta = context.input.meta;
 
   var output_type = 'text';
   var url = param.url;
