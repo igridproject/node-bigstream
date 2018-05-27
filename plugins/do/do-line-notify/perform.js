@@ -12,23 +12,31 @@ function perform_function(context,request,response){
 
   var token = param.token;
   var message = data;
+  var image_url = null;
 
-  if(param.message){
-    var env = {
-      'type' : output_type,
-      'data' : data,
-      'meta' : meta,
-      'msg' : data
-    }
-
-    var script = new vm.Script("msg=`" + param.message + "`");
-    var context = new vm.createContext(env);
-    script.runInContext(context);
-
-    message = env.msg;
+  var env = {
+    'type' : output_type,
+    'data' : data,
+    'meta' : meta,
+    'msg' : data,
+    'img' : null
   }
+  var txt_script = ""
 
-  post_to_line(token,message,function(err){
+  if(param.image_url){
+    env.msg="";
+    txt_script += "img=`" + param.image_url + "`; "
+  }
+  if(param.message){txt_script += "msg=`" + param.message + "`; "}
+
+  var script = new vm.Script(txt_script);
+  var context = new vm.createContext(env);
+  script.runInContext(context);
+
+  message = (typeof env.msg == 'string')?env.msg:JSON.stringify(env.msg);
+  image_url = env.img;
+
+  post_to_line(token,message,{'imgurl':image_url},function(err){
     if(!err){
       response.success();
     }else{
@@ -40,7 +48,7 @@ function perform_function(context,request,response){
   //response.error("error message")
 }
 
-function post_to_line(token,msg,cb)
+function post_to_line(token,msg,resource,cb)
 {
 
   var options = { method: 'POST',
@@ -49,7 +57,20 @@ function post_to_line(token,msg,cb)
      { 'cache-control': 'no-cache',
        'authorization' : 'Bearer ' + token,
        'content-type': 'multipart/form-data' },
-    formData: { message: String(msg) } };
+    formData: {
+      message: String(msg)
+    }
+  };
+
+  if(typeof resource == 'function')
+  {
+    cb=resource;
+  }else {
+    if(resource.imgurl){
+      options.formData.imageThumbnail = resource.imgurl;
+      options.formData.imageFullsize = resource.imgurl;
+    }
+  }
 
   request(options, function (err, resp, body) {
     if (!err && resp.statusCode==200) {

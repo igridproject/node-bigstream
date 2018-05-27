@@ -17,8 +17,8 @@
 	"instances"   : 0
   },
   {
-    "name"        : "bs.trigger.scheduler",
-    "script"      : "./serv-scheduler.js"
+    "name"        : "bs.trigger.core",
+    "script"      : "./serv-coretrigger.js"
   },
   {
     "name"        : "bs.trigger.httplistener",

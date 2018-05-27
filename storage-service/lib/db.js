@@ -1,3 +1,4 @@
+var fs = require('fs');
 var BSSPool = require('./bsspool');
 
 module.exports.create = function(cfg){
@@ -24,6 +25,10 @@ Db.prototype.request = function(req,cb)
       var prm = req.param
       this.bsscmd_w(prm,cb)
       break;
+    case 'delete':
+      var prm = req.param
+      this.bsscmd_del(prm,cb)
+      break;
     default:
       cb(null,result_error('invalid command'));
   }
@@ -44,7 +49,10 @@ Db.prototype.bsscmd_w = function(prm,cb)
       }
     }
 
-    this.bsspool.get(bssname,function(err,bss){
+    var bss_opt = {};
+    if(prm.opt && prm.opt.overwrite){bss_opt.newInstance=true;}
+
+    self.bsspool.get(bssname,bss_opt,function(err,bss){
       if(!err){
         bss.cmd(w_cmd,function(err,resp){
           if(!err){
@@ -59,6 +67,46 @@ Db.prototype.bsscmd_w = function(prm,cb)
     });
 }
 
+Db.prototype.bsscmd_del = function(prm,cb)
+{
+  var self = this;
+  var filepath = this.repos_dir + '/' + name2path(prm.storage_name) + '.bss';
+  var bssname = prm.storage_name;
+
+  var engine = self.bsspool.detach(bssname);
+  if(engine){
+    engine.close((err)=>{
+      if(!err){
+        unlink(filepath,cb);
+      }else{
+        cb(null,result_error('delete error'));
+      }
+    });
+  }else{
+    unlink(filepath,cb);
+  }
+
+  function unlink(fd,callback)
+  {
+
+    fs.exists(fd,function(exists){
+      if(exists){
+
+        fs.unlink(fd,function(err){
+          if(!err){
+            callback(null,result_ok());
+          }else{
+            callback(null,result_error('delete error'));
+          }
+        });
+
+      }else{
+        callback(null,result_error('file not found'));
+      }
+    });
+
+  }
+}
 
 function name2path(name){
   return name.split('.').join('/');

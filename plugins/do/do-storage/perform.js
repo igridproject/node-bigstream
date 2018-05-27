@@ -11,7 +11,8 @@ function perform_function(context,request,response){
   var job_id = context.jobconfig.job_id;
   var transaction_id = context.transaction.id;
   var param = context.jobconfig.data_out.param;
-  var memstore = context.task.memstore
+  var memstore = context.task.memstore;
+  var storagecaller = context.task.storagecaller;
 
   var output_type = request.input_type;
   var data = (Array.isArray(request.data))?request.data:[request.data];
@@ -20,10 +21,14 @@ function perform_function(context,request,response){
   var amqp_cfg = ctx.config.amqp;
   var storage_name = param.storage_name;
 
-  var caller = new RPCCaller({
-    url : amqp_cfg.url,
-    name :'storage_request'
-  });
+  var caller = storagecaller;
+
+  if(param.channel!='ipc'){
+    caller = new RPCCaller({
+      url : amqp_cfg.url,
+      name :'storage_request'
+    });
+  }
 
   var dc_meta = {
     "_jid" : job_id,
@@ -93,7 +98,7 @@ function send_storage(caller,dc_meta,dc_data,storage_name,cb)
         }
       }
     }
-
+//console.log(req);
   caller.call(req,function(err,resp){
     if(!err && resp.status=='OK'){
       cb(null);

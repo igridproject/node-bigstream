@@ -38,6 +38,10 @@ function perform_function(context,request,response){
   var meta = mapenv.meta;
   var output_type = mapenv.type;
 
+  if(param.to_binary && typeof data == 'string'){
+    data = Buffer.from(data, 'base64');
+    output_type = 'binary';
+  }
 
   response.success(data,{'meta':meta,'output_type':output_type});
 

@@ -23,8 +23,14 @@ function perform_function(context,response){
   var last_mod = {'fname':'','tts':0};
   var fs_continue = false;
   var buff_out = new Buffer(0);
+
+  if(param.last_modify_ts)
+  {
+    last_mod.tts = param.last_modify_ts*1000;
+  }
+
   memstore.getItem('lastmodify',function(err,value){
-    if(value){
+    if(value && value.tts > last_mod.tts){
       last_mod=value;
     }
     getData();

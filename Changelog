@@ -1,0 +1,11 @@
+#Changelog
+
+## [UR] - 2018-04-xx
+### Added
+- SS :: Ipc Channel
+- SS :: REST API (v1.1ur) method PUT
+- PLUGIN :: do-storage with ipc channel supported
+### Fixed
+- WORKER :: active/unactive job bugs
+### Changed
+### Removed

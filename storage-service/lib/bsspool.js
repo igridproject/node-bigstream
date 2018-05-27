@@ -9,30 +9,39 @@ function BSSPool(prm)
   this.size = 32;
 }
 
-BSSPool.prototype.get = function(name,cb)
+BSSPool.prototype.get = function(name,opt,cb)
 {
+  if(!cb){cb=opt;opt={};}
+
   var self=this;
   var filepath = this.repos_dir + '/' + name2path(name) + '.bss'
   var bssname = name;
 
   var bss = this.search(name);
-  if(bss){
+  if(bss && !opt.newInstance){
     self.clean(function(err){
       process.nextTick(function() {
         cb(null,bss.engine);
       });
     });
   }else{
-    bss = BSSEngine.create({'context':self.context,'file' : filepath,'name' : bssname});
-    bss.open(function(err){
+    var bss_engine = BSSEngine.create(
+                                { 'context':self.context,
+                                  'repos_dir':self.repos_dir,
+                                  'file' : filepath,
+                                  'name' : bssname,
+                                  'newInstance':opt.newInstance
+                                });
+
+    bss_engine.open(function(err){
       if(!err){
         self.pool.push({
           'name' : name,
-          'engine':bss
+          'engine':bss_engine
         });
       }
       self.clean(function(err){
-        cb(err,bss);
+        cb(err,bss_engine);
       });
     });
   }
@@ -64,16 +73,27 @@ BSSPool.prototype.search = function(name)
       newpool.push(bssI)
     }
   });
+
   if(ret){newpool.push(ret)}
   this.pool = newpool;
-  // for(var i=0;i<this.pool.length;i++)
-  // {
-  //   var bssI = this.pool[i];
-  //   if(bssI.name == name){
-  //     ret = bssI;
-  //     break;
-  //   }
-  // }
+
+  return ret;
+}
+
+BSSPool.prototype.detach = function(name)
+{
+  var ret=null;
+  var newpool=[];
+
+  this.pool.forEach((bssI)=>{
+    if(bssI.name == name){
+      ret = bssI;
+    }else{
+      newpool.push(bssI)
+    }
+  });
+
+  this.pool = newpool;
 
   return ret;
 }

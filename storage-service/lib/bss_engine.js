@@ -7,10 +7,16 @@ var bsdata = ctx.getLib('lib/model/bsdata');
 
 var importer = require('./importer');
 var dataevent = require('./dataevent');
+var sutils = require('./storage-utils');
 
 module.exports.create = function(prm)
 {
-  return new BSSEngine(prm);
+  var ins = prm;
+  // var bssId = sutils.mkBssId(ins.repos_dir,ins.name,{'newInstance':ins.newInstance});
+  // ins.file = bssId.file;
+  // ins.serial = bssId.serial;
+
+  return new BSSEngine(ins);
 }
 
 function BSSEngine(prm)
@@ -24,6 +30,8 @@ function BSSEngine(prm)
   this.name = prm.name;
   this.context = (prm.context)?prm.context:null;
   this.concurrent = 0;
+  this.serial=prm.serial||'';
+  this.outdate=false;
 }
 
 BSSEngine.prototype.filepath = function()
@@ -78,9 +86,11 @@ BSSEngine.prototype.cmd = function(cmd,cb)
     var command = cmd.command;
     var param = cmd.param;
 
+    var self=this;
+
     switch (command) {
       case 'write':
-        this.cmd_write(param,cb);
+        self.cmd_write(param,cb);
         break;
       default:
         cb('invalid cmd');
