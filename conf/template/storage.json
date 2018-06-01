@@ -1,0 +1,4 @@
+{
+  "api_hostname" : "http://bigstream-server:19080",
+  "repository" : "/var/bigstream/data"
+}
