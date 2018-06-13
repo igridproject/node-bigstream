@@ -1,9 +1,20 @@
 #Changelog
 
-## [UR] - 2018-04-xx
+## [UR] - 2018-06-xx
+### Added
+- BS :: tokenization & access control
+- SS :: REST API (v1.2ur) new object api
+- SS :: object indexing
+### Fixed
+
+### Changed
+- SS :: object address api 1.2 [ <storage_name>$obj_id ]
+### Removed
+
+## [UR] - 2018-05-xx
 ### Added
 - SS :: Ipc Channel
-- SS :: REST API (v1.1ur) method PUT
+- SS :: REST API (v1.1ur) method PUT DELETE
 - PLUGIN :: do-storage with ipc channel supported
 ### Fixed
 - WORKER :: active/unactive job bugs

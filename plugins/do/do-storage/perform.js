@@ -39,7 +39,7 @@ function perform_function(context,request,response){
   if(meta && typeof meta == 'object')
   {
     Object.keys(meta).forEach((item)=>{
-      if(!item.startsWith('_')){
+      if(!item.startsWith('_') || item=='_key'){
         dc_meta[item] = meta[item];
       }
     });

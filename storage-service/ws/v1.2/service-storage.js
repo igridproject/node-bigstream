@@ -14,10 +14,12 @@ var request = ctx.getLib('lib/ws/request');
 var BinStream = ctx.getLib('lib/bss/binarystream_v1_1');
 var ObjId = ctx.getLib('lib/bss/objid');
 var BSData = ctx.getLib('lib/model/bsdata');
+var Tokenizer = ctx.getLib('lib/auth/tokenizer');
 
 var StorageUtils = ctx.getLib('storage-service/lib/storage-utils');
 
 const AGENT_NAME = "Storage API";
+const ACL_SERVICE_NAME = "storage";
 
 router.put('/:id',function (req, res) {
     var reqHelper = request.create(req);
@@ -36,14 +38,25 @@ router.put('/:id',function (req, res) {
       return respHelper.response400();
     }
 
+    var acl_validator = req.context.acl_validator;
+    var tInfo = Tokenizer.info(req.auth);
+    var acp = acl_validator.isAccept(tInfo.acl,{
+      "vo":tInfo.vo,"service":ACL_SERVICE_NAME,"resource":sname,"mode":"w"
+    });
+    if(!acp){return respHelper.response401();}
+
     var databody = Array.isArray(json_body)?json_body:[json_body];
     var idx = 0;
     async.whilst(
         function() { return idx < databody.length; },
         function(callback) {
           //var el_data = databody[idx].data;
+          if(typeof databody[idx] != 'object' || !databody[idx].data){
+            return callback(new Error('invalid data format'));
+          }
+
           var el_data = (BSData.parse(databody[idx].data)==null)?BSData.create(databody[idx].data).serialize('object-encoded'):databody[idx].data;
-          var meta = databody[idx].meta;
+          var meta = databody[idx].meta || {};
 
           var dc_meta = {
             "_agent" : AGENT_NAME,
@@ -113,6 +126,13 @@ router.delete('/:id',function (req, res) {
   var sname = req.params.id;
   var caller = req.context.storagecaller;
 
+  var acl_validator = req.context.acl_validator;
+    var tInfo = Tokenizer.info(req.auth);
+    var acp = acl_validator.isAccept(tInfo.acl,{
+      "vo":tInfo.vo,"service":ACL_SERVICE_NAME,"resource":sname,"mode":"w"
+    });
+    if(!acp){return respHelper.response401();}
+
   var req = {
     'object_type' : 'storage_request',
     'command' : 'delete',
@@ -136,9 +156,36 @@ router.get('/',function (req, res) {
     var reqHelper = request.create(req);
     var respHelper = response.create(res);
 
-    respHelper.responseOK(StorageUtils.list(storage_cfg.repository));
+    var s_list = StorageUtils.list(storage_cfg.repository);
+    var s_result = [];
+
+    var acl_validator = req.context.acl_validator;
+    var tInfo = Tokenizer.info(req.auth);
+    s_list.forEach((sname)=>{
+      var acc_l = acl_validator.isAccept(tInfo.acl,{
+        "vo":tInfo.vo,"service":ACL_SERVICE_NAME,"resource":sname,"mode":"l"
+      });
+
+      if(acc_l){
+        s_result.push(sname);
+      }
+    });
+
+    respHelper.responseOK(s_result);
 
 });
+
+// router.get('/info',function (req, res) {
+//   var reqHelper = request.create(req);
+//   var respHelper = response.create(res);
+
+//   var info = {
+//     "version":"1.2",
+//     "token_info":req.user
+//   }
+//   respHelper.responseOK(info);
+
+// });
 
 router.get('/:id/stats',function (req, res) {
     var reqHelper = request.create(req);
@@ -148,6 +195,13 @@ router.get('/:id/stats',function (req, res) {
     if(!sid){
       return respHelper.response404();
     }
+
+    var acl_validator = req.context.acl_validator;
+    var tInfo = Tokenizer.info(req.auth);
+    var acp = acl_validator.isAccept(tInfo.acl,{
+      "vo":tInfo.vo,"service":ACL_SERVICE_NAME,"resource":sid,"mode":"r"
+    });
+    if(!acp){return respHelper.response403();}
 
     var storage_path = sid.split('.').join('/');
     var bss_full_path = storage_cfg.repository + "/" + storage_path + ".bss";
@@ -187,6 +241,13 @@ router.get('/:id/objects',function (req, res) {
     if(!sid){
       return respHelper.response404();
     }
+
+    var acl_validator = req.context.acl_validator;
+    var tInfo = Tokenizer.info(req.auth);
+    var acp = acl_validator.isAccept(tInfo.acl,{
+      "vo":tInfo.vo,"service":ACL_SERVICE_NAME,"resource":sid,"mode":"r"
+    });
+    if(!acp){return respHelper.response403();}
 
     var storage_path = sid.split('.').join('/');
     var bss_full_path = storage_cfg.repository + "/" + storage_path + ".bss";
@@ -231,14 +292,23 @@ router.get('/:id/objects',function (req, res) {
       from_seq = Number(query.seq_from);
     }
 
-    // param => field = id,meta,[data]
-    var objOpt = {'meta':true,'data':true}
-    if(query.field == 'id'){
+    // param => field = id,meta,data,_id,_meta,_data[all]
+    var objOpt = {'id':true,'meta':true,'data':true,'field':query.field}
+    if(query.field == 'id' || query.field == '_id'){
       objOpt.meta = false;
       objOpt.data = false;
     }else if(query.field == 'meta'){
       objOpt.data = false;
+    }else if(query.field == 'data'){
+      objOpt.meta = false;
+    }else if(query.field == '_meta'){
+      objOpt.data = false;
+      objOpt.id = false;
+    }else if(query.field == '_data'){
+      objOpt.meta = false;
+      objOpt.id = false;
     }
+
 
     // param => last
     var tail_no = query.last;
