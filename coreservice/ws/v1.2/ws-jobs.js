@@ -103,18 +103,19 @@ router.post('/',function (req, res) {
       return respHelper.response401();
     }
 
-    jm.setJob({'job':json_job},function(err,res){
+    jm.setJob({'job':json_job,'vo':tInfo.vo},function(err,res){
       if(err)
       {
         respHelper.response400(err);
       }else{
         if(q.reload){
-          tm.reload();
+          tm.reload({'vo':tInfo.vo});
         }
         respHelper.response201();
       }
     });
 
+    
 });
 
 router.post('/action',function (req, res) {
@@ -141,7 +142,7 @@ router.post('/action',function (req, res) {
         respHelper.response400(err.message);
       }else{
         if(q.reload){
-          tm.reload();
+          tm.reload({'vo':tInfo.vo});
         }
         respHelper.response201();
       }

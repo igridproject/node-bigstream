@@ -6,6 +6,7 @@ var QueueReceiver = ctx.getLib('lib/amqp/queuereceiver');
 var ConnCtx = ctx.getLib('lib/conn/connection-context');
 var JobRegistry = ctx.getLib('lib/mems/job-registry');
 var SSCaller = ctx.getLib('lib/axon/rpccaller');
+var ACLValidator = ctx.getLib('lib/auth/acl-validator');
 
 var JobTransaction = require('./lib/jobtransaction')
 
@@ -21,6 +22,7 @@ var JW = function JobWorker (prm)
 {
   var param = prm || {};
   this.config = param.config || cfg;
+  this.auth_cfg = this.config.auth;
   this.instance_name = param.name;
 
   this.conn = ConnCtx.create(this.config);
@@ -28,6 +30,7 @@ var JW = function JobWorker (prm)
 
   this.jobcaller = new QueueCaller({'url':this.conn.getAmqpUrl(),'name':'bs_jobs_cmd'});
   this.job_registry = JobRegistry.create({'redis':this.mem});
+  this.acl_validator = ACLValidator.create(this.auth_cfg);
 
   this.storagecaller = new SSCaller({'url':SS_URL});
 }

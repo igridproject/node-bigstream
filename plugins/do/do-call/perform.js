@@ -2,13 +2,16 @@
 var ctx = require('../../../context');
 var Utils = ctx.getLib('lib/util/plugin-utils');
 var bsdata = ctx.getLib('lib/model/bsdata');
+const ACL_SERVICE_NAME = "job";
 
 function perform_function(context,request,response){
   var job_id = context.jobconfig.job_id;
+  var job_vo = context.jobconfig._vo || '';
   var transaction_id = context.transaction.id;
   var param = context.jobconfig.data_out.param;
   var memstore = context.task.memstore;
   var jobcaller = context.task.jobcaller;
+  var acl_validator = context.acl_validator;
 
   var in_type = request.type;
   var data = (Array.isArray(request.data))?request.data:[request.data];
@@ -16,6 +19,12 @@ function perform_function(context,request,response){
 
   var prm_to = (Array.isArray(param.to))?param.to:[param.to];
 
+  var def_acl = [
+    {
+      'accept':true,
+      'resource':(job_vo=='$'||job_vo=='')?'*':job_vo + '.*'
+    }
+  ];
 
   data.forEach((dat)=>{
     prm_to.forEach((jobprm)=>{
@@ -25,7 +34,14 @@ function perform_function(context,request,response){
         'data' : dat
       }
       var job=Utils.vm_execute_text(ev,jobprm)
-      call_to(dat,job);
+      var acp = acl_validator.isAccept(def_acl,{
+        "vo":job_vo,"service":ACL_SERVICE_NAME,"resource":job,"mode":"x"
+      });
+      if(acp){
+        call_to(dat,job);
+      }else{
+        console.log('[Warn] Calling job :: ' + job + ' -> Not Permited')
+      }
     });
   });
 

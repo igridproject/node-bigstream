@@ -6,13 +6,16 @@ var BinStream = ctx.getLib('lib/bss/binarystream_v1_1');
 var bsdata = ctx.getLib('lib/model/bsdata');
 
 var async = require('async');
+const ACL_SERVICE_NAME = "storage";
 
 function perform_function(context,request,response){
   var job_id = context.jobconfig.job_id;
+  var job_vo = context.jobconfig._vo || '';
   var transaction_id = context.transaction.id;
   var param = context.jobconfig.data_out.param;
   var memstore = context.task.memstore;
   var storagecaller = context.task.storagecaller;
+  var acl_validator = context.acl_validator;
 
   var output_type = request.input_type;
   var data = (Array.isArray(request.data))?request.data:[request.data];
@@ -30,6 +33,7 @@ function perform_function(context,request,response){
     });
   }
 
+
   var dc_meta = {
     "_jid" : job_id,
     "_tid" : transaction_id,
@@ -45,6 +49,13 @@ function perform_function(context,request,response){
     });
   }
 
+  var def_acl = [
+    {
+      'accept':true,
+      'resource':(job_vo=='$'||job_vo=='')?'*':job_vo + '.*'
+    }
+  ];
+
   var idx = 0;
   async.whilst(
       function() { return idx < data.length; },
@@ -56,18 +67,29 @@ function perform_function(context,request,response){
           'data' : data[idx]
         }
 
-        var sname=Utils.vm_execute_text(ev,storage_name)
+        var sname=Utils.vm_execute_text(ev,storage_name);
+
         if(sname){
-          send_storage(caller,dc_meta,el_data,sname,function(err){
-            if(!err){
-              idx++;
-              callback(null);
-            }else{
-              callback(new Error('storage error'));
-            }
+          //storage permission
+          var acp = acl_validator.isAccept(def_acl,{
+            "vo":job_vo,"service":ACL_SERVICE_NAME,"resource":sname,"mode":"w"
           });
+          
+          if(acp){
+            send_storage(caller,dc_meta,el_data,sname,function(err){
+              if(!err){
+                idx++;
+                callback(null);
+              }else{
+                callback(new Error('storage error'));
+              }
+            });
+          }else{
+            callback('storage permission error');
+          }
+
         }else{
-          callback(new Error('invalid storage'));
+          callback('invalid storage');
         }
 
       },

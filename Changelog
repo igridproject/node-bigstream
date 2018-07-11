@@ -1,7 +1,15 @@
 #Changelog
 
+## [UR] - 2018-07-10
+### Added
+- TRIGGER :: nbudp
+### Fixed
+- PLUGIN :: storage acl supported
+- PLUGIN :: call acl supported
+
 ## [UR] - 2018-06-xx
 ### Added
+- TRIGGER :: httplistener supported POST text/*,binary
 - BS :: tokenization & access control
 - SS :: REST API (v1.2ur) new object api
 - SS :: object indexing

@@ -27,5 +27,9 @@
   {
     "name"        : "bs.api.service",
     "script"      : "./serv-api.js"
+  },
+  {
+    "name"        : "bs.trigger.nbudp",
+    "script"      : "./serv-nbudptrigger.js"
   }]
 }
