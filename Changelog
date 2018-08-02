@@ -1,5 +1,9 @@
 #Changelog
 
+## [1.2] - 2018-08-11
+### Fixed
+- BS :: job registering with no token bug
+
 ## [UR] - 2018-07-10
 ### Added
 - TRIGGER :: nbudp
