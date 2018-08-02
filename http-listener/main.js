@@ -50,8 +50,11 @@ HTTPListener.prototype._http_start = function()
 
   app.use(bodyParser.json({limit: '128mb'}));
   app.use(bodyParser.urlencoded({
-      extended: true
+      extended: true,
+      limit: '128mb'
   }));
+  app.use(bodyParser.raw({limit: '128mb'}));
+  app.use(bodyParser.text({limit: '128mb',type:"text/*"}));
 
   var context = require('./lib/http-context');
   app.use(context.middleware({

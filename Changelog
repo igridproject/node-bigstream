@@ -1,0 +1,34 @@
+#Changelog
+
+## [1.2] - 2018-08-11
+### Fixed
+- BS :: job registering with no token bug
+
+## [UR] - 2018-07-10
+### Added
+- TRIGGER :: nbudp
+### Fixed
+- PLUGIN :: storage acl supported
+- PLUGIN :: call acl supported
+
+## [UR] - 2018-06-xx
+### Added
+- TRIGGER :: httplistener supported POST text/*,binary
+- BS :: tokenization & access control
+- SS :: REST API (v1.2ur) new object api
+- SS :: object indexing
+### Fixed
+
+### Changed
+- SS :: object address api 1.2 [ <storage_name>$obj_id ]
+### Removed
+
+## [UR] - 2018-05-xx
+### Added
+- SS :: Ipc Channel
+- SS :: REST API (v1.1ur) method PUT DELETE
+- PLUGIN :: do-storage with ipc channel supported
+### Fixed
+- WORKER :: active/unactive job bugs
+### Changed
+### Removed

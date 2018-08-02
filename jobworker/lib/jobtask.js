@@ -18,6 +18,8 @@ function JobTask (prm)
   this.handle = prm.handle;
   this.mem = prm.handle.mem;
   this.jobcaller = prm.handle.jobcaller;
+  this.storagecaller = prm.handle.storagecaller;
+  this.acl_validator = prm.handle.acl_validator
 
   this.jobcfg = prm.job_config;
   this.input_meta = prm.input_meta;
@@ -86,6 +88,7 @@ JobTask.prototype.run = function ()
   }
 
   var context = {
+    "acl_validator" : this.acl_validator,
     "jobconfig" : job_tr_config,
     "transaction" : ctx_transaction,
     "input" : {'data':obj_input_data,'meta':input_meta} ,
@@ -290,9 +293,11 @@ function perform_do(prm,cb)
   var DOTask = getPlugins('do',do_cfg.type);
   var doMem = new memstore({'job_id':job_id,'cat':'do','mem':prm.handle.mem});
   var jobcaller = prm.handle.jobcaller;
+  var storagecaller = prm.handle.storagecaller;
   do_context.task = {
     "memstore" : doMem,
-    "jobcaller" : jobcaller
+    "jobcaller" : jobcaller,
+    "storagecaller" : storagecaller
   }
 
   var dout = new DOTask(do_context,prm.request);
@@ -324,6 +329,7 @@ function getInputData(obj)
   if(obj.type == 'bsdata')
   {
     var inp = bsdata.parse(obj.value);
+    if(!inp){ return {}}
     return inp.data;
   }else{
     return {};

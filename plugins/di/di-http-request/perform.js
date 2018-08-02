@@ -1,3 +1,4 @@
+var vm = require('vm');
 var request = require('request').defaults({ encoding: null });
 
 function execute_function(context,response){
@@ -10,9 +11,23 @@ function execute_function(context,response){
 
   var output_type = 'text';
   var url = param.url;
+  var env = {
+    'input' : {
+      'meta' : input_meta,
+      'data' : input_data
+    },
+    'url' : ''
+  }
+
+  var script = new vm.Script("url=`" + url + "`");
+  var context = new vm.createContext(env);
+  script.runInContext(context);
+
+  url = env.url;
+
 
   var reject = true;
-  if(param.reject==false){reject=false;}
+  if(typeof param.reject != 'undefined' && param.reject.toString()=="false"){reject=false;}
 
   var encode = 'utf8';
   if(param.encoding == 'binary'){
@@ -22,7 +37,21 @@ function execute_function(context,response){
 
   if(param.encoding=='json'){output_type='object'}
 
-  request({'url':url, 'encoding':encode}, function (error, resp, body) {
+//Http Header
+  var http_headers = {};
+  if(param.auth){
+    if(param.auth.type == 'basic'){
+      var auth_header  = "Basic " + new Buffer(param.auth.username + ":" + param.auth.password).toString("base64");
+      http_headers.Authorization = auth_header;
+    }
+  }
+
+  if(typeof param.headers == 'object')
+  {
+    http_headers = Object.assign(http_headers,param.headers)
+  }
+
+  request({'method': 'GET','url':url,'headers':http_headers ,'encoding':encode}, function (error, resp, body) {
     response.meta = {'_status_code':(error)?0:resp.statusCode,'_error':(error)?true:false}
     if (!error && resp.statusCode == 200) {
       if(param.encoding=='json'){

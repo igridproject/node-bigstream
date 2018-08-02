@@ -128,10 +128,9 @@ function bss_end(code)
 
 
 function obj_out(obj,opt){
-  var ret = {
-              "_id" : (new ObjId(obj.header.ID)).toString()
-            }
+  var ret = {}
 
+  if(opt.id){ret._id = (new ObjId(obj.header.ID)).toString()}
   if(opt.meta){ret.meta = obj.meta;}
   if(opt.data){
     if(obj.header.TY==BinStream.BINARY_TYPE)
@@ -141,6 +140,14 @@ function obj_out(obj,opt){
     }else{
       ret.data = obj.data;
     }
+  }
+
+  if(opt.field=='_id'){
+    ret = ret._id;
+  }else if(opt.field=='_meta'){
+    ret = ret.meta;
+  }else if(opt.field=='_data'){
+    ret = ret.data;
   }
 
   return ret

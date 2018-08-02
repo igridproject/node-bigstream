@@ -10,7 +10,7 @@ var response = ctx.getLib('lib/ws/response');
 var request = ctx.getLib('lib/ws/request');
 
 
-var process_get = function(req, res) {
+var process_req = function(req, res ,method) {
   var reqHelper = request.create(req);
   var respHelper = response.create(res);
   var appkey = req.params.akey;
@@ -20,7 +20,7 @@ var process_get = function(req, res) {
   //var evp = req.context.evp;
   var jobcaller = req.context.jobcaller;
 
-  var j = httpacl.findJob(appkey,'get');
+  var j = httpacl.findJob(appkey,method);
 
   var topic_prex = 'cmd.execute.';
 
@@ -28,8 +28,14 @@ var process_get = function(req, res) {
   j.forEach(function(item){
     var httpdata = {
       'object_type' : 'httpdata',
-      'method' : 'get',
-      'data' : reqHelper.getQuery()
+      'method' : method,
+      'data' : {}
+    }
+
+    if(method=='get'){
+      httpdata.data = reqHelper.getQuery();
+    }else if(method=='post'){
+      httpdata.data = req.body;
     }
 
     var job_execute_msg = {
@@ -40,6 +46,7 @@ var process_get = function(req, res) {
       'input_data' : {
         'type' : 'bsdata',
         'value' : {
+          'object_type':'bsdata',
           'data_type' : 'object',
           'data' : httpdata
         }
@@ -62,7 +69,8 @@ var process_get = function(req, res) {
   }
 
 }
-router.get('/:akey',process_get);
+router.get('/:akey',function(req, res){process_req(req,res,'get')});
+router.post('/:akey',function(req, res){process_req(req,res,'post')});
 
 
 module.exports = router;

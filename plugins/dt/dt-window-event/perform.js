@@ -14,7 +14,7 @@ function perform_function(context,request,response){
   //prm_reject :: bool
   //prm_name :: text
   var prm_size = (param.size && Number(param.size)>0)?Number(param.size):1;
-  var prm_reject = (param.reject==false)?false:true;
+  var prm_reject = (typeof param.reject != 'undefined' && param.reject.toString()=="false")?false:true;
   var prm_name = (param.name)?'windw-'+param.name:'windw';
 
   var obj =  {

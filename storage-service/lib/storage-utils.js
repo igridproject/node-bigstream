@@ -1,5 +1,5 @@
 var path = require('path');
-var fs = require('fs')
+var fs = require('fs');
 
 var bss_walk_sync = function(dir, filelist,cat) {
     files = fs.readdirSync(dir);
@@ -20,7 +20,25 @@ var bss_walk_sync = function(dir, filelist,cat) {
     return filelist;
 };
 
+function name2path(name){
+  return name.split('.').join('/');
+}
+
+
 module.exports.list = function (repo)
 {
   return bss_walk_sync(repo)
 }
+
+/*
+module.exports.mkBssId = function(repo,name,opt)
+{
+
+  var prefix_dir = repo + '/' + name.split('.').slice(0,-1).join('/');
+  var dirlist = fs.readdirSync(dir);
+  var found_storage = [];
+  dirlist.forEach((file)=>{
+
+  });
+}
+*/

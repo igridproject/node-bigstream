@@ -62,8 +62,10 @@ JobManager.prototype.setJob = function (prm,cb)
 {
   var self = this;
   var job = prm.job;
+  var vo = prm.vo || "";
 
   if(JUtils.validate(job)){
+    job._vo = vo;
     self.job_registry.setJob(job.job_id,job);
     if(job.trigger){
       self.trigger_registry.setByJob(job,cb);

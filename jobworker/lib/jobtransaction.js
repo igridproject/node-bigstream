@@ -36,7 +36,7 @@ JT.prototype.run = function (done)
     job_registry.getJob(jobId,function(err,data){
       if(!data){
         callback('job ' + jobId + ' :: does not exits');
-      }else if(!data.active){
+      }else if(data.active.toString()=='false'){
         callback('job ' + jobId + ' :: unactive');
       }else{
         callback(err,data);

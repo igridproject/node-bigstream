@@ -29,7 +29,7 @@ TriggerManager.prototype.reload = function (prm,cb)
   var msg = {
     'trigger_type' : 'all',
     'cmd' : 'reload',
-    'prm' : {}
+    'prm' : {'vo':prm.vo}
   }
 
   self.evp.send(topic,msg);
