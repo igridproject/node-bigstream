@@ -1,5 +1,11 @@
 #Changelog
 
+## [1.2.1] - 2018-10-11
+### Added
+- PLUGIN :: do-netpie
+### Changed
+- PLUGIN :: di-http-request inherit meta form input
+
 ## [1.2] - 2018-08-11
 ### Fixed
 - BS :: job registering with no token bug
