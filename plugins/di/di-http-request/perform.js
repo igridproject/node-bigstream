@@ -52,7 +52,23 @@ function execute_function(context,response){
   }
 
   request({'method': 'GET','url':url,'headers':http_headers ,'encoding':encode}, function (error, resp, body) {
-    response.meta = {'_status_code':(error)?0:resp.statusCode,'_error':(error)?true:false}
+    var respmeta = {};
+    //response.meta = {'_status_code':(error)?0:resp.statusCode,'_error':(error)?true:false}
+
+    //Merg Input Meta
+    if(input_meta && typeof input_meta == 'object')
+    {
+      Object.keys(input_meta).forEach((item)=>{
+        if(!item.startsWith('_')){
+          respmeta[item] = input_meta[item];
+        }
+      });
+    }
+
+    respmeta['_status_code'] = (error)?0:resp.statusCode;
+    respmeta['_error'] = (error)?true:false;
+    response.meta = respmeta;
+
     if (!error && resp.statusCode == 200) {
       if(param.encoding=='json'){
         try{

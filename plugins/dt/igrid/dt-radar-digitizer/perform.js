@@ -17,6 +17,7 @@ function perform_function(context,request,response){
   var prm_point = param.point;
   var prm_radius = param.radius;
   var prm_table = param.color_mapping || def_table();
+  var prm_field = param.field || ['avg','median'];
   var mapping_threshold = param.mapping_threshold;
   var bg_threshold = param.backgroud_threshold;
   var prefix = param.prefix || 'radar_';
@@ -48,8 +49,10 @@ function perform_function(context,request,response){
     'bg_threshold ':bg_threshold
   },function(err,res){
     if(!err){
-      meta[prefix+'avg'] = res.avg;
-      meta[prefix+'median'] = res.mdn;
+      if(prm_field.indexOf('avg') >= 0){meta[prefix+'avg'] = res.avg;}
+      if(prm_field.indexOf('avgw') >= 0){meta[prefix+'avgw'] = res.avgw;}
+      if(prm_field.indexOf('median') >=0){meta[prefix+'median'] = res.mdn;}
+
       response.success(data,{'meta':meta,'output_type':output_type});
     }else{
       response.error(err)

@@ -43,6 +43,8 @@ function avg_point(prm,cb)
     var y1 = (dpoint[1]+radius<h)?dpoint[1]+radius:h;
 
     var sum_point = [];
+    var sumwg=0;
+    var wg=0;
     var sum=0;
     for(var i=x0;i<=x1;i++){
       for(var j=y0;j<=y1;j++){
@@ -51,17 +53,15 @@ function avg_point(prm,cb)
           var bpx = Jimp.intToRGBA(ibg.getPixelColor(i, j));
           var fpx = Jimp.intToRGBA(ifg.getPixelColor(i, j));
 
-          //Channel threshold
-          // if(bpx.r-fpx.r > bg_threshold || bpx.g-fpx.g > bg_threshold || bpx.b-fpx.b > bg_threshold){
-          //   newimg.setPixelColor(Jimp.rgbaToInt(fpx.r, fpx.g, fpx.b, 255), i, j);
-          // }
-
           //Color Distance threshold
+          var pointW = weight(i,j,dpoint[0],dpoint[1],radius);
+          wg += pointW;
           if(distance([bpx.r,bpx.g,bpx.b],[fpx.r,fpx.g,fpx.b])>bg_threshold){
             var mv = mapping(table,[fpx.r,fpx.g,fpx.b])
             if(mv.value>0 && mv.distance<mapping_threshold){
               sum_point.push(mv.value);
               sum+=mv.value;
+              sumwg+=mv.value*pointW;
             }
           }else{
             sum_point.push(0);
@@ -72,9 +72,10 @@ function avg_point(prm,cb)
     }
 
     var avg = (sum_point.length>0)?sum/sum_point.length:0;
+    var avgw = (wg>0)?sumwg/wg:0
     var mdn = (sum_point.length>0)?median(sum_point):0;
 
-    callback(null,{'avg':avg,'mdn':mdn});
+    callback(null,{'avg':avg,'avgw':avgw,'mdn':mdn});
 
   }
 
@@ -151,6 +152,11 @@ function median(values) {
 function pointInCircle(x, y, cx, cy, radius) {
   var distancesquared = Math.pow(x - cx,2) + Math.pow(y - cy,2);
   return Math.sqrt(distancesquared) <= radius;
+}
+
+function weight(x, y, cx, cy,radius) {
+  var distancesquared = Math.pow(x - cx,2) + Math.pow(y - cy,2);
+  return radius - Math.sqrt(distancesquared);
 }
 
 function distance(a,b)

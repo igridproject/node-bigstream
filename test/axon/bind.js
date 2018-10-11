@@ -20,15 +20,35 @@
 //   sock.send(t);
 // }, 1500);
 
-var axon = require('axon');
-var sock = axon.socket('rep');
+// var axon = require('axon');
+// var sock = axon.socket('rep');
+//
+// sock.bind('tcp://0.0.0.0:3333')
+//
+// sock.on('message', function(img, reply){
+//   // resize the image
+//   console.log('receive');
+//   setTimeout(function(){
+//     console.log('reply');
+//     var rep = img;
+//     reply(rep);
+//   },5000);
+// });
 
-sock.bind('tcp://0.0.0.0:3333')
+var ctx = require('../../context');
+var RPCServer = ctx.getLib('lib/axon/rpcserver');
 
-sock.on('message', function(img, reply){
-  // resize the image
+var server = new RPCServer({
+  //'url':'tcp://0.0.0.0:3333'
+  'url':ctx.getUnixSocketUrl('test.sock')
+});
+
+server.start();
+
+server.set_remote_function(function(req,cb){
   console.log('receive');
-  var rep = img;
-  rep.note = 'rep';
-  reply(rep);
+  setTimeout(function(){
+    console.log('reply');
+    cb(null,req)
+  },10000);
 });
