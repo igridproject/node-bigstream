@@ -1,8 +1,9 @@
 #Changelog
-## [UR] - 2018-10-22
+## [UR] - 2019-02-12
 ### Added
 - PLUGIN :: dt-pdfmaker
 - PLUGIN :: dt-transform ba64script
+- PLUGIN :: dt-keybuffer
 
 ## [1.2.1] - 2018-10-11
 ### Added
