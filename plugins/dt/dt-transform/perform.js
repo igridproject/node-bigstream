@@ -14,9 +14,10 @@ function perform_function(context,request,response){
 
   var mapscr = Utils.parse_script_param(param.script);
   var datascr = param.text ;
+  var ba64script = param.ba64script;
 
-  if(param.text){
-    mapscr = mapscr + "; data=`" + param.text + "`";
+  if(datascr){
+    mapscr = mapscr + "; data=`" + datascr + "`";
   }
 
   var mapenv = {
@@ -25,13 +26,21 @@ function perform_function(context,request,response){
       'data' : in_data,
       'meta' : in_meta
     },
+    '_env':{},
     'type' : in_type,
     'data' : in_data,
     'meta' : in_meta
   }
 
-  var script = new vm.Script(mapscr);
   var context = new vm.createContext(mapenv);
+
+  if(ba64script && typeof ba64script == 'string'){
+    var strScript = Buffer.from(ba64script, 'base64').toString('utf8');
+    var b64s = new vm.Script(strScript);
+    b64s.runInContext(context);
+  }
+ 
+  var script = new vm.Script(mapscr);
   script.runInContext(context);
 
   var data = mapenv.data;
