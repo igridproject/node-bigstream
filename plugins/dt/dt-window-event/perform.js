@@ -7,7 +7,7 @@ function perform_function(context,request,response){
 
   var in_type = request.input_type;
   var in_data = request.data;
-  var in_meta = request.meta;
+  var in_meta = request.meta || {};
 
   //parameter
   //prm_size :: int
@@ -42,9 +42,10 @@ function perform_function(context,request,response){
       response.reject();
     }else{
       ret = ret.slice(prm_size * -1);
-      var meta = {'_size':ret.length};
+      var meta = in_meta;
+      meta['_wsize'] = ret.length;
       memstore.setItem(prm_name,ret);
-      response.success(ret,{'meta':meta,'in_meta':in_type});
+      response.success(ret,{'meta':meta,'output_type':in_type});
     }
   });
 
