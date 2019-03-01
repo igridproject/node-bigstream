@@ -16,7 +16,8 @@ function perform_function(context,request,response){
     var env = {
       'type' : output_type,
       'data' : data,
-      'meta' : meta
+      'meta' : meta,
+      'response':false
     }
 
     var script = new vm.Script("response=(" + param.condition + ")?true:false");
