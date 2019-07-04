@@ -32,7 +32,9 @@ var JW = function JobWorker (prm)
   this.job_registry = JobRegistry.create({'redis':this.mem});
   this.acl_validator = ACLValidator.create(this.auth_cfg);
 
-  this.storagecaller = new SSCaller({'url':SS_URL});
+  /* Disable RPC Feature */
+  //this.storagecaller = new SSCaller({'url':SS_URL});
+  this.storagecaller = null;
 }
 
 JW.prototype.start = function ()

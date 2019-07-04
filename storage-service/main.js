@@ -52,7 +52,10 @@ SS.prototype.start = function()
 {
   console.log('Starting Storage Service ...\n');
   this.amqp_start();
-  this.ipc_start();
+  
+  /* Disable RPC Feature */
+  //this.ipc_start();
+
   setTimeout(function(){
     this.http_start();
   },5000);
