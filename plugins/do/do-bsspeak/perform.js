@@ -36,7 +36,7 @@ function perform_function(context,request,response){
           'data' : data[idx]
         }
         var topic=Utils.vm_execute_text(ev,prm_topic);
-        client.publish(topic,data[idx],function(err){
+        client.publish(topic,JSON.stringify(data[idx]),function(err){
           idx++;
           callback(err);
         });
