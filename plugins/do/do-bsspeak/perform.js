@@ -8,7 +8,7 @@ var async = require('async');
 function perform_function(context,request,response){
   var job_id = context.jobconfig.job_id;
   var transaction_id = context.transaction.id;
-  var param = context.jobconfig.data_out.param;
+  var param = context.jobconfig.data_out.param || {};
   var memstore = context.task.memstore;
 
   var in_type = request.type;
