@@ -1,9 +1,25 @@
-module.exports = {
-  'amqp' : require('./amqp.json'),
-  'memstore' : require('./memstore.json'),
-  'storage' : require('./storage.json'),
+var fs = require('fs');
+
+var cfg = {
+  'amqp' : cfg_load('amqp.json'),
+  'memstore' : cfg_load('memstore.json'),
+  'storage' : cfg_load('storage.json'),
   'auth' : {
-    'secret': require('./secret.json'),
-	'acl' : require('./acl.json')
+    'secret': cfg_load('secret.json'),
+	  'acl' : cfg_load('acl.json')
   }
 }
+
+function cfg_load(fd)
+{
+  var ret = {};
+  if(fs.existsSync(__dirname + '/' + fd)){
+    ret = require(__dirname + '/' + fd);
+  }else if(fs.existsSync(__dirname + '/template/' + fd)){
+    ret = require(__dirname + '/template/' + fd);
+  }
+
+  return ret;
+}
+
+module.exports = cfg;
