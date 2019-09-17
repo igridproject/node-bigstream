@@ -20,6 +20,7 @@ if(m.read=="false" && m.write=="false")
   if(m.read=="true"){ss.http_start();}
   if(m.write=="true"){
     ss.amqp_start();
-    ss.ipc_start();
+    //Disable IPC Feature
+    //ss.ipc_start();
   }
 }
