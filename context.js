@@ -1,6 +1,11 @@
 var CONFIG_PATH = './conf/config';
+var cfg = require(CONFIG_PATH);
 
-module.exports.config = require(CONFIG_PATH);
+module.exports.config = cfg;
+
+module.exports.getConfig = function(name,def){
+
+}
 
 module.exports.getLib = function(name){
     if(name)
