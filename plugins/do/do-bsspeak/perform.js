@@ -8,7 +8,7 @@ var async = require('async');
 function perform_function(context,request,response){
   var job_id = context.jobconfig.job_id;
   var transaction_id = context.transaction.id;
-  var param = context.jobconfig.data_out.param;
+  var param = context.jobconfig.data_out.param || {};
   var memstore = context.task.memstore;
 
   var in_type = request.type;
@@ -36,7 +36,7 @@ function perform_function(context,request,response){
           'data' : data[idx]
         }
         var topic=Utils.vm_execute_text(ev,prm_topic);
-        client.publish(topic,data[idx],function(err){
+        client.publish(topic,JSON.stringify(data[idx]),function(err){
           idx++;
           callback(err);
         });
