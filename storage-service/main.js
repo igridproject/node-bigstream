@@ -16,7 +16,7 @@ var app = express();
 var bodyParser = require('body-parser');
 
 var EventPub = ctx.getLib('lib/amqp/event-pub');
-var cfg = ctx.config;
+//var cfg = ctx.config;
 
 var SS_LISTEN = ctx.getUnixSocketUrl('ss.sock');
 var SS_URL = ctx.getUnixSocketUrl('ss.sock');
