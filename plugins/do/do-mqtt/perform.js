@@ -15,7 +15,7 @@ function perform_function(context,request,response){
   var data = (Array.isArray(request.data))?request.data:[request.data];
   var meta = request.meta;
 
-  var prm_url = param.url || "mqtt://127.0.0.1";
+  var prm_url = param.url || ctx.getConfig('mqtt.url','mqtt://127.0.0.1');
   var prm_topic = param.topic;
 
   var client  = mqtt.connect(prm_url);
