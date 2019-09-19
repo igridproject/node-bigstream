@@ -1,6 +1,54 @@
-var CONFIG_PATH = './conf/config';
+var _dot = require('dot-prop');
 
-module.exports.config = require(CONFIG_PATH);
+var CONFIG_PATH = __dirname + '/conf/config';
+var cfg = require(CONFIG_PATH);
+
+module.exports.config = cfg;
+
+module.exports.getConfig = function(name,def,opt){
+  var option = {};
+  var def_val = def || '';
+  var ret=def_val;
+
+  if(typeof opt == 'object'){option=opt;}
+  if(typeof option.env == 'undefined'){option.env=true;}
+  if(typeof name != 'string' || name=='.'){name='';}
+
+  var bs_cfg={};
+  if(option.env){
+    bs_cfg = envcnf('',cfg);
+  }else{
+    bs_cfg = cfg;
+  }
+
+  if(typeof name != 'string' || name=='.' || name =='' || name == '*'){
+    ret = bs_cfg;
+  }else{
+    ret = _dot.get(bs_cfg,name,def_val);
+  }
+
+  return ret;
+}
+
+var envcnf = function(name,init_obj){
+  var obj=init_obj || {};
+  var env = process.env;
+  var name_pref = 'bs.config';
+  
+  if(name){name_pref=name_pref + '.' + name;}
+  if(env[name_pref]){obj=env[name_pref];}
+
+  var nfull = name_pref + '.';
+  Object.keys(env).forEach((k)=>{
+    if(k.startsWith(nfull)){
+      var dotkey = k.substring(nfull.length);
+      _dot.set(obj,dotkey,env[k]);
+    }
+  });
+
+  return obj;
+}
+module.exports.getEnvConf = envcnf
 
 module.exports.getLib = function(name){
     if(name)
@@ -35,5 +83,3 @@ module.exports.getUnixSocketUrl = function(name){
   var sockname = name || 'test.sock';
   return 'unix://' + __dirname + '/tmp/' + sockname;
 }
-//module.exports.socket_dir = __dirname + '/tmp';
-//module.exports.tmp_dir = __dirname + '/tmp';
