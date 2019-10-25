@@ -6,9 +6,9 @@ function avg_point(prm,cb)
   var bg = prm.bg;
   var fg = prm.fg;
   var dpoint = prm.point;
-  var radius = prm.radius || 10;
-  var bg_threshold = prm.bg_threshold || 20;
-  var mapping_threshold = prm.mapping_threshold || 128;
+  var radius = Number(prm.radius) || 10;
+  var bg_threshold = Number(prm.bg_threshold) || 20;
+  var mapping_threshold = Number(prm.mapping_threshold) || 128;
   var table = prm.table || [];
 
   async.waterfall([
@@ -128,7 +128,7 @@ function mapping(map_table,color)
     if(itm.color && itm.value){
         var d = distance(itm.color,color)
         if(d<out.distance){
-          out.value = itm.value;
+          out.value = Number(itm.value);
           out.distance = d;
         }
     }
@@ -162,7 +162,7 @@ function weight(x, y, cx, cy,radius) {
 function distance(a,b)
 {
   sum = 0;
-  sum = Math.pow(a[0] - b[0],2) + Math.pow(a[1] - b[1],2) + Math.pow(a[2] - b[2],2)
+  sum = Math.pow(Number(a[0]) - Number(b[0]),2) + Math.pow(Number(a[1]) - Number(b[1]),2) + Math.pow(Number(a[2]) - Number(b[2]),2)
   return Math.sqrt(sum)
 }
 
