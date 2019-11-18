@@ -1,6 +1,5 @@
 var ctx = require('../../../context');
 var Utils = ctx.getLib('lib/util/plugin-utils');
-var bsdata = ctx.getLib('lib/model/bsdata');
 
 var request = require("request");
 
@@ -16,6 +15,7 @@ function perform_function(context,request,response){
 
   var req_url = param.url || "";
   var req_method = param.method || "GET";
+  var req_body_type = param.body_type || "json";
 
   var env = {
     'type' : output_type,
@@ -26,7 +26,7 @@ function perform_function(context,request,response){
   var req_url = Utils.vm_execute_text(env,req_url);
   
 
-  send_request({'url':req_url,'method':req_method,'headers':param.headers,'body':data},function(err){
+  send_request({'url':req_url,'method':req_method,'headers':param.headers,'body_type':req_body_type,'body':data},function(err){
     if(!err){
       response.success();
     }else{
@@ -50,8 +50,16 @@ function send_request(prm,cb)
   if(prm.method.toLowerCase()=='post' || prm.method.toLowerCase()=='put')
   {
     options.method = prm.method.toUpperCase();
-    options.headers['content-type'] = 'application/json';
-    options.json = prm.body;
+
+    if(body_type=='json' && typeof prm.body == 'object'){
+      options.headers['content-type'] = 'application/json';
+      options.json = prm.body;
+    }else if(body_type=='text' || typeof prm.body == 'string'){
+      options.headers['content-type'] = 'text/plain';
+      options.body = prm.body;
+    }else{
+      options.body = prm.body;
+    }
   }
 
   if(typeof prm.headers == 'object')
