@@ -51,10 +51,10 @@ function send_request(prm,cb)
   {
     options.method = prm.method.toUpperCase();
 
-    if(body_type=='json' && typeof prm.body == 'object'){
+    if(prm.body_type=='json' && typeof prm.body == 'object'){
       options.headers['content-type'] = 'application/json';
       options.json = prm.body;
-    }else if(body_type=='text' || typeof prm.body == 'string'){
+    }else if(prm.body_type=='text' || typeof prm.body == 'string'){
       options.headers['content-type'] = 'text/plain';
       options.body = prm.body;
     }else{
