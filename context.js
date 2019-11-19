@@ -1,6 +1,8 @@
 var _dot = require('dot-prop');
 
 var CONFIG_PATH = __dirname + '/conf/config';
+var ENV_MAP = __dirname + '/conf/env';
+
 var cfg = require(CONFIG_PATH);
 
 module.exports.config = cfg;
@@ -16,7 +18,7 @@ module.exports.getConfig = function(name,def,opt){
 
   var bs_cfg={};
   if(option.env){
-    bs_cfg = envcnf('',cfg);
+    bs_cfg = envcnf(cfg);
   }else{
     bs_cfg = cfg;
   }
@@ -30,19 +32,27 @@ module.exports.getConfig = function(name,def,opt){
   return ret;
 }
 
-var envcnf = function(name,init_obj){
+var envcnf = function(init_obj){
   var obj=init_obj || {};
   var env = process.env;
-  var name_pref = 'bs.config';
+  var envmap = require(ENV_MAP);
+  // var name_pref = 'bs.config';
   
-  if(name){name_pref=name_pref + '.' + name;}
-  if(env[name_pref]){obj=env[name_pref];}
+  // if(name){name_pref=name_pref + '.' + name;}
+  // if(env[name_pref]){obj=env[name_pref];}
 
-  var nfull = name_pref + '.';
-  Object.keys(env).forEach((k)=>{
-    if(k.startsWith(nfull)){
-      var dotkey = k.substring(nfull.length);
-      _dot.set(obj,dotkey,env[k]);
+  // var nfull = name_pref + '.';
+  // Object.keys(env).forEach((k)=>{
+  //   if(k.startsWith(nfull)){
+  //     var dotkey = k.substring(nfull.length);
+  //     _dot.set(obj,dotkey,env[k]);
+  //   }
+  // });
+
+  if(!Array.isArray(envmap)){return obj;}
+  envmap.forEach((em)=>{
+    if(em.env && em.conf && env[em.env]){
+      _dot.set(obj,em.conf,env[em.env]);
     }
   });
 

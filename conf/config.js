@@ -2,6 +2,7 @@ var fs = require('fs');
 
 var cfg = {
   'amqp' : cfg_load('amqp.json'),
+  'mqtt' : cfg_load('mqtt.json'),
   'memstore' : cfg_load('memstore.json'),
   'storage' : cfg_load('storage.json'),
   'auth' : {
