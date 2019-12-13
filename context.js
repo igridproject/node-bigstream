@@ -1,7 +1,7 @@
 var _dot = require('dot-prop');
 
 var CONFIG_PATH = __dirname + '/conf/config';
-var ENV_MAP = __dirname + '/conf/env';
+var ENV_MAP = __dirname + '/env';
 
 var cfg = require(CONFIG_PATH);
 
