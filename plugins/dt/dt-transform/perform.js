@@ -28,10 +28,9 @@ function perform_function(context,request,response){
   if(param.use_register){
     memstore.getItem('register',function(err,value){
       if(err){return response.error("memstore error");}
-      if(typeof value == 'object' && value!=null)
-      {
-        mapenv.register = Register.create(value);
-      }
+
+      mapenv.register = Register.create(value);
+    
       mapenv = _compile(mapenv,param);
       memstore.setItem('register',mapenv.register.get(),function(err){
         _response();
