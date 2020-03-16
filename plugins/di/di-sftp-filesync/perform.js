@@ -70,7 +70,7 @@ function perform_function(context,response){
           'filesize': f_target.size,
           'modify_ts' : Math.round(f_target.modifyTime/1000)
         }
-    		return sftp.get(prm_dir + '/' + f_target.name,null,{});
+    		return sftp.get(prm_dir + '/' + f_target.name);
     	}else{
     		return null;
     	}
