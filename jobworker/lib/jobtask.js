@@ -98,8 +98,8 @@ JobTask.prototype.run = function ()
   var task_di = function (callback) {
     var dm_i = domain.create();
     dm_i.on('error', function(err) {
-      console.log('[DI] plugins error');
-      console.log(err);
+      // console.log('[DI] plugins error');
+      // console.log(err);
       self.stats.di = {'status':'error','data':'plugins error'};
       callback({'status':'error','data':'plugins error'});
     });
@@ -129,8 +129,8 @@ JobTask.prototype.run = function ()
 
     var dm_t = domain.create();
     dm_t.on('error', function(err) {
-      console.log('[DT] plugins error');
-      console.log(err);
+      // console.log('[DT] plugins error');
+      // console.log(err);
       self.stats.dt = {'status':'error','data':'plugins error'};
       callback({'status':'error','data':'plugins error'});
     });
@@ -149,7 +149,7 @@ JobTask.prototype.run = function ()
         perform_dt({'cfg':cur_cfg,'name':dt_name,'context':context,'request':dt_request,'handle':self},function(err,dt_resp){
 
           if(dt_resp){
-            console.log('[DT:' + dt_name + ' STATUS]\t\t: ' + dt_resp.status);
+            // console.log('[DT:' + dt_name + ' STATUS]\t\t: ' + dt_resp.status);
           }
 
           idx++;
@@ -181,8 +181,8 @@ JobTask.prototype.run = function ()
 
     var dm_o = domain.create();
     dm_o.on('error', function(err) {
-      console.log('[DO] plugins error');
-      console.log(err);
+      // console.log('[DO] plugins error');
+      // console.log(err);
       callback({'status':'error','data':'plugins error'});
     });
 
@@ -205,18 +205,18 @@ JobTask.prototype.run = function ()
     //self.emit('error',new Error('job execution timeout'))
   },self.job_timeout);
 
-  console.log('***** JOB RUNNING *****');
-  console.log('[JOB ID]\t\t: ' + job_id);
-  console.log('[TRANSACTION ID]\t: ' + transaction_id);
+  // console.log('***** JOB RUNNING *****');
+  // console.log('[JOB ID]\t\t: ' + job_id);
+  // console.log('[TRANSACTION ID]\t: ' + transaction_id);
 
   async.waterfall([task_di,task_dt,task_do],function (err,resp) {
     clearTimeout(jtimeout);
     if(!err){
       self.stop(resp)
-      console.log('***** JOB SUCCESSFULLY DONE *****\n');
+      // console.log('***** JOB SUCCESSFULLY DONE *****\n');
     }else{
       self.stop(err)
-      console.log('***** JOB UNSUCCESSFULLY DONE *****\n');
+      // console.log('***** JOB UNSUCCESSFULLY DONE *****\n');
     }
   });
 
