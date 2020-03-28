@@ -64,6 +64,7 @@ BSSEngine.prototype.open = function(cb)
   }
 
   function open(){
+    console.log("Open >> " + self.filepath())
     BinStream.open(self.filepath(),function(err,bss){
         if(!err){
           self.bss = bss;
