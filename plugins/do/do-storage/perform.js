@@ -79,6 +79,7 @@ function perform_function(context,request,response){
           });
           
           if(acp){
+            console.log('send data ' + String(idx+1) + ' of ' + String(data.length))
             send_storage(caller,dc_meta,el_data,sname,function(err){
               if(!err){
                 idx++;
