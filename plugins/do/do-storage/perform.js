@@ -24,10 +24,12 @@ function perform_function(context,request,response){
   var amqp_cfg = ctx.config.amqp;
   var storage_name = param.storage_name;
 
-  var caller = new RPCCaller({
-    url : amqp_cfg.url,
-    name :'storage_request'
-  });
+  // var caller = new RPCCaller({
+  //   url : amqp_cfg.url,
+  //   name :'storage_request'
+  // });
+
+  var caller = storagecaller;
 
   // if(param.channel!='ipc'){
   //   caller = new RPCCaller({
@@ -79,9 +81,7 @@ function perform_function(context,request,response){
           });
           
           if(acp){
-            console.log('send data ' + String(idx+1) + ' of ' + String(data.length))
             send_storage(caller,dc_meta,el_data,sname,function(err){
-              console.log('OK>>')
               if(!err){
                 idx++;
                 callback(null);
