@@ -28,11 +28,13 @@ var req = {
 
   var idx = 0;
   async.whilst(
-      function() { return idx < 10000; },
+      function() { return idx < 2000; },
       function(callback) {
         req.id = idx;
         caller.call(req,function(err,resp){
-          //console.log(resp)
+          if(idx%100==0){
+            console.log(resp)
+          }
           idx++;
           callback(null);
         });
