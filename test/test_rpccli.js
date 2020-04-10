@@ -28,19 +28,20 @@ var req = {
 
   var idx = 0;
   async.whilst(
-      function() { return idx < 10000; },
+      function() { return idx < 20; },
       function(callback) {
+        req.id = idx;
         caller.call(req,function(err,resp){
+          console.log(resp)
           idx++;
           callback(null);
         });
       },
       function (err) {
         if(!err){
-          response.success();
+          console.log('finish')
         }else{
           console.log(err);
-          response.error("storage error");
         }
       }
 

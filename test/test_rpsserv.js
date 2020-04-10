@@ -9,7 +9,7 @@ var server = new rpcserver({
             });
 
 server.set_remote_function(function(req,callback){
-  callback(null,{'time':n,'data':req.d});
+  callback(null,{'cmd':req.command,'id':req.id});
 })
 
 server.start(function(err){
