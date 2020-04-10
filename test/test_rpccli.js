@@ -1,15 +1,16 @@
 var ctx = require('../context');
+var async = require('async');
 var amqp_cfg = ctx.config.amqp;
 
 var RPCCaller = ctx.getLib('lib/amqp/rpccaller');
 
 var caller = new RPCCaller({
   url : amqp_cfg.url,
-  name :'storage_request'
+  name :'test_request'
 });
 
 var req = {
-    'object_type' : 'storage_request',
+    'object_type' : 'test_request',
     'command' : 'write',
     'param' : {
       'storage_name' : 'gcs.file.test',
@@ -24,10 +25,26 @@ var req = {
     }
 }
 
-caller.call(req,function(err,resp){
-  console.log(resp);
-});
 
+  var idx = 0;
+  async.whilst(
+      function() { return idx < 10000; },
+      function(callback) {
+        caller.call(req,function(err,resp){
+          idx++;
+          callback(null);
+        });
+      },
+      function (err) {
+        if(!err){
+          response.success();
+        }else{
+          console.log(err);
+          response.error("storage error");
+        }
+      }
+
+  );
 
 
 
