@@ -213,13 +213,15 @@ JobTask.prototype.run = function ()
 
   async.waterfall([task_di,task_dt,task_do],function (err,resp) {
     clearTimeout(jtimeout);
-    console.log('[JOB DONE] id=' + job_id + ' ,tr=' + transaction_id + '\t' + resp.status);
+    //console.log('[JOB DONE] id=' + job_id + ' ,tr=' + transaction_id + '\t' + resp.status);
     if(!err){
       self.stop(resp)
       // console.log('***** JOB SUCCESSFULLY DONE *****\n');
+      console.log('[JOB DONE] id=' + job_id + ' ,tr=' + transaction_id + '\tsuccess');
     }else{
       self.stop(err)
       // console.log('***** JOB UNSUCCESSFULLY DONE *****\n');
+      console.log('[JOB DONE] id=' + job_id + ' ,tr=' + transaction_id + '\tunsuccess');
     }
   });
 
