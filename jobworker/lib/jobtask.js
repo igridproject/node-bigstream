@@ -98,8 +98,8 @@ JobTask.prototype.run = function ()
   var task_di = function (callback) {
     var dm_i = domain.create();
     dm_i.on('error', function(err) {
-      // console.log('[DI] plugins error');
-      // console.log(err);
+      console.log('[DI] plugins error');
+      console.log(err);
       self.stats.di = {'status':'error','data':'plugins error'};
       callback({'status':'error','data':'plugins error'});
     });
@@ -108,7 +108,7 @@ JobTask.prototype.run = function ()
       perform_di({'context':context,'handle':self} ,function(err,resp){
 
         if(resp){
-          console.log('[DI STATUS]\t\t: ' + resp.status);
+          // console.log('[DI STATUS]\t\t: ' + resp.status);
           self.stats.di = resp;
         }
         if(resp.status == 'success'){
@@ -129,8 +129,8 @@ JobTask.prototype.run = function ()
 
     var dm_t = domain.create();
     dm_t.on('error', function(err) {
-      // console.log('[DT] plugins error');
-      // console.log(err);
+      console.log('[DT] plugins error');
+      console.log(err);
       self.stats.dt = {'status':'error','data':'plugins error'};
       callback({'status':'error','data':'plugins error'});
     });
@@ -181,14 +181,16 @@ JobTask.prototype.run = function ()
 
     var dm_o = domain.create();
     dm_o.on('error', function(err) {
-      // console.log('[DO] plugins error');
-      // console.log(err);
+      console.log('[DO] plugins error');
+      console.log(err);
       callback({'status':'error','data':'plugins error'});
     });
 
     dm_o.run(function() {
       perform_do({'context':context,'request':do_request,'handle':self},function(err,do_resp){
-        if(do_resp){console.log('[DO STATUS]\t\t: ' + do_resp.status);}
+        if(do_resp){
+          //console.log('[DO STATUS]\t\t: ' + do_resp.status);
+        }
         if(do_resp.status == 'success'){
           callback(null,do_resp);
         }else {
@@ -211,6 +213,7 @@ JobTask.prototype.run = function ()
 
   async.waterfall([task_di,task_dt,task_do],function (err,resp) {
     clearTimeout(jtimeout);
+    console.log('[JOB DONE] id=' + job_id + ' ,tr=' + transaction_id + '\t' + resp.status);
     if(!err){
       self.stop(resp)
       // console.log('***** JOB SUCCESSFULLY DONE *****\n');
