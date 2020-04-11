@@ -1,6 +1,10 @@
 #Changelog
-## [1.2.3] - 2019-11-19
+## [1.2.3-UR]
+### Fixed
+- BS :: AMQP RPC Singleton Connection ,auto ack
+- STORAGE :: 50x speedup
 ### Added
+- BS :: env configuration context
 - PLUGIN :: dt-transform register
 - BS :: Configuration Context with ENV
 - PLUGIN :: do-http
