@@ -92,6 +92,7 @@ BSSEngine.prototype.cmd = function(cmd,cb)
 
     switch (command) {
       case 'write':
+        console.log('CMD WRITE....')
         _self.cmd_write(param,cb);
         break;
       default:
