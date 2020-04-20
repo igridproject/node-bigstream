@@ -4,11 +4,13 @@ var ctx = require('../../context');
 var BinStream = ctx.getLib('lib/bss/binarystream_v1_1');
 var ObjId = ctx.getLib('lib/bss/objid');
 var bsdata = ctx.getLib('lib/model/bsdata');
+var thunky = require('thunky');
 
 var importer = require('./importer');
 var dataevent = require('./dataevent');
 var sutils = require('./storage-utils');
 
+var _self = null;
 module.exports.create = function(prm)
 {
   var ins = prm;
@@ -21,6 +23,7 @@ module.exports.create = function(prm)
 
 function BSSEngine(prm)
 {
+  _self = this;
   if(typeof prm == 'string'){
     prm = {'file':prm,'context':null};
   }
@@ -46,15 +49,14 @@ BSSEngine.prototype.exists = function()
   return fs.existsSync(fp);
 }
 
-BSSEngine.prototype.open = function(cb)
+BSSEngine.prototype.open = thunky(function(cb)
 {
-  var self = this;
 
-  if(self.exists())
+  if(_self.exists())
   {
     open()
   }else{
-    BinStream.format(self.filepath(),function(err){
+    BinStream.format(_self.filepath(),function(err){
       if(!err){
         open()
       }else{
@@ -64,20 +66,22 @@ BSSEngine.prototype.open = function(cb)
   }
 
   function open(){
-    BinStream.open(self.filepath(),function(err,bss){
+    BinStream.open(_self.filepath(),function(err,bss){
         if(!err){
-          self.bss = bss;
+          _self.bss = bss;
         }
 
-        cb(err);
+        cb(err,bss);
     });
   }
 
-}
+});
 
 BSSEngine.prototype.close = function(cb)
 {
-  this.bss.close(cb);
+  _self.open((err,bss)=>{
+    bss.close(cb);
+  });
 }
 
 
@@ -86,11 +90,9 @@ BSSEngine.prototype.cmd = function(cmd,cb)
     var command = cmd.command;
     var param = cmd.param;
 
-    var self=this;
-
     switch (command) {
       case 'write':
-        self.cmd_write(param,cb);
+        _self.cmd_write(param,cb);
         break;
       default:
         cb('invalid cmd');
@@ -99,31 +101,34 @@ BSSEngine.prototype.cmd = function(cmd,cb)
 
 BSSEngine.prototype.cmd_write = function(prm,cb)
 {
-  var self = this;
   var data = parseData(prm.data);
   var meta = prm.meta;
 
   if(!data){return cb("null data")}
 
-  this.bss.write(data,{'meta':meta},function(err,obj){
-    if(!err){
-      var head = obj.getHeader();
-      var obj_id = new ObjId(head.ID);
-      var resp = {
-        'resource_id' : obj_id.toString(),
-        'storage_name' : self.name
+  _self.open((err,bss)=>{
+    bss.write(data,{'meta':meta},function(err,obj){
+      if(!err){
+        var head = obj.getHeader();
+        var obj_id = new ObjId(head.ID);
+        var resp = {
+          'resource_id' : obj_id.toString(),
+          'storage_name' : _self.name
+        }
+  
+        //dataevent.newdata({'resourceId':obj_id.toString(),'storageId':self.name});
+        if(_self.context){
+            newdata_event(_self.context,{'resourceId':obj_id.toString(),'storageId':_self.name});
+        }
+  
+        cb(null,resp);
+      }else {
+        cb("write error");
       }
+    });
 
-      //dataevent.newdata({'resourceId':obj_id.toString(),'storageId':self.name});
-      if(self.context){
-          newdata_event(self.context,{'resourceId':obj_id.toString(),'storageId':self.name});
-      }
-
-      cb(null,resp);
-    }else {
-      cb("write error");
-    }
   });
+
 }
 
 function newdata_event(ctx,prm)
