@@ -11,11 +11,12 @@ function perform_function(context,request,response){
 
   var output_type = request.input_type;
   var data = request.data;
-  var meta = request.meta;
+  var meta = request.meta || {};
 
   var req_url = param.url || "";
   var req_method = param.method || "GET";
   var req_body_type = param.body_type || "json";
+  var resp_encode = param.encoding || "text";
 
   var env = {
     'type' : output_type,
@@ -23,16 +24,40 @@ function perform_function(context,request,response){
     'meta' : meta
   }
 
-  var req_url = Utils.vm_execute_text(env,req_url);
-  
+  req_url = Utils.vm_execute_text(env,req_url);
 
-  send_request({'url':req_url,'method':req_method,'headers':param.headers,'body_type':req_body_type,'body':data},function(err){
+  send_request({'url':req_url,
+                'method':req_method,
+                'headers':param.headers,
+                'body_type':req_body_type,
+                'body':data,
+                'resp_encode':resp_encode},function(err,resp,body){
+
+    var respmeta = meta;
+    Object.keys(respmeta).forEach((k)=>{
+      if(k.startsWith('_')){delete respmeta[k];}
+    });
+
+    respmeta['_status_code'] = (err)?0:resp.statusCode;
+    respmeta['_error'] = (err)?true:false;
+    response.meta = respmeta;
+
     if(!err){
-      response.success();
+      if(resp_encode=='json'){
+        try{
+          var j = JSON.parse(body);
+          response.success(j,output_type);
+        }catch(err){
+          response.success({},output_type);
+        }
+      }else{
+        response.success(body,output_type);
+      }
     }else{
-      response.error(err);
+      response.success(null,output_type);
     }
-  })
+
+  });
   //response.success();
   //response.reject();
   //response.error("error message")
@@ -67,9 +92,11 @@ function send_request(prm,cb)
     options.headers = Object.assign(options.headers,prm.headers)
   }
 
+  options.encoding = (prm.resp_encode == 'binary')?null:'utf8';
+
   request(options, function (err, resp, body) {
     if (!err) {
-      cb();
+      cb(err, resp, body);
     }else{
       cb(new Error("request error"));
     }

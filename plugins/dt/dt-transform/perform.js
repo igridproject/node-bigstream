@@ -11,7 +11,7 @@ function perform_function(context,request,response){
 
   var in_type = request.input_type;
   var in_data = request.data;
-  var in_meta = request.meta;
+  var in_meta = request.meta || {};
   
   var mapenv = {
     'src' : {
