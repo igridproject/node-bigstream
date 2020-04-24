@@ -249,13 +249,13 @@ function file_out(resp,obj,opt)
 
   if(objType == BinStream.BINARY_TYPE){
     defType = "application/octet-stream";
-    defName = (opt.file_type)?objId + "." + opt.file_type:objId + ".out";
+    defName = (opt.filetype)?objId + "." + opt.filetype:objId + ".out";
   }else if(objType == BinStream.STRING_TYPE){
     defType = "text";
-    defName = (opt.file_type)?objId + "." + opt.file_type:objId + ".out";
+    defName = (opt.filetype)?objId + "." + opt.filetype:objId + ".out";
   }else{
     defType = "json";
-    defName = (opt.file_type)?objId + "." + opt.file_type:objId + ".json";
+    defName = (opt.filetype)?objId + "." + opt.filetype:objId + ".json";
   }
 
   var file_name = opt.filename || meta.file_name || defName;
