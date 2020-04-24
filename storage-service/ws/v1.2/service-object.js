@@ -36,8 +36,25 @@ router.get('/:id/data',function (req, res) {
     var opt = {
       'field' : 'data'
     }
-    opt.filetype = (query.filetype)?query.filetype:null
+    opt.filetype = (query.file_type || query.filetype)?query.file_type || query.filetype:null;
     get_object(reqHelper,respHelper,{'oid':oid,'opt':opt});
+
+});
+
+router.get('/:id/file',function (req, res) {
+  var reqHelper = request.create(req);
+  var respHelper = response.create(res);
+  var query = reqHelper.getQuery();
+  var oid = req.params.id;
+
+  var opt = {
+    'field' : 'file'
+  }
+  opt.filetype = (query.file_type || query.filetype)?query.file_type || query.filetype:null;
+  opt.filename = (query.file_name || query.filename)?query.file_name || query.filename:null;
+  opt.download = (query.download)?true:null;
+
+  get_object(reqHelper,respHelper,{'oid':oid,'opt':opt});
 
 });
 
@@ -177,6 +194,9 @@ function output(resp,obj,opt)
   if(opt.field=='data')
   {
     data_out(resp,obj,opt);
+  }else if(opt.field=='file')
+  {
+    file_out(resp,obj,opt);
   }else{
     obj_out(resp,obj,opt);
   }
@@ -215,6 +235,40 @@ function data_out(resp,obj,opt)
   }else{
     resp.responseOK(obj.data);
   }
+
+}
+
+function file_out(resp,obj,opt)
+{
+  var objType = obj.header.TY;
+  var objId = (new ObjId(obj.header.ID)).toString();
+  var meta = obj.meta || {};
+
+  var defName=null;
+  var defType=null;
+
+  if(objType == BinStream.BINARY_TYPE){
+    defType = "application/octet-stream";
+    defName = (opt.file_type)?objId + "." + opt.file_type:objId + ".out";
+  }else if(objType == BinStream.STRING_TYPE){
+    defType = "text";
+    defName = (opt.file_type)?objId + "." + opt.file_type:objId + ".out";
+  }else{
+    defType = "json";
+    defName = (opt.file_type)?objId + "." + opt.file_type:objId + ".json";
+  }
+
+  var file_name = opt.file_name || meta.file_name || objId + ".out";
+  var file_type = opt.file_type || meta.file_type || defType
+  
+  resp.response.type(file_type);
+  if(opt.download){
+    resp.response.set('Content-Disposition', 'attachment; filename="' + file_name + '"');
+  }else{
+    resp.response.set('Content-Disposition', 'filename="' + file_name + '"');
+  }
+
+  resp.response.send(obj.data);
 
 }
 
