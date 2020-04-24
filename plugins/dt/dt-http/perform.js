@@ -6,7 +6,7 @@ var request = require("request").defaults({ encoding: null });
 function perform_function(context,request,response){
   var job_id = context.jobconfig.job_id;
   var transaction_id = context.transaction.id;
-  var param = context.jobconfig.data_out.param;
+  var param = context.task.config.param || {};
   var memstore = context.task.memstore
 
   var output_type = request.input_type;
@@ -105,7 +105,7 @@ function send_request(prm,cb)
   }
 
   options.encoding = (prm.resp_encode == 'binary')?null:'utf8';
-console.log(options);
+
   request(options, function (err, resp, body) {
     if (!err) {
       cb(err, resp, body);
