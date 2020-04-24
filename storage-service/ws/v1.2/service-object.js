@@ -258,8 +258,8 @@ function file_out(resp,obj,opt)
     defName = (opt.file_type)?objId + "." + opt.file_type:objId + ".json";
   }
 
-  var file_name = opt.file_name || meta.file_name || objId + ".out";
-  var file_type = opt.file_type || meta.file_type || defType
+  var file_name = opt.filename || meta.file_name || objId + ".out";
+  var file_type = opt.filetype || meta.file_type || defType
   
   resp.response.type(file_type);
   if(opt.download){
