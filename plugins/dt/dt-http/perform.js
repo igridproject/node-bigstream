@@ -15,6 +15,7 @@ function perform_function(context,request,response){
 
   var req_url = param.url || "";
   var req_method = param.method || "GET";
+  var req_headers = param.headers || {};
   var req_body_type = param.body_type || "json";
   var resp_encode = param.encoding || "text";
 
@@ -26,9 +27,20 @@ function perform_function(context,request,response){
 
   req_url = Utils.vm_execute_text(env,req_url);
 
+  //parsing param from meta
+  if(typeof meta._param == 'object')
+  {
+    var _prm = meta._param;
+    req_url = (_prm.url)?_prm.url:req_url;
+    req_method = (_prm.method)?_prm.method:req_method;
+    req_headers = (_prm.headers)?_prm.headers:req_headers;
+    req_body_type = (_prm.body_type)?_prm.body_type:req_body_type;
+    resp_encode = (_prm.encoding)?_prm.encoding:resp_encode;
+  }
+
   send_request({'url':req_url,
                 'method':req_method,
-                'headers':param.headers,
+                'headers':req_headers,
                 'body_type':req_body_type,
                 'body':data,
                 'resp_encode':resp_encode},function(err,resp,body){
