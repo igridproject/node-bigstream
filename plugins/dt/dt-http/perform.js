@@ -105,7 +105,7 @@ function send_request(prm,cb)
   }
 
   options.encoding = (prm.resp_encode == 'binary')?null:'utf8';
-
+console.log(options);
   request(options, function (err, resp, body) {
     if (!err) {
       cb(err, resp, body);
