@@ -71,7 +71,7 @@ function perform_function(context,request,response){
       }else if(req_output == 'base64'){
         dout = d.toString('base64');
       }
-      ok_out(d);
+      ok_out(dout);
     }).catch(e =>{
       error_out('decrypt error');
     })
