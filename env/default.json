@@ -6,5 +6,6 @@
     {"env":"BSCONFIG_MEMSTORE_URL","conf":"memstore.url"},
     {"env":"BSCONFIG_STORAGE_REPOSITORY","conf":"storage.repository"},
     {"env":"BSCONFIG_STORAGE_APIHOSTNAME","conf":"storage.api_hostname"},
-    {"env":"BSCONFIG_SECRET_TEXT","conf":"auth.secret.value"}
+    {"env":"BSCONFIG_SECRET_TEXT","conf":"auth.secret.value"},
+    {"env":"BSCONFIG_KEYSTORE_DIR","conf":"keystore.dir"}
 ]

@@ -1,6 +1,8 @@
 var ctx = require('../../../context');
 var Utils = ctx.getLib('lib/util/plugin-utils');
-var pgplib = require('./pgp')
+var pgplib = require('./pgp');
+var path = require('path');
+var fs = require('fs');
 
 function perform_function(context,request,response){
   var job_id = context.jobconfig.job_id;
@@ -18,10 +20,26 @@ function perform_function(context,request,response){
   var req_passphrase = param.passphrase || ""
   var req_output = param.output|| "binary"
 
+  var key_dir = ctx.getConfig('keystore.dir','./keys');
+  var fn_load_key = function (name) {
+    var k = "";
+    var fp = path.join(key_dir ,path.basename(name));
+    try{
+      k = fs.readFileSync(fp).toString('utf8');
+    }catch(e){
+
+    }
+
+    return k;
+  }
+
   var env = {
     'type' : output_type,
     'data' : data,
-    'meta' : meta
+    'meta' : meta,
+    '_fn' : {
+      'load_key' : fn_load_key
+    }
   }
 
   req_publickey = Utils.vm_execute_text(env,req_publickey);
