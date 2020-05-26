@@ -57,7 +57,7 @@ function perform_function(context,request,response){
     req_passphrase = (_prm.passphrase)?_prm.passphrase:req_passphrase;
     req_output = (_prm.output)?_prm.output:req_output;
   }
-console.log('PRIV ' + req_privatekey)
+
   if (['decrypt','dec'].indexOf(req_function) >= 0){
     pgplib.decrypt({
       privatekey : req_privatekey,
@@ -72,9 +72,11 @@ console.log('PRIV ' + req_privatekey)
         dout = d.toString('base64');
       }
       ok_out(d);
-    }).catch(e =>{
-      error_out('decrypt error');
     })
+    /*
+    .catch(e =>{
+      error_out('decrypt error');
+    })*/
   } else if (['encrypt','enc'].indexOf(req_function) >= 0){
     pgplib.encrypt({
       publickey : req_publickey,
