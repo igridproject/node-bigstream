@@ -1,5 +1,6 @@
 var ctx = require('../../../context');
 var Utils = ctx.getLib('lib/util/plugin-utils');
+var pgplib = require('./pgp')
 
 function perform_function(context,request,response){
   var job_id = context.jobconfig.job_id;
@@ -15,6 +16,7 @@ function perform_function(context,request,response){
   var req_publickey = param.publickey || ""
   var req_privatekey = param.privatekey || ""
   var req_passphrase = param.passphrase || ""
+  var req_output = param.output|| "binary"
 
   var env = {
     'type' : output_type,
@@ -25,6 +27,7 @@ function perform_function(context,request,response){
   req_publickey = Utils.vm_execute_text(env,req_publickey);
   req_privatekey = Utils.vm_execute_text(env,req_privatekey);
   req_passphrase = Utils.vm_execute_text(env,req_passphrase);
+  req_output = Utils.vm_execute_text(env,req_output);
 
   //parsing param from meta
   if(typeof meta._param == 'object')
@@ -34,30 +37,51 @@ function perform_function(context,request,response){
     req_publickey = (_prm.publickey)?_prm.publickey:req_publickey;
     req_privatekey = (_prm.privatekey)?_prm.privatekey:req_privatekey;
     req_passphrase = (_prm.passphrase)?_prm.passphrase:req_passphrase;
+    req_output = (_prm.output)?_prm.output:req_output;
   }
 
-  
-
-
-
-    respmeta['_status_code'] = (err)?0:resp.statusCode;
-    respmeta['_error'] = (err)?true:false;
-    response.meta = respmeta;
-
-    if(!err){
-      if(resp_encode=='json'){
-        try{
-          var j = JSON.parse(body);
-          response.success(j,output_type);
-        }catch(err){
-          response.success({},output_type);
-        }
-      }else{
-        response.success(body,output_type);
+  if (['decrypt','dec'].indexOf(req_function) >= 0){
+    pgplib.decrypt({
+      privatekey : req_privatekey,
+      passphrase : req_passphrase,
+      armor_in : (typeof data == 'string'),
+      data : data
+    }).then(d => {
+      var dout = d;
+      if(['utf8','text'].indexOf(req_output) >= 0){
+        dout = d.toString('utf8');
+      }else if(req_output == 'base64'){
+        dout = d.toString('base64');
       }
-    }else{
-      response.success(null,output_type);
-    }
+      ok_out(d);
+    }).catch(e =>{
+      error_out('decrypt error');
+    })
+  } else if (['encrypt','enc'].indexOf(req_function) >= 0){
+    pgplib.encrypt({
+      publickey : req_publickey,
+      armor_out : (['armor','text'].indexOf(req_output) >= 0),
+      data : data
+    }).then(d => {
+      ok_out(d);
+    }).catch(e =>{
+      error_out('decrypt error');
+    })
+  } else {
+    error_out('invalid function')
+  }
+
+
+  function ok_out (out)
+  {
+    response.meta = meta;
+    response.success(out,output_type);
+  }
+
+  function error_out (msg)
+  {
+    response.error(msg);
+  }
 
 
   //response.success();
