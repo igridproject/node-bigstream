@@ -92,11 +92,13 @@ function perform_function(context,response){
     		sftp.end();
     		response.reject();
     	}
-    }).catch((err) => {
+    })
+    
+    /*.catch((err) => {
         sftp.end();
         response.error(err);
         console.log(err, 'catch error');
-    });
+    });*/
   }
 
 
