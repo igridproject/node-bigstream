@@ -57,7 +57,7 @@ function perform_function(context,request,response){
     req_passphrase = (_prm.passphrase)?_prm.passphrase:req_passphrase;
     req_output = (_prm.output)?_prm.output:req_output;
   }
-
+console.log('PRIV ' + req_privatekey)
   if (['decrypt','dec'].indexOf(req_function) >= 0){
     pgplib.decrypt({
       privatekey : req_privatekey,
