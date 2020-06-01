@@ -28,7 +28,7 @@ var process_req = function(req, res ,method) {
   j.forEach(function(item){
     var httpdata = {
       'object_type' : 'httpdata',
-      'headers':req.headers,
+      'headers': req.headers,
       'method' : method,
       'data' : {}
     }
