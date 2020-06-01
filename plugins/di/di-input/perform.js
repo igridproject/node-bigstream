@@ -16,9 +16,10 @@ function perform_function(context,response){
   {
     if(data.object_type && data.object_type == 'httpdata'){
       var htdata = data; 
-      input_meta.method = htdata.method;
-      if(param.http_headers){
-        input_meta.http_headers = htdata.http_headers
+      
+      if(param.http_meta){
+        input_meta.http_headers = htdata.headers;
+        input_meta.http_method = htdata.method;
       }
       if(typeof htdata.data == 'object' && htdata.data.type == 'Buffer'){
         data = Buffer.from(htdata.data);
