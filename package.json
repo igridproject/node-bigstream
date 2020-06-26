@@ -1,7 +1,7 @@
 {
   "name": "node-bigstream",
   "description": "",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "main": "./bigstream.js",
   "author": {
     "name": "Kamron Aroonrua",
@@ -42,5 +42,10 @@
     "request": "^2.79.0",
     "thunky": "^1.0.2",
     "tiny-worker": "^2.1.1"
+  },  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "node ./script/install_plugins.js",
+    "start": "pm2 start pm2-default.json",
+    "stop": "pm2 stop pm2-default.json"
   }
 }
