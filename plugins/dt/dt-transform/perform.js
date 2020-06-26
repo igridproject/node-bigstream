@@ -11,7 +11,7 @@ function perform_function(context,request,response){
 
   var in_type = request.input_type;
   var in_data = request.data;
-  var in_meta = request.meta;
+  var in_meta = request.meta || {};
   
   var mapenv = {
     'src' : {
@@ -20,11 +20,21 @@ function perform_function(context,request,response){
       'meta' : in_meta
     },
     '_env':{},
+    '_fn':{},
     'type' : in_type,
     'data' : in_data,
     'meta' : in_meta
   }
   
+  if(param.use_function){
+    var fns = (Array.isArray(param.use_function))?param.use_function:Array.of(param.use_function);
+    fns.forEach((fname)=>{
+      if(typeof fname == 'string' && fname.length>0){
+        mapenv._fn[fname] = _loadfunc(fname);
+      }
+    });
+  }
+
   if(param.use_register){
     memstore.getItem('register',function(err,value){
       if(err){return response.error("memstore error");}
@@ -82,6 +92,17 @@ function _compile(mape,param)
   script.runInContext(context);
 
   return mapenv;
+}
+
+function _loadfunc(name)
+{
+  var f = null;
+  try {
+    f = require('./fn/' + name);
+  } catch (error) {
+    
+  }
+  return f;
 }
 
 module.exports = perform_function;

@@ -6,6 +6,7 @@ var QueueReceiver = ctx.getLib('lib/amqp/queuereceiver');
 var ConnCtx = ctx.getLib('lib/conn/connection-context');
 var JobRegistry = ctx.getLib('lib/mems/job-registry');
 var SSCaller = ctx.getLib('lib/axon/rpccaller');
+var RPCCaller = ctx.getLib('lib/amqp/rpccaller');
 var ACLValidator = ctx.getLib('lib/auth/acl-validator');
 
 var JobTransaction = require('./lib/jobtransaction')
@@ -34,7 +35,10 @@ var JW = function JobWorker (prm)
 
   /* Disable RPC Feature */
   //this.storagecaller = new SSCaller({'url':SS_URL});
-  this.storagecaller = null;
+  this.storagecaller = new RPCCaller({
+    url : this.conn.getAmqpUrl(),
+    name :'storage_request'
+  });
 }
 
 JW.prototype.start = function ()

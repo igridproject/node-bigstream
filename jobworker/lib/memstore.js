@@ -25,7 +25,7 @@ memstore.prototype.getItem = function(k,cb)
     if(!err && v){
       if(typeof v == 'object' && v.type == 'Buffer')
       {
-        value = new Buffer(v.data);
+        value = Buffer.from(v.data);
       }else{
         value = JSON.parse(v);
       }

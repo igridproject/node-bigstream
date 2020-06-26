@@ -46,7 +46,6 @@ function perform_function(context,response){
     }).then(() => {
     	return sftp.list(prm_dir + '/');
     }).then((fList) => {
-
     	var f_target = null;
       var last_tts = 0;
       var sync_list = [];
@@ -70,24 +69,24 @@ function perform_function(context,response){
           'filesize': f_target.size,
           'modify_ts' : Math.round(f_target.modifyTime/1000)
         }
-    		return sftp.get(prm_dir + '/' + f_target.name,null,null);
+    		return sftp.get(prm_dir + '/' + f_target.name);
     	}else{
     		return null;
     	}
 
     }).then((data) => {
     	if(data){
-    		data.on('data',(dat)=>{
-          var nb = Buffer.concat([buff_out,dat]);
+    
+          var nb = Buffer.concat([buff_out,data]);
           buff_out = nb;
-        })
-    		data.on('end',()=>{
+     
+    		
           sftp.end()
           memstore.setItem('lastmodify',last_mod,function(err){
             var result=(prm_encoding=='binary')?buff_out:buff_out.toString('utf8');
             response.success(result, {"meta":meta,"continue": fs_continue});
           });
-        });
+    
     	}else{
     		sftp.end();
     		response.reject();
@@ -95,7 +94,7 @@ function perform_function(context,response){
     }).catch((err) => {
         sftp.end();
         response.error(err);
-        console.log(err, 'catch error');
+        console.log(err);
     });
   }
 
