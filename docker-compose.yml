@@ -1,7 +1,7 @@
 version: '3'
 services:
   bigstream:
-    image: "bigstream:dev"
+    image: "bigstream:${BIGSTREAM_TAG}"
     build: ./
     container_name: bs_bigstream
     restart: always
