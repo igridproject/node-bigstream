@@ -10,7 +10,7 @@ module.exports.config = cfg;
 module.exports.getInfo = function (name)
 {
   var BSINFO = {
-    "v" : require('./version')
+    "version" : require('./version')
   }
 
   return BSINFO;

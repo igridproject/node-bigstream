@@ -23,7 +23,7 @@ router.get('/version',function (req, res) {
   var respHelper = response.create(res);
 
   var info = ctx.getInfo();
-  var result=info.v.version;
+  var result=info.version;
 
   respHelper.responseOK(result);
 });
