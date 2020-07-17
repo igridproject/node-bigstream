@@ -1,16 +1,14 @@
 {
   "name": "node-bigstream",
   "description": "",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "main": "./bigstream.js",
   "author": {
     "name": "Kamron Aroonrua",
     "email": "kamron.aroonrua@nectec.or.th"
   },
   "keywords": [],
-  "licenses": {
-    "type": "none"
-  },
+  "license": "Apache-2.0",
   "dependencies": {
     "amqplib": "^0.4.2",
     "async": "^2.0.1",
@@ -22,7 +20,6 @@
     "dot-prop": "^5.1.0",
     "express": "^4.14.0",
     "express-jwt": "^5.3.1",
-    "ioredis": "^2.5.0",
     "jsonwebtoken": "^8.2.2",
     "minimatch": "^3.0.4",
     "minimist": "^1.2.0",
@@ -31,7 +28,6 @@
     "node-gyp": "^3.6.2",
     "node-persist": "^2.0.7",
     "node-schedule": "^1.2.0",
-    "node-uuid": "^1.4.7",
     "object-hash": "^1.1.8",
     "pm2": "^2.4.0",
     "qs": "^6.8.0",
@@ -42,5 +38,10 @@
     "request": "^2.79.0",
     "thunky": "^1.0.2",
     "tiny-worker": "^2.1.1"
+  },  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "node ./script/install_plugins.js",
+    "start": "pm2 start pm2-default.json",
+    "stop": "pm2 stop pm2-default.json"
   }
 }

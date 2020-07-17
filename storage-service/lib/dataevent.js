@@ -29,7 +29,7 @@ module.exports.newdata = function(prm,cb){
                 var msg = JSON.stringify(objMsg);
 
                 ch.assertExchange(ex, 'topic', {durable: false});
-                ch.publish(ex, key, new Buffer(msg));
+                ch.publish(ex, key, Buffer.from(msg));
                 //console.log("[AMQP] Sent %s:'%s'", key, msg);
             }
         });

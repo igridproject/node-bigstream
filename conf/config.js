@@ -5,6 +5,7 @@ var cfg = {
   'mqtt' : cfg_load('mqtt.json'),
   'memstore' : cfg_load('memstore.json'),
   'storage' : cfg_load('storage.json'),
+  'keystore': cfg_load('keystore.json'),
   'auth' : {
     'secret': cfg_load('secret.json'),
 	  'acl' : cfg_load('acl.json')

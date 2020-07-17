@@ -46,7 +46,6 @@ function perform_function(context,response){
     }).then(() => {
     	return sftp.list(prm_dir + '/');
     }).then((fList) => {
-
     	var f_target = null;
       var last_tts = 0;
       var sync_list = [];
@@ -95,7 +94,7 @@ function perform_function(context,response){
     }).catch((err) => {
         sftp.end();
         response.error(err);
-        console.log(err, 'catch error');
+        console.log(err);
     });
   }
 

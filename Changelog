@@ -4,13 +4,17 @@
 - BS :: AMQP RPC Singleton Connection ,auto ack
 - STORAGE :: 50x speedup
 ### Added
+- BS :: Configuration Context with ENV
+- BS :: keystore env
+- BS :: httplistener headers
+- PLUGIN :: dt-pgpcrypt
 - PLUGIN :: dt-transform fn extension
 - PLUGIN :: dt-transform register
-- BS :: Configuration Context with ENV
 - PLUGIN :: do-http
 - PLUGIN :: do-bsspeak
 - PLUGIN :: do-mqtt
 - PLUGIN :: do-ext-storage
+- API :: BS Info
 ### Removed
 - STORAGE :: remove ipc channel
 
