@@ -1,25 +1,18 @@
 var vm = require('vm');
 var ctx = require('../context');
 var Utils = ctx.getLib('lib/util/plugin-utils');
+var Register = ctx.getLib('jobworker/lib/mems-register');
 
 function perform_function(context,request,response){
   var job_id = context.jobconfig.job_id;
   var transaction_id = context.transaction.id;
-  var param = context.task.config.param;
+  var param = context.task.config.param || {};
   var memstore = context.task.memstore
 
   var in_type = request.input_type;
   var in_data = request.data;
-  var in_meta = request.meta;
-
-  var mapscr = Utils.parse_script_param(param.script);
-  var datascr = param.text ;
-  var ba64script = param.ba64script;
-
-  if(datascr){
-    mapscr = mapscr + "; data=`" + datascr + "`";
-  }
-
+  var in_meta = request.meta || {};
+  
   var mapenv = {
     'src' : {
       'type' : in_type,
@@ -27,9 +20,64 @@ function perform_function(context,request,response){
       'meta' : in_meta
     },
     '_env':{},
+    '_fn':{},
     'type' : in_type,
     'data' : in_data,
     'meta' : in_meta
+  }
+  
+  if(param.use_function){
+    var fns = (Array.isArray(param.use_function))?param.use_function:Array.of(param.use_function);
+    fns.forEach((fname)=>{
+      if(typeof fname == 'string' && fname.length>0){
+        mapenv._fn[fname] = _loadfunc(fname);
+      }
+    });
+  }
+
+  if(param.use_register){
+    memstore.getItem('register',function(err,value){
+      if(err){return response.error("memstore error");}
+
+      mapenv.register = Register.create(value);
+    
+      mapenv = _compile(mapenv,param);
+      memstore.setItem('register',mapenv.register.get(),function(err){
+        _response();
+      });
+    });
+  }else{
+    mapenv = _compile(mapenv,param);
+    _response();
+  }
+
+  function _response()
+  {
+    var data = mapenv.data;
+    var meta = mapenv.meta;
+    var output_type = mapenv.type;
+
+    if(param.to_binary && typeof data == 'string'){
+      data = Buffer.from(data, 'base64');
+      output_type = 'binary';
+    }
+
+    response.success(data,{'meta':meta,'output_type':output_type});
+  }
+  
+
+}
+
+function _compile(mape,param)
+{
+  var mapenv = mape;
+
+  var mapscr = Utils.parse_script_param(param.script);
+  var datascr = param.text ;
+  var ba64script = param.ba64script;
+
+  if(datascr){
+    mapscr = mapscr + "; data=`" + datascr + "`";
   }
 
   var context = new vm.createContext(mapenv);
@@ -43,18 +91,18 @@ function perform_function(context,request,response){
   var script = new vm.Script(mapscr);
   script.runInContext(context);
 
-  var data = mapenv.data;
-  var meta = mapenv.meta;
-  var output_type = mapenv.type;
+  return mapenv;
+}
 
-  if(param.to_binary && typeof data == 'string'){
-    data = Buffer.from(data, 'base64');
-    output_type = 'binary';
+function _loadfunc(name)
+{
+  var f = null;
+  try {
+    f = require('./fn/' + name);
+  } catch (error) {
+    
   }
-
-  response.success(data,{'meta':meta,'output_type':output_type});
-
-
+  return f;
 }
 
 module.exports = perform_function;

@@ -1,6 +1,6 @@
 var ctx = require('./context');
 var StorageService = ctx.getLib('storage-service/main');
-
+var BSCONFIG = ctx.getConfig();
 var argv = require('minimist')(process.argv.slice(2));
 
 
@@ -8,10 +8,10 @@ var argv = require('minimist')(process.argv.slice(2));
 var m = {'read':"false",'write':"false"}
 if(argv['process-read']){m.read = "true";}
 if(argv['process-write']){m.write = "true";}
-if(argv['api-port']){ctx.config.storage.api_port = Number(argv['api-port']);}
+if(argv['api-port']){BSCONFIG.storage.api_port = Number(argv['api-port']);}
 
 //console.log(argv);
-var ss = StorageService.create(ctx.config);
+var ss = StorageService.create(BSCONFIG);
 
 if(m.read=="false" && m.write=="false")
 {
@@ -20,6 +20,7 @@ if(m.read=="false" && m.write=="false")
   if(m.read=="true"){ss.http_start();}
   if(m.write=="true"){
     ss.amqp_start();
-    ss.ipc_start();
+    //Disable IPC Feature
+    //ss.ipc_start();
   }
 }

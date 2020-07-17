@@ -1,6 +1,7 @@
 var ctx = require('../context');
 var ConnCtx = ctx.getLib('lib/conn/connection-context');
 var rpcserver = ctx.getLib('lib/amqp/rpcserver');
+var RPCCaller = ctx.getLib('lib/amqp/rpccaller');
 var SSServer = ctx.getLib('lib/axon/rpcserver');
 var Db = ctx.getLib('storage-service/lib/db');
 var WorkerPool = ctx.getLib('storage-service/lib/worker_pool');
@@ -16,7 +17,7 @@ var app = express();
 var bodyParser = require('body-parser');
 
 var EventPub = ctx.getLib('lib/amqp/event-pub');
-var cfg = ctx.config;
+//var cfg = ctx.config;
 
 var SS_LISTEN = ctx.getUnixSocketUrl('ss.sock');
 var SS_URL = ctx.getUnixSocketUrl('ss.sock');
@@ -52,7 +53,10 @@ SS.prototype.start = function()
 {
   console.log('Starting Storage Service ...\n');
   this.amqp_start();
-  this.ipc_start();
+  
+  /* Disable RPC Feature */
+  //this.ipc_start();
+
   setTimeout(function(){
     this.http_start();
   },5000);
@@ -142,7 +146,11 @@ SS.prototype.http_start = function()
   }));
 
   var context = ctx.getLib('lib/ws/http-context');
-  this.storagecaller = new SSCaller({'url':SS_URL});
+  //this.storagecaller = new SSCaller({'url':SS_URL});
+  this.storagecaller = new RPCCaller({
+    url : amqp_cfg.url,
+    name :'storage_request'
+  });
   this.acl_validator = ACLValidator.create(auth_cfg);
   this.worker_pool.initWorker();
   app.use(context.middleware({

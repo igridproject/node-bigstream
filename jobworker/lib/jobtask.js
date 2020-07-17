@@ -108,7 +108,7 @@ JobTask.prototype.run = function ()
       perform_di({'context':context,'handle':self} ,function(err,resp){
 
         if(resp){
-          console.log('[DI STATUS]\t\t: ' + resp.status);
+          // console.log('[DI STATUS]\t\t: ' + resp.status);
           self.stats.di = resp;
         }
         if(resp.status == 'success'){
@@ -149,7 +149,7 @@ JobTask.prototype.run = function ()
         perform_dt({'cfg':cur_cfg,'name':dt_name,'context':context,'request':dt_request,'handle':self},function(err,dt_resp){
 
           if(dt_resp){
-            console.log('[DT:' + dt_name + ' STATUS]\t\t: ' + dt_resp.status);
+            // console.log('[DT:' + dt_name + ' STATUS]\t\t: ' + dt_resp.status);
           }
 
           idx++;
@@ -188,7 +188,9 @@ JobTask.prototype.run = function ()
 
     dm_o.run(function() {
       perform_do({'context':context,'request':do_request,'handle':self},function(err,do_resp){
-        if(do_resp){console.log('[DO STATUS]\t\t: ' + do_resp.status);}
+        if(do_resp){
+          //console.log('[DO STATUS]\t\t: ' + do_resp.status);
+        }
         if(do_resp.status == 'success'){
           callback(null,do_resp);
         }else {
@@ -205,18 +207,21 @@ JobTask.prototype.run = function ()
     //self.emit('error',new Error('job execution timeout'))
   },self.job_timeout);
 
-  console.log('***** JOB RUNNING *****');
-  console.log('[JOB ID]\t\t: ' + job_id);
-  console.log('[TRANSACTION ID]\t: ' + transaction_id);
+  // console.log('***** JOB RUNNING *****');
+  // console.log('[JOB ID]\t\t: ' + job_id);
+  // console.log('[TRANSACTION ID]\t: ' + transaction_id);
 
   async.waterfall([task_di,task_dt,task_do],function (err,resp) {
     clearTimeout(jtimeout);
+    //console.log('[JOB DONE] id=' + job_id + ' ,tr=' + transaction_id + '\t' + resp.status);
     if(!err){
       self.stop(resp)
-      console.log('***** JOB SUCCESSFULLY DONE *****\n');
+      // console.log('***** JOB SUCCESSFULLY DONE *****\n');
+      console.log('[JOB DONE] id=' + job_id + ' ,tr=' + transaction_id + '\tsuccess');
     }else{
       self.stop(err)
-      console.log('***** JOB UNSUCCESSFULLY DONE *****\n');
+      // console.log('***** JOB UNSUCCESSFULLY DONE *****\n');
+      console.log('[JOB DONE] id=' + job_id + ' ,tr=' + transaction_id + '\tunsuccess');
     }
   });
 

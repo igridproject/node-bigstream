@@ -12,7 +12,7 @@ function BSSPool(prm)
 BSSPool.prototype.get = function(name,opt,cb)
 {
   if(!cb){cb=opt;opt={};}
-
+ 
   var self=this;
   var filepath = this.repos_dir + '/' + name2path(name) + '.bss'
   var bssname = name;
@@ -32,18 +32,14 @@ BSSPool.prototype.get = function(name,opt,cb)
                                   'name' : bssname,
                                   'newInstance':opt.newInstance
                                 });
-
-    bss_engine.open(function(err){
-      if(!err){
-        self.pool.push({
-          'name' : name,
-          'engine':bss_engine
-        });
-      }
-      self.clean(function(err){
-        cb(err,bss_engine);
-      });
+    self.pool.push({
+      'name' : name,
+      'engine':bss_engine
     });
+    self.clean(function(err){
+      cb(err,bss_engine);
+    });
+
   }
 
 }
