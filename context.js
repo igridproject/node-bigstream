@@ -7,6 +7,15 @@ var cfg = require(CONFIG_PATH);
 
 module.exports.config = cfg;
 
+module.exports.getInfo = function (name)
+{
+  var BSINFO = {
+    "v" : require('./version')
+  }
+
+  return BSINFO;
+}
+
 module.exports.getConfig = function(name,def,opt){
   var option = {};
   var def_val = def || '';
@@ -36,18 +45,6 @@ var envcnf = function(init_obj){
   var obj=init_obj || {};
   var env = process.env;
   var envmap = require(ENV_MAP);
-  // var name_pref = 'bs.config';
-  
-  // if(name){name_pref=name_pref + '.' + name;}
-  // if(env[name_pref]){obj=env[name_pref];}
-
-  // var nfull = name_pref + '.';
-  // Object.keys(env).forEach((k)=>{
-  //   if(k.startsWith(nfull)){
-  //     var dotkey = k.substring(nfull.length);
-  //     _dot.set(obj,dotkey,env[k]);
-  //   }
-  // });
 
   if(!Array.isArray(envmap)){return obj;}
   envmap.forEach((em)=>{

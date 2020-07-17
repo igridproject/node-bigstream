@@ -8,9 +8,7 @@
     "email": "kamron.aroonrua@nectec.or.th"
   },
   "keywords": [],
-  "licenses": {
-    "type": "none"
-  },
+  "license": "Apache-2.0",
   "dependencies": {
     "amqplib": "^0.4.2",
     "async": "^2.0.1",
