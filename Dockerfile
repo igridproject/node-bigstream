@@ -20,4 +20,4 @@ EXPOSE 19980 19080 19180
 
 # start server
 WORKDIR /app/node-bigstream
-CMD ["pm2-runtime", "start", "pm2-default.json"]
+CMD pm2-runtime pm2.config.js
