@@ -7,9 +7,11 @@
 - BS :: Configuration Context with ENV
 - BS :: keystore env
 - BS :: httplistener headers
+- PLUGIN :: dt-mysql
 - PLUGIN :: dt-pgpcrypt
 - PLUGIN :: dt-transform fn extension
 - PLUGIN :: dt-transform register
+- PLUGIN :: do-mysql
 - PLUGIN :: do-http
 - PLUGIN :: do-bsspeak
 - PLUGIN :: do-mqtt
