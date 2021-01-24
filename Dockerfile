@@ -7,6 +7,7 @@ COPY . /app/node-bigstream
 WORKDIR /app/node-bigstream
 
 RUN npm install
+RUN node script/install_plugins.js
 
 FROM node:lts-alpine
 
