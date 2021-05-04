@@ -10,7 +10,7 @@
   "keywords": [],
   "license": "Apache-2.0",
   "dependencies": {
-    "amqplib": "^0.4.2",
+    "amqplib": "^0.7.1",
     "async": "^2.0.1",
     "axon": "^2.0.3",
     "body-parser": "^1.15.2",
@@ -34,13 +34,14 @@
     "query-string": "^4.2.3",
     "quickq": "^0.8.1",
     "random-access-file": "^1.3.0",
-    "redis": "^2.6.5",
+    "redis": "^3.1.2",
     "request": "^2.79.0",
     "thunky": "^1.0.2",
     "tiny-worker": "^2.1.1"
-  },  "scripts": {
+  },
+  "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "install": "node ./script/install_plugins.js",
+    "install_plugins": "node ./script/install_plugins.js",
     "start": "pm2 start pm2-default.json",
     "stop": "pm2 stop pm2-default.json"
   }
