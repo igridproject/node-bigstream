@@ -48,13 +48,15 @@ HTTPListener.prototype._http_start = function()
     }
   });
 
-  app.use(bodyParser.json({limit: '128mb',type:"*/json"}));
+  var MAX_BODY = ctx.getConfig('httplistener.max_body','128mb')
+
+  app.use(bodyParser.json({limit: MAX_BODY,type:"*/json"}));
   app.use(bodyParser.urlencoded({
       extended: true,
-      limit: '128mb'
+      limit: MAX_BODY
   }));
-  app.use(bodyParser.text({limit: '128mb',type:"text/*"}));
-  app.use(bodyParser.raw({limit: '128mb',type:"*/*"}));
+  app.use(bodyParser.text({limit: MAX_BODY,type:"text/*"}));
+  app.use(bodyParser.raw({limit: MAX_BODY,type:"*/*"}));
 
   var context = require('./lib/http-context');
   app.use(context.middleware({

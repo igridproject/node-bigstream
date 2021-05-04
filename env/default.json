@@ -2,10 +2,12 @@
     {"env":"BSCONFIG_AMQP_TYPE","conf":"amqp.type"},
     {"env":"BSCONFIG_AMQP_URL","conf":"amqp.url"},
     {"env":"BSCONFIG_MQTT_URL","conf":"mqtt.url"},
+    {"env":"BSCONFIG_HTTPLISTENER_MAXBODY","conf":"httplistener.max_body"},
     {"env":"BSCONFIG_MEMSTORE_TYPE","conf":"memstore.type"},
     {"env":"BSCONFIG_MEMSTORE_URL","conf":"memstore.url"},
     {"env":"BSCONFIG_STORAGE_REPOSITORY","conf":"storage.repository"},
     {"env":"BSCONFIG_STORAGE_APIHOSTNAME","conf":"storage.api_hostname"},
+    {"env":"BSCONFIG_STORAGE_APIMAXBODY","conf":"storage.api_max_body"},
     {"env":"BSCONFIG_SECRET_TEXT","conf":"auth.secret.value"},
     {"env":"BSCONFIG_KEYSTORE_DIR","conf":"keystore.dir"}
 ]

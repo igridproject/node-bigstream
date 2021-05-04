@@ -140,7 +140,7 @@ SS.prototype.http_start = function()
 
   var API_PORT = (this.config.storage.api_port)?this.config.storage.api_port:19080;
 
-  app.use(bodyParser.json({limit: '64mb'}));
+  app.use(bodyParser.json({limit: ctx.getConfig('storage.api_max_body','128mb')}));
   app.use(bodyParser.urlencoded({
       extended: true
   }));

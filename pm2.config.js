@@ -2,13 +2,14 @@ module.exports = {
   "apps" : [{
     "name"        : "bs.storage.write",
     "script"      : "./serv-storage.js",
-	"args"		  : "--process-write"
+	  "args"		  : "--process-write"
   },
   {
     "name"        : "bs.storage.read",
     "script"      : "./serv-storage.js",
-	"args"		  : "--process-read",
-	"exec_mode"   : "cluster"
+	  "args"		  : "--process-read",
+	  "exec_mode"   : "cluster",
+    "instances"   : process.env['BS_NUM_READER']||2
   },
   {
     "name"        : "bs.worker",
@@ -22,7 +23,9 @@ module.exports = {
   },
   {
     "name"        : "bs.trigger.httplistener",
-    "script"      : "./serv-httplistener.js"
+    "script"      : "./serv-httplistener.js",
+    "exec_mode"   : "cluster",
+    "instances"   : process.env['BS_NUM_HTTPLISTENER']||2
   },
   {
     "name"        : "bs.api.service",

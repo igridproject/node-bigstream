@@ -14,8 +14,9 @@ services:
      - "19150:19150/udp"
     environment:
      - "BS_SECRET=${BS_SECRET}"
+     - "BSCONFIG_HTTPLISTENER_MAXBODY=128mb"
     volumes:
-     - bsdata:/var/bigstream/data
+     - ${VOLUME:-./volume}/bigstream/data:/var/bigstream/data
   redis:
     image: "redis:${REDIS_TAG}"
     command: redis-server --appendonly yes
@@ -28,7 +29,7 @@ services:
     ports:
      - "6379:6379"
     volumes:
-     - bsredis:/data
+     - ${VOLUME:-./volume}/redis/data:/data
   rabbitmq:
     image: "igridproject/rabbitmq"
     command: rabbitmq-server --hostname rabbitmq-server
@@ -40,9 +41,6 @@ services:
              - rabbitmq-server
     ports:
      - "5672:5672"
-volumes:
-  bsdata:
-  bsredis:
 networks:
   bsnet:
      driver: bridge
