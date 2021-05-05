@@ -121,7 +121,7 @@ BSSEngine.prototype.cmd_write = function(prm,cb)
         }
   
         //dataevent.newdata({'resourceId':obj_id.toString(),'storageId':self.name});
-        if(self.context){
+        if(self.context && self.context.evp){
             newdata_event(self.context,{'resourceId':obj_id.toString(),'storageId':self.name});
         }
   
