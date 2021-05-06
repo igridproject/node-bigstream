@@ -98,6 +98,7 @@ SS.prototype.amqp_start = function()
   });
 }
 
+
 SS.prototype.ipc_start = function()
 {
   var self = this;
