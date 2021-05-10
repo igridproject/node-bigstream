@@ -5,6 +5,9 @@ var RPCCaller = ctx.getLib('lib/amqp/rpccaller');
 var SSServer = ctx.getLib('lib/axon/rpcserver');
 var Db = ctx.getLib('storage-service/lib/db');
 var WorkerPool = ctx.getLib('storage-service/lib/worker_pool');
+var BSSCache = ctx.getLib('storage-service/lib/storage-bsscache');
+
+
 var SSCaller = ctx.getLib('lib/axon/rpccaller');
 
 var Tokenizer = ctx.getLib('lib/auth/tokenizer');
@@ -147,17 +150,21 @@ SS.prototype.http_start = function()
   }));
 
   var context = ctx.getLib('lib/ws/http-context');
-  //this.storagecaller = new SSCaller({'url':SS_URL});
+
   this.storagecaller = new RPCCaller({
     url : amqp_cfg.url,
     name :'storage_request'
   });
+
+  this.bsscache = BSSCache.create()
+
   this.acl_validator = ACLValidator.create(auth_cfg);
   this.worker_pool.initWorker();
   app.use(context.middleware({
     'acl_validator':self.acl_validator,
     'worker_pool' : self.worker_pool,
-    'storagecaller':self.storagecaller
+    'storagecaller':self.storagecaller,
+    'bsscache':self.bsscache
   }));
 
   var tokenizer = Tokenizer.create(auth_cfg);

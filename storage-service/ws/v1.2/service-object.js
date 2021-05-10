@@ -140,6 +140,7 @@ function get_object(reqHelper,respHelper,prm)
   var opt = prm.opt || {};
 
   var storagecaller = reqHelper.request.context.storagecaller;
+  var bsscache = reqHelper.request.context.bsscache;
   
   oid_parse(oid,storagecaller,(err,oid_result)=>{
 
@@ -158,23 +159,67 @@ function get_object(reqHelper,respHelper,prm)
 
         var bss_full_path = storage_cfg.repository + "/" + oid_result.storage_name.split('.').join('/') + ".bss";
         
-        fs.exists(bss_full_path,function(exists){
+        fs.stat(bss_full_path,function(f_error,stats){
 
-          if(exists){
-            BinStream.open(bss_full_path,function(err,bss){
-              var rd = bss.reader();
-              var rec_count = rd.count();
-              var seq = (oid_result.seq>=0)?oid_result.seq:rec_count + oid_result.seq + 1;
-      
-              rd.objectAt(seq,function(err,obj){
-                bss.close(function(err){
-                  if(obj && (oid_result.by == 'seq' ||  oid_result.obj_id == (new ObjId(obj.header.ID)).toString()) ){
-                      output(respHelper,obj,opt);
-                  }else{respHelper.response404();}
-                });
+          if(!f_error && stats.isFile()){
+            var cobj = null
+            //cache
+            if(oid_result.seq>=0){
+              cobj = bsscache.getCache({
+                s:oid_result.storage_name,
+                t:'seq',
+                k:String(oid_result.seq),
+                v:stats.atimeMs
+              })
+            }
+
+            if(cobj == null){
+              //MISS Cache
+              //console.log('Cache MISS----->>')
+              BinStream.open(bss_full_path,function(err,bss){
+                var rd = bss.reader();
+                var rec_count = rd.count();
+                var seq = (oid_result.seq>=0)?oid_result.seq:rec_count + oid_result.seq + 1;
+
+                if(oid_result.seq<0){
+                  cobj = bsscache.getCache({
+                    s:oid_result.storage_name,
+                    t:'seq',
+                    k:String(seq),
+                    v:stats.atimeMs
+                  })
+                }
+        
+                if(cobj == null){
+                  rd.objectAt(seq,function(err,obj){
+                    bss.close(function(err){
+                      if(obj && (oid_result.by == 'seq' ||  oid_result.obj_id == (new ObjId(obj.header.ID)).toString()) ){
+                          bsscache.setCache({
+                            s:oid_result.storage_name,
+                            t:'seq',
+                            k:String(seq),
+                            v:stats.atimeMs,
+                            z:obj.header.MZ+obj.header.DZ
+                          },obj)
+                          output(respHelper,obj,opt);
+                      }else{respHelper.response404();}
+                    });
+                  });
+                }else{
+                  //console.log('Cache HIT2----->>')
+                  output(respHelper,cobj,opt);
+                }
+
+        
               });
-      
-            });
+
+            }else{
+              //HIT Cache
+              //console.log('Cache HIT----->>')
+              output(respHelper,cobj,opt);
+            }
+            
+
           }else{
             respHelper.response404();
           }
