@@ -58,7 +58,7 @@ router.get('/:id/file',function (req, res) {
 
 });
 
-function oid_parse(oid,caller,cb)
+function oid_parse(oid,idxstore,cb)
 {
   var ret = {'valid':true}
   if(!oid)
@@ -82,25 +82,38 @@ function oid_parse(oid,caller,cb)
       if(ret.key.length<=0){
         return cb(null,{'valid':false});
       }
-      var callreq = {
-        'object_type' : 'storage_request',
-        'command' : 'idxget',
-        'param' : {
-          'storage_name' : ret.storage_name,
-          'key' : ret.key
-        }
-      }
 
-      caller.call(callreq,function(err,resp){
-        if(!err && resp.status=='OK' && resp.resp.found){
+      //direct idxstore
+      idxstore.getIndex(ret.storage_name,ret.key,(err,val)=>{
+        if(!err && val){
           ret.by = "obj";
-          ret.obj_id = resp.resp.object_id;
+          ret.obj_id = val;
           ret.seq = (new ObjId(ret.obj_id)).extract().seq;
           cb(null,ret);
         }else{
           cb(null,{'valid':false});
         }
       });
+
+      // var callreq = {
+      //   'object_type' : 'storage_request',
+      //   'command' : 'idxget',
+      //   'param' : {
+      //     'storage_name' : ret.storage_name,
+      //     'key' : ret.key
+      //   }
+      // }
+
+      // caller.call(callreq,function(err,resp){
+      //   if(!err && resp.status=='OK' && resp.resp.found){
+      //     ret.by = "obj";
+      //     ret.obj_id = resp.resp.object_id;
+      //     ret.seq = (new ObjId(ret.obj_id)).extract().seq;
+      //     cb(null,ret);
+      //   }else{
+      //     cb(null,{'valid':false});
+      //   }
+      // });
 
     }else if(str_addr.startsWith('[') && str_addr.endsWith(']')){
       ret.by = "seq";
@@ -139,10 +152,11 @@ function get_object(reqHelper,respHelper,prm)
   var oid = prm.oid;
   var opt = prm.opt || {};
 
-  var storagecaller = reqHelper.request.context.storagecaller;
+  //var storagecaller = reqHelper.request.context.storagecaller;
   var bsscache = reqHelper.request.context.bsscache;
+  var idxstore = reqHelper.request.context.idxstore;
   
-  oid_parse(oid,storagecaller,(err,oid_result)=>{
+  oid_parse(oid,idxstore,(err,oid_result)=>{
 
     if(!oid_result.valid){
       respHelper.response404();
