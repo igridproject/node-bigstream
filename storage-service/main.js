@@ -2,10 +2,13 @@ var ctx = require('../context');
 var ConnCtx = ctx.getLib('lib/conn/connection-context');
 var rpcserver = ctx.getLib('lib/amqp/rpcserver');
 var RPCCaller = ctx.getLib('lib/amqp/rpccaller');
-var SSServer = ctx.getLib('lib/axon/rpcserver');
 var Db = ctx.getLib('storage-service/lib/db');
 var WorkerPool = ctx.getLib('storage-service/lib/worker_pool');
-var SSCaller = ctx.getLib('lib/axon/rpccaller');
+var BSSCache = ctx.getLib('storage-service/lib/storage-bsscache');
+var StorageIndexstore = ctx.getLib('storage-service/lib/storage-indexstore')
+
+//var SSServer = ctx.getLib('lib/axon/rpcserver');
+//var SSCaller = ctx.getLib('lib/axon/rpccaller');
 
 var Tokenizer = ctx.getLib('lib/auth/tokenizer');
 var ACLValidator = ctx.getLib('lib/auth/acl-validator');
@@ -19,8 +22,8 @@ var bodyParser = require('body-parser');
 var EventPub = ctx.getLib('lib/amqp/event-pub');
 //var cfg = ctx.config;
 
-var SS_LISTEN = ctx.getUnixSocketUrl('ss.sock');
-var SS_URL = ctx.getUnixSocketUrl('ss.sock');
+// var SS_LISTEN = ctx.getUnixSocketUrl('ss.sock');
+// var SS_URL = ctx.getUnixSocketUrl('ss.sock');
 // var SS_LISTEN = ctx.getServiceUrl(19030);
 // var SS_URL = ctx.getClientUrl(19030);
 
@@ -98,39 +101,40 @@ SS.prototype.amqp_start = function()
   });
 }
 
-SS.prototype.ipc_start = function()
-{
-  var self = this;
 
-  if(this.ipc_server){return;}
+// SS.prototype.ipc_start = function()
+// {
+//   var self = this;
 
-  this.ipc_server = new SSServer({
-                url : SS_LISTEN,
-                name : 'storage_request'
-              });
-  this.ipc_server.set_remote_function(function(req,callback){
-    //console.log("IPC Command");
-    self.db.request(req,function(err,res){
-      if(err){
-        console.log(err);
-      }
-      callback(err,res);
-    });
+//   if(this.ipc_server){return;}
 
-  });
+//   this.ipc_server = new SSServer({
+//                 url : SS_LISTEN,
+//                 name : 'storage_request'
+//               });
+//   this.ipc_server.set_remote_function(function(req,callback){
+//     //console.log("IPC Command");
+//     self.db.request(req,function(err,res){
+//       if(err){
+//         console.log(err);
+//       }
+//       callback(err,res);
+//     });
 
-  this.ipc_server.start(function(err){
-    if(!err){
-      console.log('SS:IPC START\t\t\t[OK]');
-    }else{
-      console.log('SS:IPC START\t\t\t[ERR]');
-      console.log('SS:IPC ERROR Restarting ...');
-      setTimeout(function(){
-        process.exit(1);
-      },5000);
-    }
-  });
-}
+//   });
+
+//   this.ipc_server.start(function(err){
+//     if(!err){
+//       console.log('SS:IPC START\t\t\t[OK]');
+//     }else{
+//       console.log('SS:IPC START\t\t\t[ERR]');
+//       console.log('SS:IPC ERROR Restarting ...');
+//       setTimeout(function(){
+//         process.exit(1);
+//       },5000);
+//     }
+//   });
+// }
 
 SS.prototype.http_start = function()
 {
@@ -146,17 +150,23 @@ SS.prototype.http_start = function()
   }));
 
   var context = ctx.getLib('lib/ws/http-context');
-  //this.storagecaller = new SSCaller({'url':SS_URL});
+
   this.storagecaller = new RPCCaller({
     url : amqp_cfg.url,
     name :'storage_request'
   });
+
+  this.bsscache = BSSCache.create()
+  this.idxstore = new StorageIndexstore({'mem':self.mem });
+
   this.acl_validator = ACLValidator.create(auth_cfg);
   this.worker_pool.initWorker();
   app.use(context.middleware({
     'acl_validator':self.acl_validator,
     'worker_pool' : self.worker_pool,
-    'storagecaller':self.storagecaller
+    'storagecaller':self.storagecaller,
+    'bsscache':self.bsscache,
+    'idxstore':self.idxstore
   }));
 
   var tokenizer = Tokenizer.create(auth_cfg);
