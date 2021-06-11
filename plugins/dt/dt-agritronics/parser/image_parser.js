@@ -75,7 +75,7 @@ function getImage(url) {
 	return new Promise((resolve, reject) => {
 		request(url, function (error, resp, body) {
 			if (!error && resp.statusCode == 200) {
-				resolve("data:" + resp.headers["content-type"] + ";base64," + new Buffer(body).toString('base64'));
+				resolve("data:" + resp.headers["content-type"] + ";base64," + Buffer.from(body).toString('base64'));
 			}else{
 				return reject(error);
 			}

@@ -217,11 +217,13 @@ JobTask.prototype.run = function ()
     if(!err){
       self.stop(resp)
       // console.log('***** JOB SUCCESSFULLY DONE *****\n');
-      console.log('[JOB DONE] id=' + job_id + ' ,tr=' + transaction_id + '\tsuccess');
+      console.log('[JOB DONE] id=' + job_id + ' ,tr=' + transaction_id + '\tSUCCESS');
     }else{
       self.stop(err)
       // console.log('***** JOB UNSUCCESSFULLY DONE *****\n');
-      console.log('[JOB DONE] id=' + job_id + ' ,tr=' + transaction_id + '\tunsuccess');
+      var st = 'unsuccess';
+      if(err.status){st=String(err.status).toUpperCase()}
+      console.log('[JOB DONE] id=' + job_id + ' ,tr=' + transaction_id + '\t' + st);
     }
   });
 
