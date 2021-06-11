@@ -138,7 +138,7 @@ function perform_image(_result, filecontent) {
 
 function getImage(filecontent) {
   return  new Promise((resolve, reject) => {
-      resolve("data:image/jpeg;base64," + new Buffer(filecontent).toString('base64'));
+      resolve("data:image/jpeg;base64," + Buffer.from(filecontent).toString('base64'));
   });    
 }
 

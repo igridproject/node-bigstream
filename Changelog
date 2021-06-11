@@ -1,8 +1,8 @@
 #Changelog
-## [1.2.4 Dev] - 2021-05-31
+## [1.2.4 Dev] - 2021-06-11
 ### Added
 - STORAGE :: Object Cache
-### Update
+### Changed
 - SS :: Direct Idxstore
 ## [1.2.3] - 2021-05-05
 ### Update

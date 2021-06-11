@@ -41,7 +41,7 @@ function execute_function(context,response){
   var http_headers = {};
   if(param.auth){
     if(param.auth.type == 'basic'){
-      var auth_header  = "Basic " + new Buffer(param.auth.username + ":" + param.auth.password).toString("base64");
+      var auth_header  = "Basic " + Buffer.from(param.auth.username + ":" + param.auth.password).toString("base64");
       http_headers.Authorization = auth_header;
     }
   }
