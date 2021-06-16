@@ -1,8 +1,9 @@
 #Changelog
-## [1.2.4 Dev] - 2021-06-11
+## [1.2.4 Dev] - 2021-06-16
 ### Added
 - STORAGE :: Object Cache
 ### Changed
+- BS :: change bson lib to mongo/bson
 - SS :: Direct Idxstore
 ## [1.2.3] - 2021-05-05
 ### Update
