@@ -1,4 +1,4 @@
-var BinStream = require('../lib/bss/binarystream_v1_0');
+var BinStream = require('../lib/bss/binarystream_v1_1');
 var async = require('async');
 
 var FNAME = "D:\\testfile\\test-qq.bss";
