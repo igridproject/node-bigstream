@@ -1,7 +1,7 @@
 {
   "name": "node-bigstream",
   "description": "",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "main": "./bigstream.js",
   "author": {
     "name": "Kamron Aroonrua",
