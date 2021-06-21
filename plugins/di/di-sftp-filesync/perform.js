@@ -22,7 +22,8 @@ function perform_function(context,response){
   var meta = {};
   var last_mod = {'fname':'','tts':0};
   var fs_continue = false;
-  var buff_out = new Buffer(0);
+  //var buff_out = new Buffer(0);
+  var buff_out = Buffer.alloc(0);
 
   if(param.last_modify_ts)
   {

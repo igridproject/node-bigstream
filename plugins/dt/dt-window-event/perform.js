@@ -29,7 +29,7 @@ function perform_function(context,request,response){
       val.forEach(function(v){
         if(typeof v.data == 'object' && v.data.type == 'Buffer' && Array.isArray(v.data.data))
         {
-          v.data = new Buffer(v.data.data);
+          v.data = Buffer.from(v.data.data);
         }
         ret.push(v);
       });
