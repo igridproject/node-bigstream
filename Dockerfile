@@ -11,6 +11,7 @@ RUN node script/install_plugins.js
 
 FROM node:12-alpine
 RUN apk add --no-cache python
+RUN apk add --no-cache tzdata
 
 COPY --from=0 /app/node-bigstream /app/node-bigstream
 
