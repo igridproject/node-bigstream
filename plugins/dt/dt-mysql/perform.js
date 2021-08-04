@@ -14,6 +14,7 @@ function perform_function(context,request,response){
   var meta = request.meta || {};
 
   var req_host = param.host || "localhost";
+  var req_port = param.port || "3306"
   var req_user = param.user || "";
   var req_pass = param.password || "";
   var req_db = param.database || "";
@@ -35,6 +36,7 @@ function perform_function(context,request,response){
   {
     var _prm = meta._param;
     req_host = (_prm.host)?_prm.host:req_host;
+    req_port = (_prm.port)?_prm.host:req_port;
     req_user = (_prm.user)?_prm.user:req_user;
     req_pass = (_prm.password)?_prm.password:req_pass;
     req_db = (_prm.database)?_prm.database:req_db;
@@ -43,6 +45,7 @@ function perform_function(context,request,response){
 
   var conf = {
     "host" : req_host,
+    "port" : Number(req_port),
     "user" : req_user,
     "password" : req_pass,
     "database" : req_db
