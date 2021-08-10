@@ -1,7 +1,8 @@
 #Changelog
-## [1.2.5dev] - 2021-08-04
+## [1.2.5dev] - 2021-08-11
 ### Added
 - DOCKER :: TZ Data
+- STORAGE :: Wirdcard Subscribe
 ### Fixed
 - PLUGIN :: dt-mysql port param
 ## [1.2.4] - 2021-06-21
