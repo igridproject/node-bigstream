@@ -20,6 +20,7 @@ function perform_function(context,response){
       if(param.http_meta){
         input_meta.http_headers = htdata.headers;
         input_meta.http_method = htdata.method;
+        input_meta.http_query = htdata.query;
       }
       if(typeof htdata.data == 'object' && htdata.data.type == 'Buffer'){
         data = Buffer.from(htdata.data);
