@@ -24,7 +24,7 @@ var process_req = function(req, res ,method) {
   var msgrecv = req.context.msgrecv;
 
   var j = httpacl.findJob(appkey,method);
-  var jmatch = (J>0);
+  var jmatch = (j.length>0);
 
   var topic_prex = 'cmd.execute.';
 
