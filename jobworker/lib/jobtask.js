@@ -18,6 +18,7 @@ function JobTask (prm)
   this.handle = prm.handle;
   this.mem = prm.handle.mem;
   this.jobcaller = prm.handle.jobcaller;
+  this.msgsender = prm.handle.msgsender;
   this.storagecaller = prm.handle.storagecaller;
   this.acl_validator = prm.handle.acl_validator
 
@@ -300,10 +301,12 @@ function perform_do(prm,cb)
   var DOTask = getPlugins('do',do_cfg.type);
   var doMem = new memstore({'job_id':job_id,'cat':'do','mem':prm.handle.mem});
   var jobcaller = prm.handle.jobcaller;
+  var msgsender = prm.handle.msgsender;
   var storagecaller = prm.handle.storagecaller;
   do_context.task = {
     "memstore" : doMem,
     "jobcaller" : jobcaller,
+    "msgsender" : msgsender,
     "storagecaller" : storagecaller
   }
 
