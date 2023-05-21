@@ -21,7 +21,6 @@ var process_req = function(req, res ,method) {
   var httpacl = req.context.httpacl;
   //var evp = req.context.evp;
   var jobcaller = req.context.jobcaller;
-  var msgrecv = req.context.msgrecv;
   var httpcb = req.context.httpcb;
 
   var j = httpacl.findJob(appkey,method);
@@ -69,7 +68,7 @@ var process_req = function(req, res ,method) {
     if(iopt.session){ resp_msg.session=session_id }
     if(Number(iopt.timeout)>0){cb_timeout=Number(iopt.timeout)}
     if(iopt.response){
-      cb_response=true
+      cb_response=iopt.response
       resp_msg.session=session_id
     }
     req.setTimeout(cb_timeout);
@@ -86,6 +85,10 @@ var process_req = function(req, res ,method) {
     if(cb_response){
       httpcb.on(session_id,function(msg){
         resp_msg.response=msg.data.data;
+        if(['data','data_only','json'].includes(String(cb_response).toLocaleLowerCase())){
+          resp_msg(resp_msg)
+        }
+
         respHelper.responseOK(resp_msg);
       })
     }else{

@@ -70,7 +70,6 @@ HTTPListener.prototype._http_start = function()
   app.use(context.middleware({
     'httpacl' : self.httpacl,
     'jobcaller' : self.jobcaller,
-    'msgrecv' : self.msgrecv,
     'httpcb' : self.httpcb
   }));
 
