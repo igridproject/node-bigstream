@@ -86,7 +86,7 @@ var process_req = function(req, res ,method) {
       httpcb.on(session_id,function(msg){
         resp_msg.response=msg.data.data;
         if(['data','data_only','json'].includes(String(cb_response).toLocaleLowerCase())){
-          resp_msg(resp_msg)
+          resp_msg=msg.data.data
         }
 
         respHelper.responseOK(resp_msg);
