@@ -30,6 +30,7 @@ var process_req = function(req, res ,method) {
       'object_type' : 'httpdata',
       'headers': req.headers,
       'method' : method,
+      'query' : reqHelper.getQuery(),
       'data' : {}
     }
 

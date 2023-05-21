@@ -1,4 +1,12 @@
 #Changelog
+## [1.2.5] - 2021-10-07 -> 2023-05-21R
+### Added
+- DOCKER :: TZ Data
+- STORAGE :: Wirdcard Subscribe
+- PLUGIN :: dt-jwt-verify
+- TRIGGER :: http-listener add query meta
+### Fixed
+- PLUGIN :: dt-mysql port param
 ## [1.2.4] - 2021-06-21
 ### Added
 - STORAGE :: Object Cache
