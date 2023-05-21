@@ -21,12 +21,16 @@ var process_req = function(req, res ,method) {
   var httpacl = req.context.httpacl;
   //var evp = req.context.evp;
   var jobcaller = req.context.jobcaller;
+  var msgrecv = req.context.msgrecv;
 
   var j = httpacl.findJob(appkey,method);
+  var jmatch = (J>0);
 
   var topic_prex = 'cmd.execute.';
 
   var resp_msg = {'status':'OK'}
+  var cb_timeout = 10000
+  var cb_response = false
 
   j.forEach(function(item){
     var httpdata = {
@@ -59,7 +63,15 @@ var process_req = function(req, res ,method) {
       }
     }
 
-    if(item.opt && item.opt.session){ resp_msg.session=session_id }
+    //HTTP OPTION
+    var iopt = item.opt||{}
+    if(iopt.session){ resp_msg.session=session_id }
+    if(Number(iopt.timeout)>0){cb_timeout=Number(iopt.timeout)}
+    if(iopt.response){
+      cb_response=true
+      resp_msg.session=session_id
+    }
+    req.setTimeout(cb_timeout);
 
     var msg = job_execute_msg;
     msg.jobId = item.jobid;
@@ -68,9 +80,16 @@ var process_req = function(req, res ,method) {
   
   });
 
-  if(j.length > 0)
+  if(jmatch)
   {
-    respHelper.responseOK(resp_msg);
+    if(cb_response){
+      msgrecv.sub('msg.httpcb.' + session_id,function(err,msg){
+        resp_msg.response=msg.data
+        respHelper.responseOK(resp_msg);
+      })
+    }else{
+      respHelper.responseOK(resp_msg);
+    }
   }else{
     respHelper.response403();
   }

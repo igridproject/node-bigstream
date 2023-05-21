@@ -3,9 +3,10 @@ var cfg = ctx.config;
 
 var QueueCaller = ctx.getLib('lib/amqp/queuecaller');
 var QueueReceiver = ctx.getLib('lib/amqp/queuereceiver');
+var EvenPub = ctx.getLib('lib/amqp/event-pub');
 var ConnCtx = ctx.getLib('lib/conn/connection-context');
 var JobRegistry = ctx.getLib('lib/mems/job-registry');
-var SSCaller = ctx.getLib('lib/axon/rpccaller');
+//var SSCaller = ctx.getLib('lib/axon/rpccaller');
 var RPCCaller = ctx.getLib('lib/amqp/rpccaller');
 var ACLValidator = ctx.getLib('lib/auth/acl-validator');
 
@@ -30,6 +31,7 @@ var JW = function JobWorker (prm)
   this.mem = this.conn.getMemstore();
 
   this.jobcaller = new QueueCaller({'url':this.conn.getAmqpUrl(),'name':'bs_jobs_cmd'});
+  this.msgsender = new EvenPub({'url':this.conn.getAmqpUrl(),'name':'bs_msg_bus'});
   this.job_registry = JobRegistry.create({'redis':this.mem});
   this.acl_validator = ACLValidator.create(this.auth_cfg);
 
