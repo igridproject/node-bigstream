@@ -26,7 +26,7 @@ function HTTPListener(cfg)
     this.httpacl = HttpACL.create({'conn':this.config.memstore.url});
     this.jobcaller = new QueueCaller({'url':this.config.amqp.url,'name':'bs_jobs_cmd'});
     this.evs = new EvenSub({'url':this.config.amqp.url,'name':'bs_trigger_cmd'});
-    //this.evp = new EvenPub({'url':this.config.amqp.url,'name':JOBCHANEL});
+    this.msgrecv = new EvenSub({'url':this.config.amqp.url,'name':'bs_msg_bus'});
 }
 
 HTTPListener.prototype.start = function()
@@ -61,11 +61,11 @@ HTTPListener.prototype._http_start = function()
   var context = require('./lib/http-context');
   app.use(context.middleware({
     'httpacl' : self.httpacl,
-    'jobcaller' : self.jobcaller
+    'jobcaller' : self.jobcaller,
+    'msgrecv' : self.msgrecv
   }));
 
   app.use(require('./ws'));
-
 
 
   app.listen(API_PORT, function () {
