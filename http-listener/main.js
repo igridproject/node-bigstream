@@ -11,6 +11,8 @@ var EvenPub = ctx.getLib('lib/amqp/event-pub');
 var QueueCaller = ctx.getLib('lib/amqp/queuecaller');
 var EvenSub = ctx.getLib('lib/amqp/event-sub');
 
+const EventEmitter = require('events')
+
 const JOBCHANEL = 'bs_job_cmd';
 const API_PORT = 19180;
 
@@ -27,6 +29,7 @@ function HTTPListener(cfg)
     this.jobcaller = new QueueCaller({'url':this.config.amqp.url,'name':'bs_jobs_cmd'});
     this.evs = new EvenSub({'url':this.config.amqp.url,'name':'bs_trigger_cmd'});
     this.msgrecv = new EvenSub({'url':this.config.amqp.url,'name':'bs_msg_bus'});
+    this.httpcb = new EventEmitter()
 }
 
 HTTPListener.prototype.start = function()
@@ -39,6 +42,11 @@ HTTPListener.prototype.start = function()
 HTTPListener.prototype._http_start = function()
 {
   var self = this;
+
+  self.msgrecv.sub('msg.httpcb.#' + session_id,function(err,msg){
+    var ssid = msg.topic.split('.')[2]
+    self.httpcb.emit(ssid,msg)
+  })
 
   this.httpacl.update(function(err){
     if(!err){
@@ -62,7 +70,8 @@ HTTPListener.prototype._http_start = function()
   app.use(context.middleware({
     'httpacl' : self.httpacl,
     'jobcaller' : self.jobcaller,
-    'msgrecv' : self.msgrecv
+    'msgrecv' : self.msgrecv,
+    'httpcb' : self.httpcb
   }));
 
   app.use(require('./ws'));

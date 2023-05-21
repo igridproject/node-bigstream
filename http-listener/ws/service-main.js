@@ -22,6 +22,7 @@ var process_req = function(req, res ,method) {
   //var evp = req.context.evp;
   var jobcaller = req.context.jobcaller;
   var msgrecv = req.context.msgrecv;
+  var httpcb = req.context.httpcb;
 
   var j = httpacl.findJob(appkey,method);
   var jmatch = (j.length>0);
@@ -83,8 +84,8 @@ var process_req = function(req, res ,method) {
   if(jmatch)
   {
     if(cb_response){
-      msgrecv.sub('msg.httpcb.' + session_id,function(err,msg){
-        resp_msg.response=msg.data
+      httpcb.on(session_id,function(msg){
+        resp_msg.response=msg.data.data;
         respHelper.responseOK(resp_msg);
       })
     }else{
