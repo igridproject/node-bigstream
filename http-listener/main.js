@@ -43,7 +43,7 @@ HTTPListener.prototype._http_start = function()
 {
   var self = this;
 
-  self.msgrecv.sub('msg.httpcb.#' + session_id,function(err,msg){
+  self.msgrecv.sub('msg.httpcb.#' ,function(err,msg){
     var ssid = msg.topic.split('.')[2]
     self.httpcb.emit(ssid,msg)
   })
