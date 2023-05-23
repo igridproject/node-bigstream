@@ -1,8 +1,9 @@
 # Changelog
-## [1.2.6dev] - 2023-05-22
+## [1.2.6dev] - 2023-05-23
 ### Added
 - TRIGGER :: http trigger callback
 - PLUGIN :: do-http-callback
+- PLUGIN :: dt-pgsql
 ### Removed
 - PLUGIN :: di-gistda-air
 - PLUGIN :: di-tanpibut
