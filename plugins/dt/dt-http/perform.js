@@ -84,7 +84,7 @@ function send_request(prm,cb)
      { 'cache-control': 'no-cache' }
   };
 
-  if(prm.method.toLowerCase()=='post' || prm.method.toLowerCase()=='put')
+  if(['post','put','delete','patch'].includes(prm.method.toLowerCase()))
   {
     options.method = prm.method.toUpperCase();
 
