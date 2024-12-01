@@ -1,5 +1,5 @@
 # Changelog
-## [1.2.6dev] - 2023-07-13
+## [1.2.6dev] - 2024-12-01
 ### Added
 - TRIGGER :: http trigger callback
 - PLUGIN :: do-http-callback
@@ -7,6 +7,7 @@
 ### Update
 - PLUGIN :: dt-http add method delete patch
 - PLUGIN :: do-http add method delete patch
+- PLUGIN :: do-http,dt-http add body_type=form-data
 ### Removed
 - PLUGIN :: di-gistda-air
 - PLUGIN :: di-tanpibut

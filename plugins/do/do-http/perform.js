@@ -54,6 +54,13 @@ function send_request(prm,cb)
     if(prm.body_type=='json' && typeof prm.body == 'object'){
       options.headers['content-type'] = 'application/json';
       options.json = prm.body;
+    }else if(prm.body_type=='form-data' && typeof prm.body == 'object'){
+      options.formData={}
+      Object.keys(prm.body).forEach((el)=>{
+        if(typeof prm.body[el]=='string'){
+          options.formData[el]=prm.body[el]
+        }
+      })
     }else if(prm.body_type=='text' || typeof prm.body == 'string'){
       options.headers['content-type'] = 'text/plain';
       options.body = prm.body;
