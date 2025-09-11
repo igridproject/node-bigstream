@@ -1,7 +1,7 @@
 {
   "name": "node-bigstream",
   "description": "",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "main": "./bigstream.js",
   "author": {
     "name": "Kamron Aroonrua",
@@ -36,8 +36,10 @@
     "random-access-file": "^1.3.0",
     "redis": "^3.1.2",
     "request": "^2.79.0",
+    "socket.io": "^4.6.1",
     "thunky": "^1.0.2",
-    "tiny-worker": "^2.1.1"
+    "tiny-worker": "^2.1.1",
+    "uuid": "^9.0.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

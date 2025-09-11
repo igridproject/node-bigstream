@@ -1,4 +1,4 @@
-FROM node:14-alpine
+FROM node:12-alpine
 
 RUN apk add make gcc g++ linux-headers udev
 
@@ -9,7 +9,7 @@ WORKDIR /app/node-bigstream
 RUN npm install
 RUN node script/install_plugins.js
 
-FROM node:14-alpine
+FROM node:12-alpine
 RUN apk add --no-cache python3
 RUN apk add --no-cache tzdata
 

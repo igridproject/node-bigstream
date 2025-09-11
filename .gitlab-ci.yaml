@@ -1,0 +1,40 @@
+stages:
+  - build
+  - push
+
+variables:
+  IMAGE_NAME: "registry.igridproject.info/bs/node-bigstream"
+
+docker-build:
+  stage: build
+  tags:
+    - igrid
+    - gitlab
+  script:
+    - echo "Building Docker image for $CI_COMMIT_REF_NAME"
+    - docker build -t $IMAGE_NAME:$CI_COMMIT_REF_NAME .
+    - if [ "$CI_COMMIT_REF_NAME" = "master" ]; then
+        docker tag $IMAGE_NAME:$CI_COMMIT_REF_NAME $IMAGE_NAME:latest;
+      fi
+  only:
+    - branches
+    - tags
+
+docker-push:
+  stage: push
+  tags:
+    - igrid
+    - gitlab
+  script:
+    - echo "Logging into registry $CI_REGISTRY"
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+    - echo "Pushing Docker image $IMAGE_NAME:$CI_COMMIT_REF_NAME"
+    - docker push $IMAGE_NAME:$CI_COMMIT_REF_NAME
+    - if [ "$CI_COMMIT_REF_NAME" = "master" ]; then
+        docker push $IMAGE_NAME:latest;
+      fi
+  only:
+    - branches
+    - tags
+  needs:
+    - job: docker-build

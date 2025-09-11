@@ -1,18 +1,14 @@
 {
-  "name": "dt-tanpibut",
-  "version": "0.0.1",
+  "name": "dt-pgsql",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [
-    "bigstream"
-  ],
-  "author": "lsr.bigstream",
+  "author": "",
   "license": "ISC",
   "dependencies": {
-    "async": "^2.1.2",
-    "xml2json": "^0.11.0"
+    "pg": "^8.5.1"
   }
 }

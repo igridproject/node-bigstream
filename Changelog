@@ -1,4 +1,23 @@
-#Changelog
+# Changelog
+## [1.2.6dev] - 2024-12-01
+### Added
+- TRIGGER :: http trigger callback
+- PLUGIN :: do-http-callback
+- PLUGIN :: dt-pgsql
+### Update
+- PLUGIN :: dt-http add method delete patch
+- PLUGIN :: do-http add method delete patch
+- PLUGIN :: do-http,dt-http add body_type=form-data
+### Removed
+- PLUGIN :: di-gistda-air
+- PLUGIN :: di-tanpibut
+- PLUGIN :: di-agritronics
+- PLUGIN :: dt-agritronics
+- PLUGIN :: dt-agritronics-tpb
+- PLUGIN :: dt-gistda-air
+- PLUGIN :: dt-gistda-water
+- PLUGIN :: dt-tanpibut
+
 ## [1.2.5] - 2021-10-07 -> 2023-05-21R
 ### Added
 - DOCKER :: TZ Data
